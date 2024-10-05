@@ -1,5 +1,6 @@
 import '@/app/ui/globals.css';
 import { roboto } from '@/app/ui/fonts';
+import { Toaster } from 'react-hot-toast';
 
 export default async function RootLayout({
   children,
@@ -8,7 +9,28 @@ export default async function RootLayout({
 }) {
   return (
     <html lang='en'>
-      <body className={`${roboto.className} antialiased`}>{children}</body>
+      <body className={`${roboto.className} antialiased`}>
+        {children}
+        <Toaster
+          position='top-right'
+          toastOptions={{
+            success: {
+              style: {
+                backgroundColor: 'green',
+                color: 'white',
+              },
+              icon: '👍',
+            },
+            error: {
+              style: {
+                background: 'red',
+                color: 'white',
+              },
+              icon: '👎',
+            },
+          }}
+        />
+      </body>
     </html>
   );
 }

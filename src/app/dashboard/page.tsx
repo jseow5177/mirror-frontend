@@ -1,4 +1,4 @@
-import RoundLinkButton from '@/app/ui/round-link-btn';
+import { LinkButton } from '@/app/ui/buttons';
 import { ChatBubbleLeftIcon } from '@heroicons/react/24/outline';
 
 export default async function Page() {
@@ -6,7 +6,7 @@ export default async function Page() {
     <div className='flex min-h-full flex-col items-center justify-center gap-4'>
       <h1 className='text-2xl'>Welcome to Mirror!</h1>
       <p>Encounter issues? Submit a feedback!</p>
-      <RoundLinkButton
+      <LinkButton
         label='Contact Us'
         href='https://www.mirrorcdp.com/#contact'
         openInNewTab

@@ -1,5 +1,5 @@
 import { GlobeAltIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
-import RoundLinkButton from '@/app/ui/round-link-btn';
+import { LinkButton } from '@/app/ui/buttons';
 
 export default function Home() {
   return (
@@ -7,7 +7,7 @@ export default function Home() {
       <main className='row-start-2 flex flex-col items-center gap-8'>
         <div className='flex flex-col items-center gap-8'>
           <h1 className='text-4xl'>Welcome to Mirror</h1>
-          <RoundLinkButton
+          <LinkButton
             label='Try it out'
             href='/dashboard'
             Icon={ArrowRightIcon}
