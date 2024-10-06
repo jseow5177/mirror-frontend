@@ -1,9 +1,10 @@
 import Link from 'next/link';
+import clsx from 'clsx';
 
 export enum ButtonColors {
-  Primary = 'bg-blue-600 hover:bg-blue-500 focus-visible:outline-blue-600',
-  Neutral = 'bg-gray-600 hover:bg-gray-500 focus-visible:outline-gray-600',
-  Warn = 'bg-red-600 hover:bg-red-500 focus-visible:outline-red-600',
+  Primary = 'bg-blue-600 hover:bg-blue-500 focus-visible:outline-blue-600 text-white',
+  Neutral = 'bg-gray-200 hover:bg-gray-300 focus-visible:outline-gray-600 text-gray-600',
+  Warn = 'bg-red-600 hover:bg-red-500 focus-visible:outline-red-600 text-white',
 }
 
 export function LinkButton({
@@ -11,18 +12,20 @@ export function LinkButton({
   href,
   Icon,
   openInNewTab = false,
+  color = ButtonColors.Primary,
 }: {
   label: string;
   href: string;
   Icon?: React.ElementType;
   openInNewTab?: boolean;
+  color?: ButtonColors;
 }) {
   return (
     <Link
       href={href}
       target={openInNewTab ? '_blank' : ''}
       rel='noopener noreferrer'
-      className='flex h-10 items-center rounded-lg bg-blue-600 px-4 text-base font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600'
+      className={`flex h-10 items-center rounded-lg ${color} px-4 text-base font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2`}
     >
       <span className='block'>{label}</span>
       {Icon && <Icon className='ml-2 h-5' />}
@@ -33,12 +36,19 @@ export function LinkButton({
 export function LinkIconButton({
   href,
   Icon,
+  openInNewTab = false,
 }: {
   href: string;
   Icon: React.ElementType;
+  openInNewTab?: boolean;
 }) {
   return (
-    <Link href={href} className='rounded-md border p-2 hover:bg-gray-100'>
+    <Link
+      href={href}
+      target={openInNewTab ? '_blank' : ''}
+      rel='noopener noreferrer'
+      className='rounded-md border p-2 hover:bg-gray-100'
+    >
       <Icon className='w-5' />
     </Link>
   );
@@ -57,12 +67,10 @@ export function ActionButton({
 }) {
   return (
     <form action={action}>
-      <button
-        className={`flex h-10 items-center rounded-lg ${color} px-4 text-base font-medium text-white transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2`}
-      >
+      <BaseButton className={`${color}`}>
         <span className='block'>{label}</span>
         {Icon && <Icon className='ml-2 h-5' />}
-      </button>
+      </BaseButton>
     </form>
   );
 }
@@ -78,10 +86,39 @@ export function ActionIconButton({
 }) {
   return (
     <form action={action}>
-      <button className='rounded-md border p-2 hover:bg-gray-100'>
+      <BaseIconButton>
         <span className='sr-only'>{srText}</span>
         <Icon className='w-5' />
-      </button>
+      </BaseIconButton>
     </form>
+  );
+}
+
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  children: React.ReactNode;
+}
+
+export function BaseButton({ children, className, ...rest }: ButtonProps) {
+  return (
+    <button
+      {...rest}
+      className={clsx(
+        `flex h-10 items-center rounded-lg ${ButtonColors.Primary} px-4 text-base font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 aria-disabled:cursor-not-allowed aria-disabled:opacity-50`,
+        className
+      )}
+    >
+      {children}
+    </button>
+  );
+}
+
+export function BaseIconButton({ children, className, ...rest }: ButtonProps) {
+  return (
+    <button
+      {...rest}
+      className={clsx('rounded-md border p-2 hover:bg-gray-100', className)}
+    >
+      {children}
+    </button>
   );
 }

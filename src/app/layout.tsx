@@ -12,7 +12,7 @@ export default async function RootLayout({
       <body className={`${roboto.className} antialiased`}>
         {children}
         <Toaster
-          position='top-right'
+          position='top-center'
           toastOptions={{
             success: {
               style: {
@@ -23,7 +23,7 @@ export default async function RootLayout({
             },
             error: {
               style: {
-                background: 'red',
+                backgroundColor: 'red',
                 color: 'white',
               },
               icon: '👎',
