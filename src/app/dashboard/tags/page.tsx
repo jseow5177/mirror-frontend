@@ -1,8 +1,6 @@
 import Pagination from '@/app/ui/pagination';
-import { LinkButton } from '@/app/ui/buttons';
 import SearchBar from '@/app/ui/search-bar';
 import { countTagsPages } from '@/app/lib/data';
-import { PlusIcon } from '@heroicons/react/24/outline';
 import Table from '@/app/ui/tags/table';
 import { CreateTag } from '@/app/ui/tags/buttons';
 

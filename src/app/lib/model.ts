@@ -1,8 +1,13 @@
 export enum TagStatus {
-  Invalid = 0,
   Normal = 1,
   Pending = 2,
   Deleted = 3,
+}
+
+export enum TagValueType {
+  Int = 1,
+  Str = 2,
+  Float = 3,
 }
 
 export type Tag = {
@@ -10,6 +15,7 @@ export type Tag = {
   tag_name: string;
   tag_desc: string;
   tag_status: TagStatus;
+  tag_value_type: TagValueType;
   create_time: number;
   update_time: number;
 };

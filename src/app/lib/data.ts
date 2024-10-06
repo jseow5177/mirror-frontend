@@ -6,13 +6,7 @@ const ITEMS_PER_PAGE = 10;
 export async function getTag(id: number) {
   try {
     const data = await sql<Tag>`
-        SELECT
-            tag_id,
-            tag_name,
-            tag_desc,
-            tag_status,
-            create_time,
-            update_time
+        SELECT *
         FROM tag_tab
         WHERE tag_id = ${id} AND tag_status != ${TagStatus.Deleted}
     `;
@@ -38,18 +32,13 @@ export async function getTags(query: string, currentPage: number) {
 
   try {
     const data = await sql<Tag>`
-            SELECT
-                tag_id,
-                tag_name,
-                tag_desc,
-                tag_status,
-                create_time,
-                update_time
+            SELECT *
             FROM tag_tab
             WHERE (
                 tag_name ILIKE ${`%${query}%`} OR
                 tag_desc ILIKE ${`%${query}%`}
             ) AND tag_status != ${TagStatus.Deleted}
+            ORDER BY update_time DESC
             LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
         `;
 

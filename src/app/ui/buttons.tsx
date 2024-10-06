@@ -1,10 +1,13 @@
+//'use client';
+
 import Link from 'next/link';
 import clsx from 'clsx';
+import { Spinner } from '@nextui-org/react';
 
 export enum ButtonColors {
-  Primary = 'bg-blue-600 hover:bg-blue-500 focus-visible:outline-blue-600 text-white',
-  Neutral = 'bg-gray-200 hover:bg-gray-300 focus-visible:outline-gray-600 text-gray-600',
-  Warn = 'bg-red-600 hover:bg-red-500 focus-visible:outline-red-600 text-white',
+  Primary = 'bg-blue-600 hover:bg-blue-500 disabled:bg-blue-400 focus-visible:outline-blue-600 text-white',
+  Neutral = 'bg-gray-400 hover:bg-gray-300 disabled:bg-gray-400 focus-visible:outline-gray-600 text-gray-600',
+  Warn = 'bg-red-600 hover:bg-red-500 disabled:bg-red-400 focus-visible:outline-red-600 text-white',
 }
 
 export function LinkButton({
@@ -96,18 +99,24 @@ export function ActionIconButton({
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
+  isPending?: boolean;
 }
 
-export function BaseButton({ children, className, ...rest }: ButtonProps) {
+export function BaseButton({
+  children,
+  className,
+  isPending,
+  ...rest
+}: ButtonProps) {
   return (
     <button
       {...rest}
       className={clsx(
-        `flex h-10 items-center rounded-lg ${ButtonColors.Primary} px-4 text-base font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 aria-disabled:cursor-not-allowed aria-disabled:opacity-50`,
+        `flex h-10 min-w-20 items-center justify-center rounded-lg ${ButtonColors.Primary} px-4 text-base font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 aria-disabled:cursor-not-allowed aria-disabled:opacity-50`,
         className
       )}
     >
-      {children}
+      {isPending ? <Spinner size='sm' color='default' /> : children}
     </button>
   );
 }

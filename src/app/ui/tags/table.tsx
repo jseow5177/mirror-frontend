@@ -1,10 +1,8 @@
 import React from 'react';
-import { useState } from 'react';
 import { getTags } from '@/app/lib/data';
 import Status from './status';
 import { convertUnixToLocalTime } from '@/app/lib/utils';
 import { DeleteTag, UpdateTag } from './buttons';
-import Modal from '../modal';
 
 export default async function Table({
   query,
@@ -57,13 +55,13 @@ export default async function Table({
                   <td className='w-[10%] whitespace-nowrap px-3 py-3'>
                     <Status status={tag.tag_status} />
                   </td>
-                  <td className='w-[15%] whitespace-nowrap px-3 py-3'>
+                  <td className='w-[10%] whitespace-nowrap px-3 py-3'>
                     {convertUnixToLocalTime(tag.create_time)}
                   </td>
-                  <td className='w-[15%] whitespace-nowrap px-3 py-3'>
+                  <td className='w-[10%] whitespace-nowrap px-3 py-3'>
                     {convertUnixToLocalTime(tag.update_time)}
                   </td>
-                  <td className='w-[10%] whitespace-nowrap px-3 py-3'>
+                  <td className='w-[20%] whitespace-nowrap px-3 py-3'>
                     <div className='flex justify-end gap-2'>
                       <UpdateTag id={tag.tag_id} />
                       <DeleteTag id={tag.tag_id} name={tag.tag_name} />

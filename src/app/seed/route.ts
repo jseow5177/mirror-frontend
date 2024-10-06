@@ -12,6 +12,7 @@ async function seedTags() {
             tag_id BIGSERIAL PRIMARY KEY,
             tag_name VARCHAR(64) NOT NULL,
             tag_desc VARCHAR(120) NOT NULL DEFAULT '',
+            tag_value_type INTEGER NOT NULL,
             tag_status INTEGER NOT NULL,
             create_time BIGINT NOT NULL,
             update_time BIGINT NOT NULL
@@ -21,8 +22,8 @@ async function seedTags() {
   await Promise.all(
     tags.map(
       (tag) => client.sql`
-                INSERT INTO tag_tab (tag_name, tag_desc, tag_status, create_time, update_time)
-                VALUES (${tag.tag_name}, ${tag.tag_desc}, ${tag.tag_status}, ${tag.create_time}, ${tag.update_time})
+                INSERT INTO tag_tab (tag_name, tag_desc, tag_value_type, tag_status, create_time, update_time)
+                VALUES (${tag.tag_name}, ${tag.tag_desc},${tag.tag_value_type}, ${tag.tag_status}, ${tag.create_time}, ${tag.update_time})
             `
     )
   );
