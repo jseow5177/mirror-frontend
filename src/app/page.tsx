@@ -1,5 +1,5 @@
 import { GlobeAltIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
-import { LinkButton } from '@/app/ui/buttons';
+import { Button, Link } from '@nextui-org/react';
 
 export default function Home() {
   return (
@@ -7,11 +7,15 @@ export default function Home() {
       <main className='row-start-2 flex flex-col items-center gap-8'>
         <div className='flex flex-col items-center gap-8'>
           <h1 className='text-4xl'>Welcome to Mirror</h1>
-          <LinkButton
-            label='Try it out'
+          <Button
             href='/dashboard'
-            Icon={ArrowRightIcon}
-          />
+            as={Link}
+            color='primary'
+            variant='solid'
+            startContent={<ArrowRightIcon className='h-5' />}
+          >
+            Try it out
+          </Button>
         </div>
       </main>
       <footer className='row-start-3 flex flex-wrap items-center justify-center gap-6'>

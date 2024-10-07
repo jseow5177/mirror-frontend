@@ -1,22 +1,27 @@
 'use client';
 
 import React from 'react';
-import { useState } from 'react';
 import { deleteTag } from '@/app/lib/action';
 import {
-  ActionIconButton,
-  LinkButton,
-  LinkIconButton,
-  ActionButton,
-  ButtonColors,
-} from '../buttons';
-import { PencilIcon, TrashIcon, PlusIcon } from '@heroicons/react/24/outline';
-import Modal from '../modal';
+  PencilIcon,
+  TrashIcon,
+  PlusIcon,
+  EyeIcon,
+} from '@heroicons/react/24/outline';
 import { toast } from 'react-hot-toast';
-import { revalidatePath } from 'next/cache';
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
+  ButtonGroup,
+} from '@nextui-org/react';
+import { Button, Link } from '@nextui-org/react';
+import { Tag } from '@/app/lib/model';
 
 export function DeleteTag({ id, name }: { id: number; name: string }) {
-  const [showModal, setShowModal] = useState(false);
   const deleteTagWithID = async () => {
     const res = await deleteTag(id);
     if (res.error) {
@@ -24,52 +29,94 @@ export function DeleteTag({ id, name }: { id: number; name: string }) {
     } else {
       toast.success(res.message);
     }
-    setShowModal(false);
   };
+
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   return (
     <>
-      {showModal && (
-        <Modal
-          title={`Delete tag "${name}"`}
-          subTitle='This action is irreversible!'
-          Buttons={[
-            <ActionButton
-              key={1}
-              action={() => setShowModal(false)}
-              label='Cancel'
-              color={ButtonColors.Neutral}
-            />,
-            <ActionButton
-              key={2}
-              action={deleteTagWithID}
-              label='Confirm'
-              color={ButtonColors.Warn}
-            />,
-          ]}
-        />
-      )}
-      <ActionIconButton
-        action={() => setShowModal(true)}
-        Icon={TrashIcon}
-        srText='Delete'
-      />
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className='flex flex-col gap-1'>
+                {`Delete tag "${name}"`}
+              </ModalHeader>
+              <ModalBody>
+                <p>This action is irreversible!</p>
+              </ModalBody>
+              <ModalFooter>
+                <Button onClick={onClose} color='default' variant='solid'>
+                  Cancel
+                </Button>
+                <Button
+                  onClick={async () => {
+                    await deleteTagWithID();
+                    onClose();
+                  }}
+                  color='danger'
+                  variant='solid'
+                >
+                  Confirm
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+      <Button isIconOnly variant='bordered' onClick={onOpen}>
+        <TrashIcon className='h-5' />
+      </Button>
     </>
   );
 }
 
 export function CreateTag() {
   return (
-    <LinkButton
+    <Button
       href='/dashboard/tags/create'
-      label='Create Tag'
-      Icon={PlusIcon}
-    />
+      as={Link}
+      color='primary'
+      variant='solid'
+      startContent={<PlusIcon className='h-8' />}
+    >
+      Create Tag
+    </Button>
   );
 }
 
 export function UpdateTag({ id }: { id: number }) {
   return (
-    <LinkIconButton Icon={PencilIcon} href={`/dashboard/tags/${id}/edit`} />
+    <Button
+      isIconOnly
+      variant='bordered'
+      as={Link}
+      href={`/dashboard/tags/${id}/edit`}
+    >
+      <PencilIcon className='h-5' />
+    </Button>
+  );
+}
+
+export function ViewTag({ id }: { id: number }) {
+  return (
+    <Button
+      isIconOnly
+      variant='bordered'
+      as={Link}
+      href={`/dashboard/tags/${id}`}
+    >
+      <EyeIcon className='h-5' />
+    </Button>
+  );
+}
+
+export function TagActions({ tag }: { tag: Tag }) {
+  return (
+    <ButtonGroup>
+      <ViewTag id={tag.tag_id} />
+      <UpdateTag id={tag.tag_id} />
+      <DeleteTag id={tag.tag_id} name={tag.tag_name} />
+    </ButtonGroup>
   );
 }

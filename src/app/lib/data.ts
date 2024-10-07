@@ -1,9 +1,12 @@
 import { sql } from '@vercel/postgres';
 import { Tag, TagStatus } from './model';
 
+// await new Promise((resolve) => setTimeout(resolve, 1000));
+
 const ITEMS_PER_PAGE = 10;
 
 export async function getTag(id: number) {
+  await new Promise((resolve) => setTimeout(resolve, 1000));
   try {
     const data = await sql<Tag>`
         SELECT *
@@ -74,5 +77,22 @@ export async function countTagsPages(query: string) {
   } catch (error) {
     console.error('countTagsPages database error:', error);
     throw new Error('Failed to count tags.');
+  }
+}
+
+export async function countTotalTags() {
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+  try {
+    const count = await sql`
+            SELECT
+                COUNT(*)
+            FROM tag_tab
+            WHERE tag_status = ${TagStatus.Normal}
+        `;
+
+    return Number(count.rows[0].count);
+  } catch (error) {
+    console.error('countTotalTags database error:', error);
+    throw new Error('Failed to count total tags.');
   }
 }

@@ -10,6 +10,12 @@ export enum TagValueType {
   Float = 3,
 }
 
+export const tagValueTypes: Record<TagValueType, String> = {
+  [TagValueType.Int]: 'Number',
+  [TagValueType.Str]: 'Text',
+  [TagValueType.Float]: 'Decimal',
+};
+
 export type Tag = {
   tag_id: number;
   tag_name: string;

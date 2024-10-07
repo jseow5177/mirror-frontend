@@ -1,17 +1,22 @@
-import { LinkButton } from '@/app/ui/buttons';
-import { ChatBubbleLeftIcon } from '@heroicons/react/24/outline';
+import { Suspense } from 'react';
+import {
+  NumberOfTagsCard,
+  NumberOfSegmentsCard,
+  DashboardCardSkeleton,
+} from '../ui/dashboard/cards';
 
 export default async function Page() {
   return (
-    <div className='flex min-h-full flex-col items-center justify-center gap-4'>
-      <h1 className='text-2xl'>Welcome to Mirror!</h1>
-      <p>Encounter issues? Submit a feedback!</p>
-      <LinkButton
-        label='Contact Us'
-        href='https://www.mirrorcdp.com/#contact'
-        openInNewTab
-        Icon={ChatBubbleLeftIcon}
-      />
-    </div>
+    <main>
+      <h1 className='mb-8 text-2xl'>Dashboard</h1>
+      <div className='grid h-[150px] grid-cols-4 gap-6'>
+        <Suspense fallback={<DashboardCardSkeleton />}>
+          <NumberOfTagsCard />
+        </Suspense>
+        <Suspense fallback={<DashboardCardSkeleton />}>
+          <NumberOfSegmentsCard />
+        </Suspense>
+      </div>
+    </main>
   );
 }

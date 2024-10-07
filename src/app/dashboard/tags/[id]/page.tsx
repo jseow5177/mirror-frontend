@@ -1,8 +1,8 @@
-import React from 'react';
-import Breadcrumbs from '@/app/ui/breadcrumbs';
-import TagForm from '@/app/ui/tags/form';
 import { notFound } from 'next/navigation';
 import { getTag } from '@/app/lib/data';
+import TagView from '@/app/ui/tags/tag';
+import BaseBreadcrumbs from '@/app/ui/breadcrumbs';
+import Link from 'next/link';
 
 export default async function Page({ params }: { params: { id: string } }) {
   const id = params.id;
@@ -14,17 +14,16 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   return (
     <main>
-      <Breadcrumbs
+      <BaseBreadcrumbs
         breadcrumbs={[
           { label: 'Tags', href: '/dashboard/tags' },
           {
-            label: 'Edit Tag',
-            href: `/dashboard/tags/${id}/edit`,
-            isCurrent: true,
+            label: 'View Tag',
+            href: `/dashboard/tags/${id}`,
           },
         ]}
       />
-      <TagForm tag={tag} />
+      <TagView tag={tag} />
     </main>
   );
 }

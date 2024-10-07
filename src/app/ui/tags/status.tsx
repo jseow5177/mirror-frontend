@@ -1,31 +1,48 @@
 import React from 'react';
-import { CheckIcon, ClockIcon } from '@heroicons/react/24/outline';
+import {
+  CheckIcon,
+  ClockIcon,
+  ExclamationTriangleIcon,
+} from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import { TagStatus } from '@/app/lib/model';
+import { Chip } from '@nextui-org/react';
 
-export default function Status({ status }: { status: number }) {
-  return (
-    <span
-      className={clsx(
-        'inline-flex items-center rounded-full px-2 py-1 text-xs',
-        {
-          'bg-gray-100 text-gray-500': status === TagStatus.Pending,
-          'bg-green-600 text-white': status === TagStatus.Normal,
-        }
-      )}
-    >
-      {status === TagStatus.Pending ? (
-        <>
-          Pending
-          <ClockIcon className='ml-1 w-4 text-gray-500' />
-        </>
-      ) : null}
-      {status === TagStatus.Normal ? (
-        <>
-          Normal
-          <CheckIcon className='ml-1 w-4 text-white' />
-        </>
-      ) : null}
-    </span>
-  );
+type availableColors =
+  | 'success'
+  | 'default'
+  | 'danger'
+  | 'primary'
+  | 'secondary'
+  | 'warning'
+  | undefined;
+
+interface chipProperty {
+  color: availableColors;
+  label: string;
+  icon: React.ElementType;
+}
+
+const chipProperties: Record<TagStatus, chipProperty> = {
+  [TagStatus.Normal]: {
+    color: 'success',
+    label: 'Normal',
+    icon: CheckIcon,
+  },
+  [TagStatus.Pending]: {
+    color: 'default',
+    label: 'Pending',
+    icon: ClockIcon,
+  },
+  [TagStatus.Deleted]: {
+    color: 'danger',
+    label: 'Deleted',
+    icon: ExclamationTriangleIcon,
+  },
+};
+
+export default function Status({ status }: { status: TagStatus }) {
+  const chipProperty = chipProperties[status];
+
+  return <Chip color={chipProperty.color}>{chipProperty.label}</Chip>;
 }

@@ -10,7 +10,7 @@ export default async function Page() {
           {
             label: 'Create Tag',
             href: '/dashboard/tags/create',
-            active: true,
+            isCurrent: true,
           },
         ]}
       />

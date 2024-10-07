@@ -1,8 +1,8 @@
-import Pagination from '@/app/ui/pagination';
 import SearchBar from '@/app/ui/search-bar';
-import { countTagsPages } from '@/app/lib/data';
-import Table from '@/app/ui/tags/table';
+import { countTagsPages, getTags } from '@/app/lib/data';
+import BaseTable from '@/app/ui/tags/table';
 import { CreateTag } from '@/app/ui/tags/buttons';
+import { Pagination } from '@nextui-org/react';
 
 export default async function Page({
   searchParams,
@@ -15,20 +15,30 @@ export default async function Page({
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
 
-  const totalPages = await countTagsPages(query);
+  const fetchTagData = async () => {
+    const [totalPages, tags] = await Promise.all([
+      countTagsPages(query),
+      getTags(query, currentPage),
+    ]);
+
+    return {
+      totalPages,
+      tags,
+    };
+  };
+
+  const { totalPages, tags } = await fetchTagData();
 
   return (
     <div className='min-h-screen w-full'>
-      <div className='flex w-full items-center justify-between'>
-        <h1 className='text-2xl'>Tags</h1>
-      </div>
-      <div className='mt-4 flex items-center justify-between gap-2 md:mt-8'>
+      <h1 className='mb-8 text-2xl'>Tags</h1>
+      <div className='mb-5 flex items-center justify-between gap-2'>
         <SearchBar placeholder='Search tags...' />
         <CreateTag />
       </div>
-      <Table query={query} currentPage={currentPage} />
+      <BaseTable tags={tags} />
       <div className='mt-5 flex w-full justify-end'>
-        <Pagination totalPages={totalPages} />
+        <Pagination showControls total={totalPages} initialPage={1} />
       </div>
     </div>
   );

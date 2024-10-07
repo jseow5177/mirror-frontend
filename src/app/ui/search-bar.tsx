@@ -3,6 +3,7 @@
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { useDebouncedCallback } from 'use-debounce';
+import { Input } from '@nextui-org/react';
 
 export default function SearchBar({ placeholder }: { placeholder: string }) {
   const pathname = usePathname();
@@ -21,20 +22,17 @@ export default function SearchBar({ placeholder }: { placeholder: string }) {
   }, 300);
 
   return (
-    <div className='relative flex flex-1 flex-shrink-0'>
-      <label htmlFor='search' className='sr-only'>
-        Search
-      </label>
-      <input
-        id='search'
-        className='peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500'
-        placeholder={placeholder}
-        onChange={(e) => {
-          handleSearch(e.target.value);
-        }}
-        defaultValue={searchParams.get('query')?.toString()}
-      />
-      <MagnifyingGlassIcon className='absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900' />
-    </div>
+    <Input
+      variant='bordered'
+      fullWidth
+      size='lg'
+      defaultValue={searchParams.get('query')?.toString()}
+      startContent={<MagnifyingGlassIcon className='w-5' />}
+      labelPlacement='outside'
+      placeholder='Search'
+      onChange={(e) => {
+        handleSearch(e.target.value);
+      }}
+    />
   );
 }

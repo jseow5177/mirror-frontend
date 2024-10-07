@@ -84,6 +84,7 @@ export async function updateTag(_: TagState, formData: FormData) {
 
     revalidatePath('/dashboard/tags');
     revalidatePath(`/dashboard/tags/${tagID}/edit`);
+    revalidatePath(`/dashboard/tags/${tagID}`);
 
     return {
       message: 'Tag updated',
@@ -130,6 +131,7 @@ export async function createTag(_: TagState, formData: FormData) {
       VALUES (${tagName}, ${tagDesc}, ${tagValueType}, ${TagStatus.Normal}, ${now}, ${now})
     `;
 
+    revalidatePath('/dashboard');
     revalidatePath('/dashboard/tags');
 
     return {
@@ -153,6 +155,7 @@ export async function deleteTag(id: number) {
         SET tag_status = ${TagStatus.Deleted} 
         WHERE tag_id = ${id}
     `;
+    revalidatePath('/dashboard');
     revalidatePath('/dashboard/tags');
     return { message: 'Tag deleted.' };
   } catch (error) {
