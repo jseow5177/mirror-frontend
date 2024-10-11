@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { createTag, TagState, updateTag } from '@/app/lib/action';
-import { Tag, TagValueType, tagValueTypes } from '@/app/lib/model';
+import { Tag, TagValueType, TagValueTypes } from '@/app/lib/model';
 import { DocumentTextIcon, TagIcon } from '@heroicons/react/24/outline';
 import { useEffect } from 'react';
 import toast from 'react-hot-toast';
@@ -149,13 +149,13 @@ export default function TagForm({ tag }: { tag?: Tag }) {
             }
           >
             <Radio value={`${TagValueType.Str}`}>
-              {tagValueTypes[TagValueType.Str]}
+              {TagValueTypes[TagValueType.Str]}
             </Radio>
             <Radio value={`${TagValueType.Int}`}>
-              {tagValueTypes[TagValueType.Int]}
+              {TagValueTypes[TagValueType.Int]}
             </Radio>
             <Radio value={`${TagValueType.Float}`}>
-              {tagValueTypes[TagValueType.Float]}
+              {TagValueTypes[TagValueType.Float]}
             </Radio>
           </RadioGroup>
         )}

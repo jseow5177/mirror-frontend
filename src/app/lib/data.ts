@@ -11,7 +11,7 @@ export async function getTag(id: number) {
     const data = await sql<Tag>`
         SELECT *
         FROM tag_tab
-        WHERE tag_id = ${id} AND tag_status != ${TagStatus.Deleted}
+        WHERE tag_id = ${id} AND tag_status = ${TagStatus.Normal}
     `;
 
     const tag = data.rows[0];

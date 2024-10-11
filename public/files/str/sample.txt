@@ -1,0 +1,2 @@
+john.doe@gmail.com,Singapore
+jane.doe@gmail.com,Malaysia

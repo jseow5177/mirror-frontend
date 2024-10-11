@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import Status from './status';
+import TagStatusChip from './status';
 import { convertUnixToLocalTime } from '@/app/lib/utils';
 import { TagActions } from './buttons';
 
@@ -32,7 +32,7 @@ export default function BaseTable({ tags }: { tags: Array<Tag> }) {
             <TableCell>{tag.tag_name}</TableCell>
             <TableCell>{tag.tag_desc}</TableCell>
             <TableCell>
-              <Status status={tag.tag_status} />
+              <TagStatusChip status={tag.tag_status} />
             </TableCell>
             <TableCell>{convertUnixToLocalTime(tag.create_time)}</TableCell>
             <TableCell>{convertUnixToLocalTime(tag.update_time)}</TableCell>

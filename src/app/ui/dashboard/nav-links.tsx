@@ -1,12 +1,7 @@
 'use client';
 
 import React from 'react';
-import {
-  UserGroupIcon,
-  HomeIcon,
-  CircleStackIcon,
-  TagIcon,
-} from '@heroicons/react/24/outline';
+import { UserGroupIcon, HomeIcon, TagIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
@@ -23,7 +18,6 @@ const links = [
     href: '/dashboard/segments',
     icon: UserGroupIcon,
   },
-  { name: 'Ingestions', href: '/dashboard/ingestions', icon: CircleStackIcon },
 ];
 
 export default function NavLinks() {
