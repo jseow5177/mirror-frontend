@@ -1,6 +1,6 @@
 import SearchBar from '@/app/ui/search-bar';
 import { countTagsPages, getTags } from '@/app/lib/data';
-import BaseTable from '@/app/ui/tags/table';
+import TagTable from '@/app/ui/tags/tag-table';
 import { CreateTag } from '@/app/ui/tags/buttons';
 import { Pagination } from '@nextui-org/react';
 
@@ -36,7 +36,7 @@ export default async function Page({
         <SearchBar placeholder='Search tags...' />
         <CreateTag />
       </div>
-      <BaseTable tags={tags} />
+      <TagTable tags={tags} />
       <div className='mt-5 flex w-full justify-end'>
         <Pagination showControls total={totalPages} initialPage={1} />
       </div>

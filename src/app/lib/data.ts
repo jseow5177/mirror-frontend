@@ -6,7 +6,6 @@ import { Tag, TagStatus } from './model';
 const ITEMS_PER_PAGE = 10;
 
 export async function getTag(id: number) {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
   try {
     const data = await sql<Tag>`
         SELECT *
@@ -81,7 +80,6 @@ export async function countTagsPages(query: string) {
 }
 
 export async function countTotalTags() {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
   try {
     const count = await sql`
             SELECT

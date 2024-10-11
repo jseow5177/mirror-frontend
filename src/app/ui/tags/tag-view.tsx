@@ -1,6 +1,7 @@
 'use client';
 
 import { Tag, TagValueType } from '@/app/lib/model';
+import BaseChip from './chip';
 import {
   Card,
   CardHeader,
@@ -9,9 +10,7 @@ import {
   Divider,
   Link,
 } from '@nextui-org/react';
-
 import DragAndDrop from './file-drop';
-import TagValueTypeChip from './value_type';
 
 const csvFiles: Record<TagValueType, string> = {
   [TagValueType.Str]: '/files/str/sample.csv',
@@ -26,7 +25,6 @@ const txtFiles: Record<TagValueType, string> = {
 };
 
 export default function TagView({ tag }: { tag: Tag }) {
-  console.log(csvFiles[tag.tag_value_type]);
   return (
     <Card className='w-[500px]'>
       <CardHeader className='flex justify-between'>
@@ -35,7 +33,7 @@ export default function TagView({ tag }: { tag: Tag }) {
           <p className='text-sm text-default-500'>Tag ID: {tag.tag_id}</p>
         </div>
         <div className='flex flex-col items-end gap-2'>
-          <TagValueTypeChip tagValueType={tag.tag_value_type} />
+          <BaseChip label={tag.tag_value_type} labelType='tagValueType' />
           {tag.tag_value_type === TagValueType.Float && (
             <p className='text-xs text-red-500'>(Max 5 decimal places)</p>
           )}

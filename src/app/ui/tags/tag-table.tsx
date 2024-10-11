@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import TagStatusChip from './status';
+import BaseChip from './chip';
 import { convertUnixToLocalTime } from '@/app/lib/utils';
 import { TagActions } from './buttons';
 
@@ -15,7 +15,7 @@ import {
 } from '@nextui-org/react';
 import { Tag } from '@/app/lib/model';
 
-export default function BaseTable({ tags }: { tags: Array<Tag> }) {
+export default function TagTable({ tags }: { tags: Array<Tag> }) {
   return (
     <Table>
       <TableHeader>
@@ -32,7 +32,7 @@ export default function BaseTable({ tags }: { tags: Array<Tag> }) {
             <TableCell>{tag.tag_name}</TableCell>
             <TableCell>{tag.tag_desc}</TableCell>
             <TableCell>
-              <TagStatusChip status={tag.tag_status} />
+              <BaseChip label={tag.tag_status} labelType='tagStatus' />
             </TableCell>
             <TableCell>{convertUnixToLocalTime(tag.create_time)}</TableCell>
             <TableCell>{convertUnixToLocalTime(tag.update_time)}</TableCell>

@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { getTag } from '@/app/lib/data';
-import TagView from '@/app/ui/tags/tag';
+import TagView from '@/app/ui/tags/tag-view';
 import BaseBreadcrumbs from '@/app/ui/breadcrumbs';
 
 export default async function Page({ params }: { params: { id: string } }) {
