@@ -96,7 +96,7 @@ export default function DragAndDrop({ tag }: { tag: Tag }) {
 
   useEffect(() => {
     if (canRedirect) {
-      redirect('/dashboard');
+      redirect(`/dashboard/tags/${tag.tag_id}`);
     }
   }, [canRedirect]);
 

@@ -26,7 +26,7 @@ const txtFiles: Record<TagValueType, string> = {
 
 export default function TagView({ tag }: { tag: Tag }) {
   return (
-    <Card className='w-[500px]'>
+    <Card className='w-full'>
       <CardHeader className='flex justify-between'>
         <div className='flex flex-col items-start gap-2'>
           <h1 className='text-xl'>{tag.tag_name}</h1>

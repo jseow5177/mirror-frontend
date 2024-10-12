@@ -1,11 +1,40 @@
 import { notFound } from 'next/navigation';
-import { getTag } from '@/app/lib/data';
+import { getTag, getTasks, countTasksPages } from '@/app/lib/data';
 import TagView from '@/app/ui/tags/tag-view';
 import BaseBreadcrumbs from '@/app/ui/breadcrumbs';
+import TaskTable from '@/app/ui/tags/task-table';
+import BasePagination from '@/app/ui/pagination';
 
-export default async function Page({ params }: { params: { id: string } }) {
+export default async function Page({
+  params,
+  searchParams,
+}: {
+  params: { id: string };
+  searchParams?: {
+    query?: string;
+    page?: string;
+  };
+}) {
   const id = params.id;
-  const tag = await getTag(Number(id));
+  const currentPage = Number(searchParams?.page) || 1;
+
+  const fetchTaskData = async () => {
+    const tagID = Number(id) | 0;
+
+    const [tag, totalPages, tasks] = await Promise.all([
+      getTag(tagID),
+      countTasksPages(tagID),
+      getTasks(tagID, currentPage),
+    ]);
+
+    return {
+      tag,
+      totalPages,
+      tasks,
+    };
+  };
+
+  const { tag, totalPages, tasks } = await fetchTaskData();
 
   if (!tag) {
     notFound();
@@ -23,6 +52,15 @@ export default async function Page({ params }: { params: { id: string } }) {
         ]}
       />
       <TagView tag={tag} />
+      <div className='mt-5'>
+        <h2 className='text-xl'>Tasks</h2>
+        <div className='mt-3'>
+          <TaskTable tasks={tasks} />
+        </div>
+        <div className='mt-5 flex w-full justify-end'>
+          <BasePagination totalPages={totalPages} />
+        </div>
+      </div>
     </main>
   );
 }

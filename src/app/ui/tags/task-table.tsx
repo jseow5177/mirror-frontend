@@ -3,7 +3,6 @@
 import React from 'react';
 import BaseChip from './chip';
 import { convertUnixToLocalTime } from '@/app/lib/utils';
-
 import {
   Table,
   TableHeader,
@@ -14,12 +13,12 @@ import {
 } from '@nextui-org/react';
 import { Task } from '@/app/lib/model';
 
-export default function TaskTable({ tasks }: { tasks: Array<Task> }) {
+export default async function TaskTable({ tasks }: { tasks: Array<Task> }) {
   return (
-    <Table>
+    <Table aria-label='task-table'>
       <TableHeader>
         <TableColumn>Task ID</TableColumn>
-        <TableColumn>File URL</TableColumn>
+        <TableColumn>File</TableColumn>
         <TableColumn>Status</TableColumn>
         <TableColumn>Create Time</TableColumn>
         <TableColumn>Update Time</TableColumn>
