@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { getTag, getTasks, countTasksPages } from '@/app/lib/data';
+import { getTag, getTasks, countTasksPages } from '@/app/lib/tag-data';
 import TagView from '@/app/ui/tags/tag-view';
 import BaseBreadcrumbs from '@/app/ui/breadcrumbs';
 import TaskTable from '@/app/ui/tags/task-table';

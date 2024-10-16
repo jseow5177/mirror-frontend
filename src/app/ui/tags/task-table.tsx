@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import BaseChip from './chip';
+import BaseChip from '../chip';
 import { convertUnixToLocalTime } from '@/app/lib/utils';
 import {
   Table,
@@ -23,7 +23,7 @@ export default async function TaskTable({ tasks }: { tasks: Array<Task> }) {
         <TableColumn>Create Time</TableColumn>
         <TableColumn>Update Time</TableColumn>
       </TableHeader>
-      <TableBody>
+      <TableBody emptyContent={'No tasks to display.'}>
         {tasks.map((task, i) => (
           <TableRow key={i}>
             <TableCell>{task.task_id}</TableCell>

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { deleteTag } from '@/app/lib/action';
+import { deleteTag } from '@/app/lib/tag-action';
 import {
   PencilIcon,
   TrashIcon,

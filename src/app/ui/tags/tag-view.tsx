@@ -1,7 +1,7 @@
 'use client';
 
 import { Tag, TagValueType } from '@/app/lib/model';
-import BaseChip from './chip';
+import BaseChip from '../chip';
 import {
   Card,
   CardHeader,

@@ -105,7 +105,7 @@ export default function DragAndDrop({ tag }: { tag: Tag }) {
       <form
         className={`${
           dragActive ? 'bg-gray-300' : 'bg-gray-100'
-        } flex h-[10rem] w-[20rem] flex-col items-center justify-center rounded-lg p-4 text-center`}
+        } flex h-[10rem] w-[30rem] flex-col items-center justify-center rounded-lg p-4 text-center`}
         onDragEnter={handleDragEnter}
         onSubmit={handleSubmit}
         onDrop={handleDrop}

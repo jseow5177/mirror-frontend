@@ -1,6 +1,7 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import { UserGroupIcon, TagIcon } from '@heroicons/react/24/outline';
-import { countTotalTags } from '@/app/lib/data';
+import { countTotalTags } from '@/app/lib/tag-data';
+import { countTotalSegments } from '@/app/lib/segment-data';
 import {
   Card,
   CardHeader,
@@ -21,10 +22,11 @@ export async function NumberOfTagsCard() {
 }
 
 export async function NumberOfSegmentsCard() {
+  const numberOfSegments = await countTotalSegments();
   return (
     <DashboardCard
       title='Number of Segments'
-      body={`${0}`}
+      body={`${numberOfSegments}`}
       Icon={UserGroupIcon}
     />
   );

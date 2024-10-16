@@ -4,6 +4,24 @@ import { NextResponse } from 'next/server';
 
 const client = await db.connect();
 
+async function seedSegment() {
+  await client.sql`
+        DROP TABLE IF EXISTS segment_tab;
+    `;
+
+  await client.sql`
+      CREATE TABLE IF NOT EXISTS segment_tab (
+        segment_id BIGSERIAL PRIMARY KEY,
+        segment_name VARCHAR(64) NOT NULL,
+        segment_desc VARCHAR(120) NOT NULL DEFAULT '',
+        criteria TEXT NOT NULL,
+        segment_status INTEGER NOT NULL,
+        create_time BIGINT NOT NULL,
+        update_time BIGINT NOT NULL
+      );
+  `;
+}
+
 async function seedUdTag() {
   await client.sql`
         DROP TABLE IF EXISTS ud_tag_tab;
@@ -91,6 +109,7 @@ export async function GET() {
     await seedTags();
     await seedTask();
     await seedUdTag();
+    await seedSegment();
     await client.sql`COMMIT`;
     return NextResponse.json({ message: 'OK' });
   } catch (error) {

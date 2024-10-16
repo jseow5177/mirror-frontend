@@ -24,8 +24,31 @@ export async function getTag(id: number) {
     }
     return null;
   } catch (error) {
-    console.error('getTags database error:', error);
-    throw new Error('Failed to get tags.');
+    console.error('getTag database error:', error);
+    throw new Error('Failed to get tag.');
+  }
+}
+
+export async function getAllTags() {
+  try {
+    const data = await sql<Tag>`
+            SELECT *
+            FROM tag_tab
+            WHERE tag_status != ${TagStatus.Deleted}
+            ORDER BY tag_name
+        `;
+
+    const tags = data.rows.map((tag) => ({
+      ...tag,
+      tag_id: Number(tag.tag_id),
+      create_time: Number(tag.create_time),
+      update_time: Number(tag.update_time),
+    }));
+
+    return tags;
+  } catch (error) {
+    console.error('getAllTags database error:', error);
+    throw new Error('Failed to get all tags.');
   }
 }
 
@@ -46,6 +69,7 @@ export async function getTags(query: string, currentPage: number) {
 
     const tags = data.rows.map((tag) => ({
       ...tag,
+      tag_id: Number(tag.tag_id),
       create_time: Number(tag.create_time),
       update_time: Number(tag.update_time),
     }));

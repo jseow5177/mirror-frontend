@@ -29,7 +29,7 @@ export default function SearchBar({ placeholder }: { placeholder: string }) {
       defaultValue={searchParams.get('query')?.toString()}
       startContent={<MagnifyingGlassIcon className='w-5' />}
       labelPlacement='outside'
-      placeholder='Search'
+      placeholder={placeholder}
       onChange={(e) => {
         handleSearch(e.target.value);
       }}

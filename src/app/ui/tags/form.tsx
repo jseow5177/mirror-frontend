@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { createTag, TagState, updateTag } from '@/app/lib/action';
+import { createTag, TagState, updateTag } from '@/app/lib/tag-action';
 import { Tag, TagValueType, TagValueTypes } from '@/app/lib/model';
 import { DocumentTextIcon, TagIcon } from '@heroicons/react/24/outline';
 import { useEffect } from 'react';
@@ -9,7 +9,6 @@ import toast from 'react-hot-toast';
 import { useActionState } from 'react';
 import { redirect } from 'next/navigation';
 import {
-  Tooltip,
   Link,
   Button,
   Input,
@@ -28,7 +27,6 @@ export default function TagForm({ tag }: { tag?: Tag }) {
     message: null,
     fieldErrors: {},
     error: null,
-    payload: null,
   };
   const [state, formAction, pending] = useActionState(
     !isUpdate ? createTag : updateTag,
@@ -53,16 +51,12 @@ export default function TagForm({ tag }: { tag?: Tag }) {
     }
 
     // keep form state
-    if (state.payload) {
-      setTagFields({
-        tagID: (state.payload?.get('tagID') as string) || tagFields.tagID,
-        tagName: (state.payload?.get('tagName') as string) || tagFields.tagName,
-        tagDesc: (state.payload?.get('tagDesc') as string) || tagFields.tagDesc,
-        tagValueType:
-          (state.payload?.get('tagValueType') as string) ||
-          tagFields.tagValueType,
-      });
-    }
+    setTagFields({
+      tagID: tagFields.tagID,
+      tagName: tagFields.tagName,
+      tagDesc: tagFields.tagDesc,
+      tagValueType: tagFields.tagValueType,
+    });
   }, [state]);
 
   return (

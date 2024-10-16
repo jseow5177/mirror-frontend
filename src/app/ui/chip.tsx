@@ -6,6 +6,8 @@ import {
   TagValueTypes,
   TaskStatus,
   TaskStatuses,
+  SegmentStatus,
+  SegmentStatuses,
 } from '@/app/lib/model';
 import { Chip } from '@nextui-org/react';
 
@@ -22,6 +24,17 @@ interface ChipProperty {
   color: ChipColors;
   text: string;
 }
+
+const segmentStatusChipProperties: Record<SegmentStatus, ChipProperty> = {
+  [SegmentStatus.Normal]: {
+    color: 'success',
+    text: SegmentStatuses[SegmentStatus.Normal],
+  },
+  [SegmentStatus.Deleted]: {
+    color: 'danger',
+    text: SegmentStatuses[SegmentStatus.Deleted],
+  },
+};
 
 const tagStatusChipProperties: Record<TagStatus, ChipProperty> = {
   [TagStatus.Normal]: {
@@ -68,13 +81,13 @@ const tagValueTypeChipProperties: Record<TagValueType, ChipProperty> = {
   },
 };
 
-type LabelType = 'tagStatus' | 'taskStatus' | 'tagValueType';
+type LabelType = 'tagStatus' | 'taskStatus' | 'tagValueType' | 'segmentStatus';
 
 export default function BaseChip({
   label,
   labelType,
 }: {
-  label: TagStatus | TaskStatus | TagValueType;
+  label: TagStatus | TaskStatus | TagValueType | SegmentStatus;
   labelType: LabelType;
 }) {
   let chipProperty: ChipProperty | undefined;
@@ -85,6 +98,9 @@ export default function BaseChip({
       break;
     case 'taskStatus':
       chipProperty = taskStatusChipProperties[label as TaskStatus];
+      break;
+    case 'segmentStatus':
+      chipProperty = segmentStatusChipProperties[label as SegmentStatus];
       break;
     case 'tagValueType':
       chipProperty = tagValueTypeChipProperties[label as TagValueType];

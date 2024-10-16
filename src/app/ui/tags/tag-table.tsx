@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import BaseChip from './chip';
+import BaseChip from '../chip';
 import { convertUnixToLocalTime } from '@/app/lib/utils';
 import { TagActions } from './buttons';
 
@@ -17,7 +17,7 @@ import { Tag } from '@/app/lib/model';
 
 export default function TagTable({ tags }: { tags: Array<Tag> }) {
   return (
-    <Table>
+    <Table aria-label='tag-table'>
       <TableHeader>
         <TableColumn>Name</TableColumn>
         <TableColumn>Description</TableColumn>
@@ -26,7 +26,7 @@ export default function TagTable({ tags }: { tags: Array<Tag> }) {
         <TableColumn>Update Time</TableColumn>
         <TableColumn> </TableColumn>
       </TableHeader>
-      <TableBody>
+      <TableBody emptyContent={'No tags to display.'}>
         {tags.map((tag, i) => (
           <TableRow key={i}>
             <TableCell>{tag.tag_name}</TableCell>

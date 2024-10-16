@@ -13,7 +13,6 @@ export type TagState = {
   };
   error?: string | null;
   message?: string | null;
-  payload?: FormData | null;
 };
 
 const TagSchema = z.object({
@@ -68,7 +67,6 @@ export async function updateTag(_: TagState, formData: FormData) {
     return {
       fieldErrors: fields.error.flatten().fieldErrors,
       message: 'Fields validation error. Failed to update tag.',
-      payload: formData,
     };
   }
 
@@ -118,7 +116,6 @@ export async function createTag(_: TagState, formData: FormData) {
     return {
       fieldErrors: fields.error.flatten().fieldErrors,
       message: 'Fields validation error. Failed to create tag.',
-      payload: formData,
     };
   }
 
