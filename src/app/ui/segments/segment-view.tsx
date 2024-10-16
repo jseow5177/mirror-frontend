@@ -1,5 +1,3 @@
-'use client';
-
 import { Segment, Tag } from '@/app/lib/model';
 import {
   Card,
@@ -7,16 +5,30 @@ import {
   CardBody,
   CardFooter,
   Divider,
+  Chip,
 } from '@nextui-org/react';
 import { CriteriaView } from './criteria';
+import { getCriteriaCount } from '@/app/lib/segment-data';
 
-export default function SegmentView({
+export default async function SegmentView({
   segment,
   tags,
 }: {
   segment: Segment;
   tags: Array<Tag>;
 }) {
+  const fetchTaskData = async () => {
+    const [count] = await Promise.all([getCriteriaCount(segment.criteria)]);
+
+    return {
+      count,
+    };
+  };
+
+  const { count } = await fetchTaskData();
+
+  console.log(count);
+
   return (
     <Card className='w-full'>
       <CardHeader className='flex justify-between'>
@@ -26,6 +38,9 @@ export default function SegmentView({
             Segment ID: {segment.segment_id}
           </p>
         </div>
+        <Chip size='lg' color='primary'>
+          Count: {count}
+        </Chip>
       </CardHeader>
       <Divider />
       <CardBody>

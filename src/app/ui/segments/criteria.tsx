@@ -158,7 +158,9 @@ export function CriteriaInput({
                   }}
                 >
                   {tags.map((tag) => (
-                    <SelectItem key={tag.tag_id}>{tag.tag_name}</SelectItem>
+                    <SelectItem key={tag.tag_id || 0}>
+                      {tag.tag_name}
+                    </SelectItem>
                   ))}
                 </Select>
                 <Select

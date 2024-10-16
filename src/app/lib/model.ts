@@ -21,7 +21,7 @@ export const TagValueTypes: Record<TagValueType, string> = {
 };
 
 export type Tag = {
-  tag_id: number;
+  tag_id?: number;
   tag_name: string;
   tag_desc: string;
   tag_status: TagStatus;
