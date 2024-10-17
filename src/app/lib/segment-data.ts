@@ -1,4 +1,3 @@
-//import { sql } from '@vercel/postgres';
 import { Segment, SegmentStatus, TagValueType } from './model';
 import pg from 'pg';
 import { getTag } from './tag-data';
@@ -159,6 +158,7 @@ function parseCriteria(criteria: string) {
   }
 
   const parsedData = {
+    
     queries: js.queries.map((query: any) => {
       return {
         lookup: {

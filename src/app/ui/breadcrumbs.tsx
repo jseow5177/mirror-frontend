@@ -1,7 +1,5 @@
 'use client';
 
-import { clsx } from 'clsx';
-import Link from 'next/link';
 import { Breadcrumbs, BreadcrumbItem } from '@nextui-org/react';
 
 interface Breadcrumb {
