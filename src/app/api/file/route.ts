@@ -3,7 +3,8 @@ import { put } from '@vercel/blob';
 import { sql } from '@vercel/postgres';
 
 import Queue from 'queue';
-import { Tag, TagStatus, TagValueType, TaskStatus } from '@/app/lib/model';
+import { TaskStatus } from '@/app/lib/model';
+import { Tag, TagStatus, TagValueType } from '@/app/lib/model/tag';
 
 const FLOAT_PRECISION = 5;
 const BATCH_SIZE = 1000;
@@ -135,7 +136,7 @@ async function upsertTagData(taskID: number, tag: Tag, fileUrl: string) {
         });
       } else {
         let v: string | number;
-        switch (tag.tag_value_type) {
+        switch (tag.value_type) {
           case TagValueType.Str: // no-op
             v = tagVal;
             break;
@@ -176,7 +177,7 @@ async function upsertTagData(taskID: number, tag: Tag, fileUrl: string) {
       try {
         await sql`
           DELETE FROM ud_tag_tab
-          WHERE tag_id = ${tag.tag_id} AND ud_id IN (${udIDCond});
+          WHERE tag_id = ${tag.id} AND ud_id IN (${udIDCond});
         `;
       } catch (error) {
         console.log(`delete errors: ${error}`);
@@ -188,11 +189,11 @@ async function upsertTagData(taskID: number, tag: Tag, fileUrl: string) {
     // TODO: HOW TO WRITE BATCH INSERTS WITHOUT SQL INJECTION ERROR??
     for (const udTag of inserts) {
       try {
-        switch (tag.tag_value_type) {
+        switch (tag.value_type) {
           case TagValueType.Str:
             await sql`
               INSERT INTO ud_tag_tab (tag_id, ud_id, tag_val_str, update_time)
-              VALUES (${tag.tag_id}, ${udTag.UdID}, ${udTag.TagVal}, ${now})
+              VALUES (${tag.id}, ${udTag.UdID}, ${udTag.TagVal}, ${now})
               ON CONFLICT (tag_id, ud_id) 
               DO UPDATE SET
                 tag_val_str = EXCLUDED.tag_val_str,
@@ -202,7 +203,7 @@ async function upsertTagData(taskID: number, tag: Tag, fileUrl: string) {
           case TagValueType.Int:
             await sql`
               INSERT INTO ud_tag_tab (tag_id, ud_id, tag_val_int, update_time)
-              VALUES (${tag.tag_id}, ${udTag.UdID}, ${udTag.TagVal}, ${now})
+              VALUES (${tag.id}, ${udTag.UdID}, ${udTag.TagVal}, ${now})
               ON CONFLICT (tag_id, ud_id) 
               DO UPDATE SET
                 tag_val_int = EXCLUDED.tag_val_int,
@@ -212,7 +213,7 @@ async function upsertTagData(taskID: number, tag: Tag, fileUrl: string) {
           case TagValueType.Float:
             await sql`
               INSERT INTO ud_tag_tab (tag_id, ud_id, tag_val_float, update_time)
-              VALUES (${tag.tag_id}, ${udTag.UdID}, ${udTag.TagVal}, ${now})
+              VALUES (${tag.id}, ${udTag.UdID}, ${udTag.TagVal}, ${now})
               ON CONFLICT (tag_id, ud_id) 
               DO UPDATE SET
                 tag_val_float = EXCLUDED.tag_val_float,

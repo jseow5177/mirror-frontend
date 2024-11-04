@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Segment, Tag } from '@/app/lib/model';
+import { Segment } from '@/app/lib/model';
+import { Tag } from '@/app/lib/model/tag';
 import { DocumentTextIcon, TagIcon } from '@heroicons/react/24/outline';
 import {
   createSegment,

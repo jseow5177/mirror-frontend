@@ -1,6 +1,6 @@
 'use client';
 
-import { Tag, TagValueType } from '@/app/lib/model';
+import { Tag, TagValueType } from '@/app/lib/model/tag';
 import BaseChip from '../chip';
 import {
   Card,
@@ -29,19 +29,19 @@ export default function TagView({ tag }: { tag: Tag }) {
     <Card className='w-full'>
       <CardHeader className='flex justify-between'>
         <div className='flex flex-col items-start gap-2'>
-          <h1 className='text-xl'>{tag.tag_name}</h1>
-          <p className='text-sm text-default-500'>Tag ID: {tag.tag_id}</p>
+          <h1 className='text-xl'>{tag.name}</h1>
+          <p className='text-sm text-default-500'>Tag ID: {tag.id}</p>
         </div>
         <div className='flex flex-col items-end gap-2'>
-          <BaseChip label={tag.tag_value_type} labelType='tagValueType' />
-          {tag.tag_value_type === TagValueType.Float && (
+          <BaseChip label={tag.value_type} labelType='tagValueType' />
+          {tag.value_type === TagValueType.Float && (
             <p className='text-xs text-red-500'>(Max 5 decimal places)</p>
           )}
         </div>
       </CardHeader>
       <Divider />
       <CardBody>
-        <p>{tag.tag_desc}</p>
+        <p>{tag.desc}</p>
       </CardBody>
       <Divider />
       <CardFooter className='flex flex-col items-center gap-2'>
@@ -50,10 +50,10 @@ export default function TagView({ tag }: { tag: Tag }) {
           Only .csv or .txt file are accepted
         </p>
         <div className='flex gap-3'>
-          <Link href={csvFiles[tag.tag_value_type]} size='sm'>
+          <Link href={csvFiles[tag.value_type]} size='sm'>
             sample.csv
           </Link>
-          <Link href={txtFiles[tag.tag_value_type]} size='sm'>
+          <Link href={txtFiles[tag.value_type]} size='sm'>
             sample.txt
           </Link>
         </div>

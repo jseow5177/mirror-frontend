@@ -1,4 +1,5 @@
-import { Segment, SegmentStatus, TagValueType } from './model';
+import { Segment, SegmentStatus } from './model';
+import { TagValueType } from './model/tag';
 import pg from 'pg';
 import { getTag } from './tag-data';
 
@@ -131,11 +132,11 @@ async function constructSQL(queries: Array<any>) {
     const tag = await getTag(lookup.tagID);
     let valueCond = '';
 
-    if (tag?.tag_value_type === TagValueType.Str) {
+    if (tag?.value_type === TagValueType.Str) {
       valueCond = `tag_val_str ${lookup.op} '${lookup.value}'`;
-    } else if (tag?.tag_value_type === TagValueType.Int) {
+    } else if (tag?.value_type === TagValueType.Int) {
       valueCond = `tag_val_int ${lookup.op} ${lookup.value}`;
-    } else if (tag?.tag_value_type === TagValueType.Float) {
+    } else if (tag?.value_type === TagValueType.Float) {
       valueCond = `tag_val_float ${lookup.op} ${lookup.value}`;
     }
 

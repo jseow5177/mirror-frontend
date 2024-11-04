@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Tag, TagValueType } from '@/app/lib/model';
+import { Tag, TagValueType } from '@/app/lib/model/tag';
 import { RadioGroup, Radio, Button } from '@nextui-org/react';
 import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Select, SelectItem, Input } from '@nextui-org/react';
@@ -107,18 +107,18 @@ export function CriteriaInput({
 
   const getSupportedOps = (tagID: number) => {
     const tag = findTag(tagID);
-    return supportedOps[tag?.tag_value_type || TagValueType.Int];
+    return supportedOps[tag?.value_type || TagValueType.Int];
   };
 
   const isNumeric = (tagID: number) => {
     const tag = findTag(tagID);
     return (
-      tag?.tag_value_type === TagValueType.Int ||
-      tag?.tag_value_type === TagValueType.Float
+      tag?.value_type === TagValueType.Int ||
+      tag?.value_type === TagValueType.Float
     );
   };
 
-  const findTag = (tagID: number) => tags.find((tag) => tag.tag_id === tagID);
+  const findTag = (tagID: number) => tags.find((tag) => tag.id === tagID);
 
   return (
     <div className='w-full'>
@@ -158,9 +158,7 @@ export function CriteriaInput({
                   }}
                 >
                   {tags.map((tag) => (
-                    <SelectItem key={tag.tag_id || 0}>
-                      {tag.tag_name}
-                    </SelectItem>
+                    <SelectItem key={tag.id || 0}>{tag.name}</SelectItem>
                   ))}
                 </Select>
                 <Select
@@ -242,7 +240,7 @@ export function CriteriaView({
   const queries = parseCriteria(JSON.parse(criteria));
 
   const getTag = (id: number) => {
-    return tags.find((tag) => tag.tag_id === id);
+    return tags.find((tag) => tag.id === id);
   };
 
   return (
@@ -253,7 +251,7 @@ export function CriteriaView({
           <div key={i} className='flex flex-col items-center'>
             {query.prevOp && <p className='my-2'>{query.prevOp}</p>}
             <div className='flex justify-center gap-2'>
-              <p>{getTag(lookup.tagID || 0)?.tag_name}</p>
+              <p>{getTag(lookup.tagID || 0)?.name}</p>
               <p>{lookup.op}</p>
               <p>{lookup.value}</p>
             </div>

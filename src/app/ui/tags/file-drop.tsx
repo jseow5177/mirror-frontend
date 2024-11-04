@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Button } from '@nextui-org/react';
 import { toast } from 'react-hot-toast';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-import { Tag } from '../../lib/model';
+import { Tag } from '../../lib/model/tag';
 import { redirect } from 'next/navigation';
 
 const FILE_SIZE_LIMIT = 3_000_000;
@@ -74,13 +74,10 @@ export default function DragAndDrop({ tag }: { tag: Tag }) {
 
     setIsLoading(true);
 
-    const res = await fetch(
-      `/api/file?tagId=${tag.tag_id}&fileName=${file.name}`,
-      {
-        method: 'POST',
-        body: file,
-      }
-    );
+    const res = await fetch(`/api/file?tagId=${tag.id}&fileName=${file.name}`, {
+      method: 'POST',
+      body: file,
+    });
 
     setIsLoading(false);
 
@@ -96,7 +93,7 @@ export default function DragAndDrop({ tag }: { tag: Tag }) {
 
   useEffect(() => {
     if (canRedirect) {
-      redirect(`/dashboard/tags/${tag.tag_id}`);
+      redirect(`/dashboard/tags/${tag.id}`);
     }
   }, [canRedirect]);
 

@@ -19,7 +19,7 @@ import {
   ButtonGroup,
 } from '@nextui-org/react';
 import { Button, Link } from '@nextui-org/react';
-import { Tag } from '@/app/lib/model';
+import { Tag } from '@/app/lib/model/tag';
 
 export function DeleteTag({ id, name }: { id: number; name: string }) {
   const deleteTagWithID = async () => {
@@ -114,9 +114,7 @@ export function ViewTag({ id }: { id: number }) {
 export function TagActions({ tag }: { tag: Tag }) {
   return (
     <ButtonGroup>
-      <ViewTag id={tag.tag_id || 0} />
-      <UpdateTag id={tag.tag_id || 0} />
-      <DeleteTag id={tag.tag_id || 0} name={tag.tag_name} />
+      <ViewTag id={tag.id || 0} />
     </ButtonGroup>
   );
 }

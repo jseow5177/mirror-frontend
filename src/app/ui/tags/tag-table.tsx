@@ -13,7 +13,7 @@ import {
   TableRow,
   TableCell,
 } from '@nextui-org/react';
-import { Tag } from '@/app/lib/model';
+import { Tag } from '@/app/lib/model/tag';
 
 export default function TagTable({ tags }: { tags: Array<Tag> }) {
   return (
@@ -29,10 +29,10 @@ export default function TagTable({ tags }: { tags: Array<Tag> }) {
       <TableBody emptyContent={'No tags to display.'}>
         {tags.map((tag, i) => (
           <TableRow key={i}>
-            <TableCell>{tag.tag_name}</TableCell>
-            <TableCell>{tag.tag_desc}</TableCell>
+            <TableCell>{tag.name}</TableCell>
+            <TableCell>{tag.desc}</TableCell>
             <TableCell>
-              <BaseChip label={tag.tag_status} labelType='tagStatus' />
+              <BaseChip label={tag.status} labelType='tagStatus' />
             </TableCell>
             <TableCell>{convertUnixToLocalTime(tag.create_time)}</TableCell>
             <TableCell>{convertUnixToLocalTime(tag.update_time)}</TableCell>
