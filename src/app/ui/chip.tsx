@@ -1,14 +1,16 @@
 import React from 'react';
 import {
-  TagStatus,
-  TagStatuses,
-  TagValueType,
-  TagValueTypes,
   TaskStatus,
   TaskStatuses,
   SegmentStatus,
   SegmentStatuses,
 } from '@/app/lib/model';
+import {
+  TagStatus,
+  TagStatuses,
+  TagValueType,
+  TagValueTypes,
+} from '@/app/lib/model/tag';
 import { Chip } from '@nextui-org/react';
 
 type ChipColors =

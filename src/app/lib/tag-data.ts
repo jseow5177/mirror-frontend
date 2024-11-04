@@ -1,5 +1,6 @@
 import { sql } from '@vercel/postgres';
-import { Tag, TagStatus, Task } from './model';
+import { Task } from './model';
+import { Tag, TagStatus } from './model/tag';
 
 // await new Promise((resolve) => setTimeout(resolve, 1000));
 
@@ -40,7 +41,7 @@ export async function getAllTags() {
 
     const tags = data.rows.map((tag) => ({
       ...tag,
-      tag_id: Number(tag.tag_id),
+      tag_id: Number(tag.id),
       create_time: Number(tag.create_time),
       update_time: Number(tag.update_time),
     }));
@@ -69,7 +70,7 @@ export async function getTags(query: string, currentPage: number) {
 
     const tags = data.rows.map((tag) => ({
       ...tag,
-      tag_id: Number(tag.tag_id),
+      tag_id: Number(tag.id),
       create_time: Number(tag.create_time),
       update_time: Number(tag.update_time),
     }));

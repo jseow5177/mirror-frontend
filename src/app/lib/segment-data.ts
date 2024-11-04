@@ -113,7 +113,6 @@ export async function getCriteriaCount(criteria: string) {
       WHERE ${whereCond}
     `);
 
-
     return Number(count.rows[0].count);
   } catch (error) {
     console.error('getCriteriaCount database error:', error);
@@ -128,7 +127,7 @@ async function constructSQL(queries: Array<any>) {
 
   let sql = '';
   for (const query of queries) {
-    const lookup = query.lookup
+    const lookup = query.lookup;
     const tag = await getTag(lookup.tagID);
     let valueCond = '';
 
@@ -141,7 +140,7 @@ async function constructSQL(queries: Array<any>) {
     }
 
     if (query.prevOp) {
-      sql += query.prevOp
+      sql += query.prevOp;
     }
 
     sql += ` (tag_id = ${lookup.tagID} AND ${valueCond}) `;
@@ -158,7 +157,6 @@ function parseCriteria(criteria: string) {
   }
 
   const parsedData = {
-    
     queries: js.queries.map((query: any) => {
       return {
         lookup: {

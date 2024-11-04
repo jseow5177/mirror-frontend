@@ -3,7 +3,7 @@
 import { z } from 'zod';
 import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
-import { TagStatus, TagValueType } from './model';
+import { TagStatus, TagValueType } from './model/tag';
 
 export type TagState = {
   fieldErrors?: {

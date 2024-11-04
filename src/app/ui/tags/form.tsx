@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { createTag, TagState, updateTag } from '@/app/lib/tag-action';
-import { Tag, TagValueType, TagValueTypes } from '@/app/lib/model';
+import { createTag, TagState } from '@/app/lib/tag-action-v2';
+import { Tag, TagValueType, TagValueTypes } from '@/app/lib/model/tag';
 import { DocumentTextIcon, TagIcon } from '@heroicons/react/24/outline';
 import { useEffect } from 'react';
 import toast from 'react-hot-toast';
@@ -28,16 +28,13 @@ export default function TagForm({ tag }: { tag?: Tag }) {
     fieldErrors: {},
     error: null,
   };
-  const [state, formAction, pending] = useActionState(
-    !isUpdate ? createTag : updateTag,
-    initialState
-  );
+  const [state, formAction, pending] = useActionState(createTag, initialState);
 
   const [tagFields, setTagFields] = useState({
-    tagID: `${tag?.tag_id}` || '',
-    tagName: tag?.tag_name || '',
-    tagDesc: tag?.tag_desc || '',
-    tagValueType: `${tag?.tag_value_type}` || '',
+    id: '0',
+    name: '',
+    desc: '',
+    valueType: '0',
   });
 
   useEffect(() => {
@@ -52,10 +49,10 @@ export default function TagForm({ tag }: { tag?: Tag }) {
 
     // keep form state
     setTagFields({
-      tagID: tagFields.tagID,
-      tagName: tagFields.tagName,
-      tagDesc: tagFields.tagDesc,
-      tagValueType: tagFields.tagValueType,
+      id: tagFields.id,
+      name: tagFields.name,
+      desc: tagFields.desc,
+      valueType: tagFields.valueType,
     });
   }, [state]);
 
@@ -64,35 +61,28 @@ export default function TagForm({ tag }: { tag?: Tag }) {
       <div className='border-gray-60 rounded-md border-2 p-6'>
         {/* Tag ID */}
         {isUpdate && (
-          <Input
-            className='hidden'
-            id='tagID'
-            name='tagID'
-            value={tagFields.tagID}
-          />
+          <Input className='hidden' id='id' name='id' value={tagFields.id} />
         )}
 
         {/* Tag Name */}
         <Input
           className='mb-6'
-          id='tagName'
-          name='tagName'
+          id='name'
+          name='name'
           variant='bordered'
           label={<p className='text-base'>Tag name</p>}
           fullWidth
           size='lg'
-          value={tagFields.tagName}
+          value={tagFields.name}
           startContent={<TagIcon className='w-5' />}
           labelPlacement='outside'
           placeholder='Enter tag name'
-          isInvalid={state.fieldErrors?.tagName && true}
-          errorMessage={
-            state.fieldErrors?.tagName && state.fieldErrors?.tagName[0]
-          }
+          isInvalid={state.fieldErrors?.name && true}
+          errorMessage={state.fieldErrors?.name && state.fieldErrors?.name[0]}
           onValueChange={(v) =>
             setTagFields({
               ...tagFields,
-              tagName: v,
+              name: v,
             })
           }
         />
@@ -100,24 +90,22 @@ export default function TagForm({ tag }: { tag?: Tag }) {
         {/* Tag Description */}
         <Textarea
           className='mb-6'
-          id='tagDesc'
-          name='tagDesc'
+          id='desc'
+          name='desc'
           variant='bordered'
           label={<p className='text-base'>Tag Description</p>}
           fullWidth
           size='lg'
-          value={tagFields.tagDesc}
+          value={tagFields.desc}
           startContent={<DocumentTextIcon className='w-5' />}
           labelPlacement='outside'
           placeholder='Enter tag description'
-          isInvalid={state.fieldErrors?.tagDesc && true}
-          errorMessage={
-            state.fieldErrors?.tagDesc && state.fieldErrors?.tagDesc[0]
-          }
+          isInvalid={state.fieldErrors?.desc && true}
+          errorMessage={state.fieldErrors?.desc && state.fieldErrors?.desc[0]}
           onValueChange={(v) =>
             setTagFields({
               ...tagFields,
-              tagDesc: v,
+              desc: v,
             })
           }
         />
@@ -125,20 +113,19 @@ export default function TagForm({ tag }: { tag?: Tag }) {
         {/* Tag Value Type */}
         {!isUpdate && (
           <RadioGroup
-            id='tagValueType'
-            name='tagValueType'
+            id='valueType'
+            name='valueType'
             label='Tag Value Type'
             orientation='horizontal'
-            value={tagFields.tagValueType}
-            isInvalid={state.fieldErrors?.tagValueType && true}
+            value={tagFields.valueType}
+            isInvalid={state.fieldErrors?.valueType && true}
             errorMessage={
-              state.fieldErrors?.tagValueType &&
-              state.fieldErrors?.tagValueType[0]
+              state.fieldErrors?.valueType && state.fieldErrors?.valueType[0]
             }
             onValueChange={(v) =>
               setTagFields({
                 ...tagFields,
-                tagValueType: v,
+                valueType: v,
               })
             }
           >
