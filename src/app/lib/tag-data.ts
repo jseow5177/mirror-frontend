@@ -1,10 +1,25 @@
 import { sql } from '@vercel/postgres';
 import { Task } from './model';
 import { Tag, TagStatus } from './model/tag';
+import axiosInstance from './axios';
 
-// await new Promise((resolve) => setTimeout(resolve, 1000));
+type Pagination = {
+  page?: number;
+  limit?: number;
+  has_next?: boolean;
+  total?: number;
+};
 
-const ITEMS_PER_PAGE = 5;
+type GetTagsResponse = {
+  tags: Array<Tag>;
+  pagination: Pagination;
+};
+
+type CountTagsResponse = {
+  count: number;
+};
+
+const ITEMS_PER_PAGE = 1;
 
 export async function getTag(id: number) {
   try {
@@ -53,31 +68,38 @@ export async function getAllTags() {
   }
 }
 
-export async function getTags(query: string, currentPage: number) {
-  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
-
+export async function countTotalTags() {
   try {
-    const data = await sql<Tag>`
-            SELECT *
-            FROM tag_tab
-            WHERE (
-                tag_name ILIKE ${`%${query}%`} OR
-                tag_desc ILIKE ${`%${query}%`}
-            ) AND tag_status != ${TagStatus.Deleted}
-            ORDER BY update_time DESC
-            LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
-        `;
+    const resp = await axiosInstance.post('/count_tags', {});
 
-    const tags = data.rows.map((tag) => ({
-      ...tag,
-      tag_id: Number(tag.id),
-      create_time: Number(tag.create_time),
-      update_time: Number(tag.update_time),
-    }));
+    const body: CountTagsResponse = resp.data.body;
 
-    return tags;
+    return body.count;
   } catch (error) {
-    console.error('getTags database error:', error);
+    console.error('countTotalTags err:', error);
+    throw new Error('Failed to count total tags.');
+  }
+}
+
+export async function getTags(
+  query: string,
+  currentPage: number
+): Promise<[GetTagsResponse, number]> {
+  try {
+    const resp = await axiosInstance.post('/get_tags', {
+      name: query,
+      desc: query,
+      pagination: {
+        page: currentPage,
+        limit: ITEMS_PER_PAGE,
+      },
+    });
+
+    const body: GetTagsResponse = resp.data.body;
+
+    return [body, Math.ceil((body.pagination.total || 0) / ITEMS_PER_PAGE)];
+  } catch (error) {
+    console.error('getTags err:', error);
     throw new Error('Failed to get tags.');
   }
 }
@@ -121,43 +143,5 @@ export async function countTasksPages(tagID: number) {
   } catch (error) {
     console.error('countTasksPages database error:', error);
     throw new Error('Failed to count tasks.');
-  }
-}
-
-export async function countTagsPages(query: string) {
-  try {
-    const count = await sql`
-            SELECT
-                COUNT(*)
-            FROM tag_tab
-            WHERE
-                (
-                    tag_name ILIKE ${`%${query}%`} OR
-                    tag_desc ILIKE ${`%${query}%`}
-                ) 
-                    AND tag_status = ${TagStatus.Normal}
-        `;
-
-    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
-    return totalPages;
-  } catch (error) {
-    console.error('countTagsPages database error:', error);
-    throw new Error('Failed to count tags.');
-  }
-}
-
-export async function countTotalTags() {
-  try {
-    const count = await sql`
-            SELECT
-                COUNT(*)
-            FROM tag_tab
-            WHERE tag_status = ${TagStatus.Normal}
-        `;
-
-    return Number(count.rows[0].count);
-  } catch (error) {
-    console.error('countTotalTags database error:', error);
-    throw new Error('Failed to count total tags.');
   }
 }

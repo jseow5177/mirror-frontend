@@ -1,5 +1,5 @@
 import SearchBar from '@/app/ui/search-bar';
-import { countTagsPages, getTags } from '@/app/lib/tag-data';
+import { getTags } from '@/app/lib/tag-data';
 import TagTable from '@/app/ui/tags/tag-table';
 import { CreateTag } from '@/app/ui/tags/buttons';
 import BasePagination from '@/app/ui/pagination';
@@ -16,18 +16,14 @@ export default async function Page({
   const currentPage = Number(searchParams?.page) || 1;
 
   const fetchTagData = async () => {
-    const [totalPages, tags] = await Promise.all([
-      countTagsPages(query),
-      getTags(query, currentPage),
-    ]);
+    const [resp] = await Promise.all([getTags(query, currentPage)]);
 
     return {
-      totalPages,
-      tags,
+      resp,
     };
   };
 
-  const { totalPages, tags } = await fetchTagData();
+  const { resp } = await fetchTagData();
 
   return (
     <main className='min-h-screen w-full'>
@@ -36,9 +32,9 @@ export default async function Page({
         <SearchBar placeholder='Search tags...' />
         <CreateTag />
       </div>
-      <TagTable tags={tags} />
+      <TagTable tags={resp[0].tags || []} />
       <div className='mt-5 flex w-full justify-end'>
-        <BasePagination totalPages={totalPages} />
+        <BasePagination totalPages={resp[1]} />
       </div>
     </main>
   );
