@@ -19,7 +19,7 @@ type CountTagsResponse = {
   count: number;
 };
 
-const ITEMS_PER_PAGE = 1;
+const ITEMS_PER_PAGE = 10;
 
 export async function getTag(id: number) {
   try {
