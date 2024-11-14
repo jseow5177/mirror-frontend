@@ -21,7 +21,7 @@ type LookupCond = {
   value?: string | null;
 };
 
-const supportedOps: Record<TagValueType, Array<LookupOp>> = {
+const supportedOps: Record<TagValueType, LookupOp[]> = {
   [TagValueType.Str]: [LookupOp.Eq, LookupOp.NEq],
   [TagValueType.Int]: [
     LookupOp.Eq,
@@ -52,7 +52,7 @@ type QueryCond = {
 };
 
 type Criteria = {
-  queries: Array<QueryCond>;
+  queries: QueryCond[];
 };
 
 export function CriteriaInput({
@@ -61,10 +61,10 @@ export function CriteriaInput({
   onChange,
 }: {
   criteria: string;
-  tags: Array<Tag>;
+  tags: Tag[];
   onChange?: (criteria: string) => void;
 }) {
-  const [queries, setQueries] = useState<Array<QueryCond>>(
+  const [queries, setQueries] = useState<QueryCond[]>(
     parseCriteria(JSON.parse(criteria))
   );
 
@@ -235,7 +235,7 @@ export function CriteriaView({
   tags,
 }: {
   criteria: string;
-  tags: Array<Tag>;
+  tags: Tag[];
 }) {
   const queries = parseCriteria(JSON.parse(criteria));
 
@@ -262,7 +262,7 @@ export function CriteriaView({
   );
 }
 
-function parseCriteria(jsonData: any): Array<QueryCond> {
+function parseCriteria(jsonData: any): QueryCond[] {
   if (!Array.isArray(jsonData.queries)) {
     return [];
   }

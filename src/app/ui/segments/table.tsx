@@ -14,11 +14,7 @@ import {
 import { Segment } from '@/app/lib/model';
 import { SegmentActions } from './buttons';
 
-export default function SegmentTable({
-  segments,
-}: {
-  segments: Array<Segment>;
-}) {
+export default function SegmentTable({ segments }: { segments: Segment[] }) {
   return (
     <Table aria-label='tag-table'>
       <TableHeader>

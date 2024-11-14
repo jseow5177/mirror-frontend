@@ -101,7 +101,7 @@ async function upsertTagData(taskID: number, tag: Tag, fileUrl: string) {
     const reader = res.body.getReader();
     const decoder = new TextDecoder();
     let done = false;
-    const lines: Array<string> = [];
+    const lines: string[] = [];
     while (!done) {
       const { value, done: streamDone } = await reader.read();
       done = streamDone;
@@ -117,8 +117,8 @@ async function upsertTagData(taskID: number, tag: Tag, fileUrl: string) {
       });
     }
 
-    const inserts: Array<UdTagVal> = [];
-    const deletes: Array<UdTagVal> = [];
+    const inserts: UdTagVal[] = [];
+    const deletes: UdTagVal[] = [];
 
     // validate lines
     lines.forEach((line, i) => {

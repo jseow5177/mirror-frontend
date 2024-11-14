@@ -29,3 +29,9 @@ export type Tag = {
   create_time: number;
   update_time: number;
 };
+
+export const isTagNumeric = (tag: Tag) => {
+  return (
+    tag.value_type === TagValueType.Int || tag.value_type === TagValueType.Float
+  );
+};

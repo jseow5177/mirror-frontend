@@ -1,17 +1,23 @@
+export type LRange = {
+  lte?: string;
+  lt?: string;
+  gte?: string;
+  gt?: string;
+};
+
 export type Lookup = {
-  tag_id: number;
+  tag_id?: number;
   eq?: string;
-  In?: string[];
-  Range?: {
-    lte?: string;
-    lt?: string;
-    gte?: string;
-    gt?: string;
-  };
+  in?: string[];
+  range?: LRange;
 };
 
 export type Query = {
-  queries?: Array<Query>;
-  lookups?: Array<Lookup>;
+  lookups: Lookup[];
   op: string;
 };
+
+export type Criteria = {
+  queries: Query[];
+  op: string;
+}

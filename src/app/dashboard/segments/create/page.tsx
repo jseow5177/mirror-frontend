@@ -1,9 +1,9 @@
 import Breadcrumbs from '@/app/ui/breadcrumbs';
 import SegmentForm from '@/app/ui/segments/form';
-import { getAllTags } from '@/app/lib/tag-data';
+import { getTags } from '@/app/lib/tag-data';
 
 export default async function Page() {
-  const tags = await getAllTags();
+  const resp = await getTags();
 
   return (
     <main>
@@ -17,7 +17,7 @@ export default async function Page() {
           },
         ]}
       />
-      <SegmentForm tags={tags} />
+      <SegmentForm tags={resp[0].tags} />
     </main>
   );
 }

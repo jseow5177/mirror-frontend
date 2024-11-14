@@ -13,7 +13,7 @@ import {
 } from '@nextui-org/react';
 import { Task } from '@/app/lib/model';
 
-export default async function TaskTable({ tasks }: { tasks: Array<Task> }) {
+export default async function TaskTable({ tasks }: { tasks: Task[] }) {
   return (
     <Table aria-label='task-table'>
       <TableHeader>

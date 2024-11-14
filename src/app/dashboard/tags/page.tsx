@@ -1,6 +1,6 @@
 import SearchBar from '@/app/ui/search-bar';
 import { getTags } from '@/app/lib/tag-data';
-import TagTable from '@/app/ui/tags/tag-table';
+import TagTable from '@/app/ui/tags/table';
 import { CreateTag } from '@/app/ui/tags/buttons';
 import BasePagination from '@/app/ui/pagination';
 
@@ -16,7 +16,7 @@ export default async function Page({
   const currentPage = Number(searchParams?.page) || 1;
 
   const fetchTagData = async () => {
-    const [resp] = await Promise.all([getTags(query, currentPage)]);
+    const [resp] = await Promise.all([getTags(currentPage, query)]);
 
     return {
       resp,

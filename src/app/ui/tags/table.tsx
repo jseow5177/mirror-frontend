@@ -15,7 +15,7 @@ import {
 } from '@nextui-org/react';
 import { Tag } from '@/app/lib/model/tag';
 
-export default function TagTable({ tags }: { tags: Array<Tag> }) {
+export default function TagTable({ tags }: { tags: Tag[] }) {
   return (
     <Table aria-label='tag-table'>
       <TableHeader>

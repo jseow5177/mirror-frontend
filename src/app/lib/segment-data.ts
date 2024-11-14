@@ -121,7 +121,7 @@ export async function getCriteriaCount(criteria: string) {
   }
 }
 
-async function constructSQL(queries: Array<any>) {
+async function constructSQL(queries: any[]) {
   if (queries.length === 0) {
     return '';
   }

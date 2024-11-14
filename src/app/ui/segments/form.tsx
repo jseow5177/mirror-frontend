@@ -12,15 +12,16 @@ import {
 import { useActionState } from 'react';
 import { redirect } from 'next/navigation';
 import toast from 'react-hot-toast';
-import { Link, Button, Input, Textarea } from '@nextui-org/react';
-import { CriteriaInput } from './criteria';
+import { Link, Button, Input, Textarea, Divider } from '@nextui-org/react';
+import { QueryBuilder } from './query-builder';
+import { Criteria } from '@/app/lib/model/segment';
 
 export default function SegmentForm({
   segment,
   tags,
 }: {
   segment?: Segment;
-  tags: Array<Tag>;
+  tags: Tag[];
 }) {
   let isUpdate = false;
   if (segment) {
@@ -40,6 +41,8 @@ export default function SegmentForm({
     segmentDesc: segment?.segment_desc || '',
     criteria: segment?.criteria || '{}',
   });
+
+  const [criteria, setCriteria] = useState<Criteria>(Object);
 
   const handleCreateSegment = (s: SegmentState, formData: FormData) => {
     formData.append('criteria', segmentFields.criteria);
@@ -76,8 +79,33 @@ export default function SegmentForm({
   }, [state]);
 
   return (
-    <form className='w-1/2' action={formAction}>
-      <div className='border-gray-60 rounded-md border-2 p-6'>
+    <div className='flex w-full flex-col items-center'>
+      <div className='flex w-full items-center justify-between'>
+        <h1 className='text-xl text-slate-500'>
+          Build a user segment with tags
+        </h1>
+        <div className='flex gap-4'>
+          <Button
+            href='/dashboard/segments'
+            as={Link}
+            color='danger'
+            variant='solid'
+          >
+            Cancel
+          </Button>
+          <Button
+            type='submit'
+            isDisabled={pending}
+            isLoading={pending}
+            color='primary'
+            variant='solid'
+          >
+            Save
+          </Button>
+        </div>
+      </div>
+      <Divider className='my-8' />
+      <form className='w-[80%] rounded-md' action={formAction}>
         {/* Segment ID */}
         {isUpdate && (
           <Input
@@ -90,12 +118,12 @@ export default function SegmentForm({
 
         {/* Segment Name */}
         <Input
-          className='mb-6'
+          className='mb-6 w-1/2'
           id='segmentName'
           name='segmentName'
           variant='bordered'
-          label={<p className='text-base'>Segment name</p>}
-          fullWidth
+          label={<p className='text-base'>Name</p>}
+          fullWidth={false}
           size='lg'
           value={segmentFields.segmentName}
           startContent={<TagIcon className='w-5' />}
@@ -115,12 +143,12 @@ export default function SegmentForm({
 
         {/* Segment Description */}
         <Textarea
-          className='mb-6'
+          className='mb-6 w-1/2'
           id='segmentDesc'
           name='segmentDesc'
           variant='bordered'
-          label={<p className='text-base'>Segment Description</p>}
-          fullWidth
+          label={<p className='text-base'>Description</p>}
+          fullWidth={false}
           size='lg'
           value={segmentFields.segmentDesc}
           startContent={<DocumentTextIcon className='w-5' />}
@@ -139,16 +167,13 @@ export default function SegmentForm({
         />
 
         {/* Segment Criteria */}
-        <div>
-          <p className='mb-2 text-base'>Segment Criteria</p>
-          <CriteriaInput
-            criteria={segmentFields.criteria}
+        <div className='w-8/10'>
+          <p className='mb-2 text-base'>Criteria</p>
+          <QueryBuilder
             tags={tags}
-            onChange={(c) => {
-              setSegmentFields({
-                ...segmentFields,
-                criteria: c,
-              });
+            //initialCriteria={criteria}
+            onChange={(criteria) => {
+              setCriteria(criteria);
             }}
           />
           {state.fieldErrors?.criteria && (
@@ -157,26 +182,7 @@ export default function SegmentForm({
             </p>
           )}
         </div>
-      </div>
-      <div className='mt-6 flex justify-end gap-4'>
-        <Button
-          href='/dashboard/segments'
-          as={Link}
-          color='danger'
-          variant='solid'
-        >
-          Cancel
-        </Button>
-        <Button
-          type='submit'
-          isDisabled={pending}
-          isLoading={pending}
-          color='primary'
-          variant='solid'
-        >
-          {`${isUpdate ? 'Update' : 'Create'}`} Segment
-        </Button>
-      </div>
-    </form>
+      </form>
+    </div>
   );
 }

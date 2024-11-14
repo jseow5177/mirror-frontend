@@ -2,7 +2,7 @@ import BaseBreadcrumbs from '@/app/ui/breadcrumbs';
 import { getSegment } from '@/app/lib/segment-data';
 import { getAllTags } from '@/app/lib/tag-data';
 import { notFound } from 'next/navigation';
-import SegmentView from '@/app/ui/segments/segment-view';
+import SegmentView from '@/app/ui/segments/view';
 
 export default async function Page({ params }: { params: { id: string } }) {
   const id = params.id;

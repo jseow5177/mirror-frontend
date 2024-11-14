@@ -11,7 +11,7 @@ type Pagination = {
 };
 
 type GetTagsResponse = {
-  tags: Array<Tag>;
+  tags: Tag[];
   pagination: Pagination;
 };
 
@@ -82,8 +82,8 @@ export async function countTotalTags() {
 }
 
 export async function getTags(
-  query: string,
-  currentPage: number
+  currentPage?: number,
+  query?: string
 ): Promise<[GetTagsResponse, number]> {
   try {
     const resp = await axiosInstance.post('/get_tags', {

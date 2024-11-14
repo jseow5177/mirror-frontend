@@ -16,7 +16,7 @@ export default async function SegmentView({
   tags,
 }: {
   segment: Segment;
-  tags: Array<Tag>;
+  tags: Tag[];
 }) {
   const fetchTaskData = async () => {
     const [count] = await Promise.all([getCriteriaCount(segment.criteria)]);
@@ -27,8 +27,6 @@ export default async function SegmentView({
   };
 
   const { count } = await fetchTaskData();
-
-  console.log(count);
 
   return (
     <Card className='w-full'>
