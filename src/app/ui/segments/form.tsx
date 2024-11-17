@@ -12,9 +12,18 @@ import { createSegment, SegmentState } from '@/app/lib/segment-action';
 import { useActionState } from 'react';
 import { redirect } from 'next/navigation';
 import toast from 'react-hot-toast';
-import { Link, Button, Input, Textarea, Divider } from '@nextui-org/react';
+import {
+  Link,
+  Button,
+  Input,
+  Textarea,
+  Divider,
+  Skeleton,
+} from '@nextui-org/react';
 import { QueryBuilder } from './query-builder';
 import clsx from 'clsx';
+import { previewUd } from '@/app/lib/segment-data';
+import { validateCriteria } from '@/app/lib/utils';
 
 export default function SegmentForm({
   segment,
@@ -51,6 +60,45 @@ export default function SegmentForm({
     initialState
   );
 
+  const [segmentSize, setSegmentSize] = useState(-1);
+  const [isPreviewLoading, setPreviewLoading] = useState(false);
+
+  const useDebouncedPreview = (criteria: string, delay = 500) => {
+    useEffect(() => {
+      if (criteria === '') return;
+
+      const controller = new AbortController();
+      const { signal } = controller;
+
+      const debounce = setTimeout(async () => {
+        if (!validateCriteria(criteria)) {
+          return;
+        }
+
+        try {
+          setPreviewLoading(true);
+          const [count, _] = await Promise.all([
+            previewUd(criteria, signal),
+            new Promise((r) => setTimeout(r, 300)),
+          ]);
+          setSegmentSize(count);
+        } catch (error) {
+          toast.error(error instanceof Error ? error.message : String(error));
+        } finally {
+          setPreviewLoading(false);
+        }
+      }, delay);
+
+      return () => {
+        clearTimeout(debounce);
+        controller.abort();
+        setPreviewLoading(false);
+      };
+    }, [criteria, delay]);
+  };
+
+  useDebouncedPreview(segmentFields.criteria, 1000);
+
   useEffect(() => {
     if (!state.fieldErrors) {
       if (state.error) {
@@ -82,10 +130,17 @@ export default function SegmentForm({
     <div className='flex w-full flex-col items-center'>
       <form className='w-[80%] rounded-md' action={formAction}>
         <div className='flex w-full items-center justify-between'>
-          <h1 className='text-xl text-slate-500'>
-            Build a user segment with tags
-          </h1>
-          <div className='flex gap-4'>
+          <div className='flex flex-col justify-center'>
+            <Skeleton isLoaded={!isPreviewLoading} className='rounded-lg'>
+              <h1 className='text-3xl text-slate-700'>
+                {segmentSize === -1 ? 'No Data' : segmentSize}
+              </h1>
+            </Skeleton>
+            <p className='mt-2 text-xs text-slate-500'>
+              Define criteria to preview size.
+            </p>
+          </div>
+          <div className='flex h-12 items-center gap-4'>
             <Button
               href='/dashboard/segments'
               as={Link}
@@ -106,7 +161,7 @@ export default function SegmentForm({
           </div>
         </div>
 
-        <Divider className='my-10' />
+        <Divider className='my-8' />
 
         <div>
           {/* Segment ID */}
@@ -137,7 +192,7 @@ export default function SegmentForm({
             />
           </div>
 
-          <Divider className='my-6' />
+          <Divider className='my-8' />
 
           {/* Segment Name */}
           <div

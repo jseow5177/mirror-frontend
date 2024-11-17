@@ -83,12 +83,12 @@ export async function countTotalTags() {
 
 export async function getTags(
   currentPage?: number,
-  query?: string
+  keyword?: string
 ): Promise<[GetTagsResponse, number]> {
   try {
     const resp = await axiosInstance.post('/get_tags', {
-      name: query,
-      desc: query,
+      name: keyword,
+      desc: keyword,
       pagination: {
         page: currentPage,
         limit: ITEMS_PER_PAGE,

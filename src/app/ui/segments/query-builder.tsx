@@ -9,8 +9,8 @@ import {
   VisuallyHidden,
   useSwitch,
   SwitchProps,
-  Button,
   Tooltip,
+  Link,
 } from '@nextui-org/react';
 import clsx from 'clsx';
 
@@ -301,16 +301,15 @@ export const QueryBuilder = ({
                       content={`Max ${LOOKUP_LIMIT} lookups`}
                     >
                       <span>
-                        <Button
-                          color='primary'
-                          variant='light'
-                          size='sm'
-                          fullWidth={false}
-                          onPress={(_) => addLookup(queryIdx)}
+                        <Link
+                          href='#'
+                          className='mt-1'
                           isDisabled={isMaxLookup()}
+                          size='sm'
+                          onClick={(_) => addLookup(queryIdx)}
                         >
                           + Add Lookup
-                        </Button>
+                        </Link>
                       </span>
                     </Tooltip>
                   </div>
@@ -319,6 +318,7 @@ export const QueryBuilder = ({
             ))}
         </div>
       </div>
+
       {showAddQuery() && (
         <Tooltip
           color='foreground'
@@ -328,17 +328,15 @@ export const QueryBuilder = ({
           content={`Max ${LOOKUP_LIMIT} lookups`}
         >
           <span>
-            <Button
+            <Link
+              href='#'
               className='mt-1'
-              size='sm'
-              color='primary'
-              variant='light'
-              fullWidth={false}
-              onPress={addQuery}
               isDisabled={isMaxLookup()}
+              onClick={addQuery}
+              size='sm'
             >
               + Add Query
-            </Button>
+            </Link>
           </span>
         </Tooltip>
       )}

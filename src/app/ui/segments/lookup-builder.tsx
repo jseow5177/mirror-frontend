@@ -158,7 +158,7 @@ export const LookupBuilder = ({
   return (
     <div
       className={clsx(
-        'flex justify-between rounded-md px-1 py-2 transition-all duration-300 ease-in-out',
+        'flex justify-between rounded-md py-2 pl-1 pr-3 transition-all duration-300 ease-in-out',
         {
           'bg-gray-100': showActionButtons,
         }

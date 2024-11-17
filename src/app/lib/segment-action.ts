@@ -2,10 +2,9 @@
 
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
-import { Criteria } from './model/segment';
 import axiosInstance from './axios';
-import axios, { AxiosError } from 'axios';
-import { stat } from 'fs';
+import axios from 'axios';
+import { validateCriteria } from './utils';
 
 export type SegmentState = {
   fieldErrors?: {
@@ -100,35 +99,4 @@ export async function createSegment(_: SegmentState, formData: FormData) {
       };
     }
   }
-}
-
-// Just simple validation to make sure it is not empty
-function validateCriteria(c: string): boolean {
-  const criteria: Criteria = JSON.parse(c);
-
-  if (!Array.isArray(criteria.queries) || criteria.queries.length === 0) {
-    console.log('criteria has empty queries');
-    return false;
-  }
-
-  for (const query of criteria.queries) {
-    for (const lookup of query.lookups) {
-      if (!lookup.tag_id || (!lookup.eq && !lookup.in && !lookup.range)) {
-        console.log('lookup fields are incomplete');
-        return false;
-      }
-    }
-
-    if (!query.op) {
-      console.log('query op is missing');
-      return false;
-    }
-  }
-
-  if (!criteria.op) {
-    console.log('criteria op is missing');
-    return false;
-  }
-
-  return true;
 }
