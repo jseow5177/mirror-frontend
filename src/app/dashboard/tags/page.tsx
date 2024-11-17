@@ -26,7 +26,7 @@ export default async function Page({
   const { resp } = await fetchTagData();
 
   return (
-    <main className='min-h-screen w-full'>
+    <main className='w-full'>
       <h1 className='mb-8 text-2xl'>Tags</h1>
       <div className='mb-5 flex items-center justify-between gap-2'>
         <SearchBar placeholder='Search tags...' />

@@ -1,3 +1,5 @@
+import { Criteria } from './model/segment';
+
 export enum TaskStatus {
   Pending = 1,
   Running = 2,
@@ -37,7 +39,7 @@ export type Segment = {
   name: string;
   desc: string;
   status: SegmentStatus;
-  criteria: string;
+  criteria: Criteria;
   create_time: number;
   update_time: number;
 };

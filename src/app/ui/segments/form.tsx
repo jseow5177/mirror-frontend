@@ -20,10 +20,11 @@ import {
   Divider,
   Skeleton,
 } from '@nextui-org/react';
-import { QueryBuilder } from './query-builder';
+import { emptyCriteria, QueryBuilder } from './query-builder';
 import clsx from 'clsx';
 import { previewUd } from '@/app/lib/segment-data';
 import { validateCriteria } from '@/app/lib/utils';
+import { Criteria } from '@/app/lib/model/segment';
 
 export default function SegmentForm({
   segment,
@@ -47,11 +48,11 @@ export default function SegmentForm({
     id: segment?.id ? `${segment?.id}` : '0',
     name: segment?.name || '',
     desc: segment?.desc || '',
-    criteria: segment?.criteria || '{}',
+    criteria: segment?.criteria || emptyCriteria,
   });
 
   const handleCreateSegment = (s: SegmentState, formData: FormData) => {
-    formData.append('criteria', segmentFields.criteria);
+    formData.append('criteria', JSON.stringify(segmentFields.criteria));
     return createSegment(s, formData);
   };
 
@@ -63,9 +64,9 @@ export default function SegmentForm({
   const [segmentSize, setSegmentSize] = useState(-1);
   const [isPreviewLoading, setPreviewLoading] = useState(false);
 
-  const useDebouncedPreview = (criteria: string, delay = 500) => {
+  const useDebouncedPreview = (criteria: Criteria, delay = 500) => {
     useEffect(() => {
-      if (criteria === '') return;
+      if (!criteria) return;
 
       const controller = new AbortController();
       const { signal } = controller;
@@ -182,11 +183,11 @@ export default function SegmentForm({
             </div>
             <QueryBuilder
               tags={tags}
-              initialCriteria={JSON.parse(segmentFields.criteria)}
+              initialCriteria={segmentFields.criteria}
               onChange={(criteria) => {
                 setSegmentFields({
                   ...segmentFields,
-                  criteria: JSON.stringify(criteria),
+                  criteria: criteria,
                 });
               }}
             />

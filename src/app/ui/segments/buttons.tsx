@@ -23,6 +23,7 @@ export function ViewSegment({ id }: { id: number }) {
       variant='bordered'
       as={Link}
       href={`/dashboard/segments/${id}`}
+      isDisabled
     >
       <EyeIcon className='h-5' />
     </Button>
@@ -32,7 +33,7 @@ export function ViewSegment({ id }: { id: number }) {
 export function SegmentActions({ segment }: { segment: Segment }) {
   return (
     <ButtonGroup>
-      <ViewSegment id={segment.segment_id} />
+      <ViewSegment id={segment.id || 0} />
     </ButtonGroup>
   );
 }

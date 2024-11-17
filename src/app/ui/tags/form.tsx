@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { createTag, TagState } from '@/app/lib/tag-action-v2';
+import { createTag, TagState } from '@/app/lib/tag-action';
 import { Tag, TagValueType, TagValueTypes } from '@/app/lib/model/tag';
 import { DocumentTextIcon, TagIcon } from '@heroicons/react/24/outline';
 import { useEffect } from 'react';

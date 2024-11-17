@@ -44,7 +44,7 @@ const SegmentSchema = z.object({
       required_error: 'Criteria is required.',
       invalid_type_error: 'Criteria must be a string.',
     })
-    .refine((data) => validateCriteria(data), {
+    .refine((data) => validateCriteria(JSON.parse(data)), {
       message: 'Invalid criteria.',
     }),
 });

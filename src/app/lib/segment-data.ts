@@ -1,17 +1,36 @@
 import axiosInstance from './axios';
 import axios from 'axios';
-import { validateCriteria } from './utils';
+import { Segment } from './model';
+import { Criteria } from './model/segment';
+
+type Pagination = {
+  page?: number;
+  limit?: number;
+  has_next?: boolean;
+  total?: number;
+};
 
 type PreviewUdResponse = {
   count: number;
 };
 
-export async function previewUd(criteria: string, signal?: AbortSignal) {
+type GetSegmentsResponse = {
+  segments: Segment[];
+  pagination: Pagination;
+};
+
+type CountSegmentsResponse = {
+  count: number;
+};
+
+const ITEMS_PER_PAGE = 5;
+
+export async function previewUd(criteria: Criteria, signal?: AbortSignal) {
   try {
     const resp = await axiosInstance.post(
       '/preview_ud',
       {
-        criteria: JSON.parse(criteria),
+        criteria: criteria,
       },
       {
         signal: signal,
@@ -39,38 +58,40 @@ export async function getSegment(id: number) {
   }
 }
 
-export async function getSegments(query: string, currentPage: number) {
+export async function getSegments(
+  currentPage?: number,
+  keyword?: string
+): Promise<[GetSegmentsResponse, number]> {
   try {
-    return [];
-  } catch (error) {
-    console.error('getSegments database error:', error);
-    throw new Error('Failed to get segments.');
-  }
-}
+    const resp = await axiosInstance.post('/get_segments', {
+      name: keyword,
+      desc: keyword,
+      pagination: {
+        page: currentPage,
+        limit: ITEMS_PER_PAGE,
+      },
+    });
 
-export async function countSegmentsPages(query: string) {
-  try {
-    return 0;
+    const body: GetSegmentsResponse = resp.data.body;
+
+    return [body, Math.ceil((body.pagination.total || 0) / ITEMS_PER_PAGE)];
   } catch (error) {
-    console.error('countSegmentsPages database error:', error);
-    throw new Error('Failed to count segments.');
+    console.error('getSegments err:', error);
+    throw new Error('Failed to get segments.');
   }
 }
 
 export async function countTotalSegments() {
   try {
-    return 0;
+    const resp = await axiosInstance.post('/count_segments', {});
+
+    const body: CountSegmentsResponse = resp.data.body;
+
+    return body.count;
   } catch (error) {
     console.error('countTotalSegments database error:', error);
     throw new Error('Failed to count total segments.');
   }
 }
 
-export async function getCriteriaCount(criteria: string) {
-  try {
-    return 0;
-  } catch (error) {
-    console.error('getCriteriaCount database error:', error);
-    throw new Error('Failed to get criteria count.');
-  }
-}
+

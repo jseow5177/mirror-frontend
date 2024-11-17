@@ -79,11 +79,11 @@ const OperatorToggle = ({
 
 type QueryProps = {
   tags: Tag[];
-  initialCriteria?: Criteria;
+  initialCriteria: Criteria;
   onChange?: (criteria: Criteria) => void;
 };
 
-const emptyCriteria: Criteria = {
+export const emptyCriteria: Criteria = {
   queries: [
     {
       lookups: [
@@ -99,7 +99,7 @@ const emptyCriteria: Criteria = {
 
 export const QueryBuilder = ({
   tags,
-  initialCriteria = emptyCriteria,
+  initialCriteria,
   onChange = () => {},
 }: QueryProps) => {
   const [criteria, setCriteria] = useState<Criteria>(

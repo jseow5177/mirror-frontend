@@ -1,14 +1,12 @@
 'use client';
 
 import React from 'react';
-import { deleteTag } from '@/app/lib/tag-action';
 import {
   PencilIcon,
   TrashIcon,
   PlusIcon,
   EyeIcon,
 } from '@heroicons/react/24/outline';
-import { toast } from 'react-hot-toast';
 import {
   Modal,
   ModalContent,
@@ -22,15 +20,6 @@ import { Button, Link } from '@nextui-org/react';
 import { Tag } from '@/app/lib/model/tag';
 
 export function DeleteTag({ id, name }: { id: number; name: string }) {
-  const deleteTagWithID = async () => {
-    const res = await deleteTag(id);
-    if (res.error) {
-      toast.error(res.message);
-    } else {
-      toast.success(res.message);
-    }
-  };
-
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   return (
@@ -49,14 +38,7 @@ export function DeleteTag({ id, name }: { id: number; name: string }) {
                 <Button onClick={onClose} color='default' variant='solid'>
                   Cancel
                 </Button>
-                <Button
-                  onClick={async () => {
-                    await deleteTagWithID();
-                    onClose();
-                  }}
-                  color='danger'
-                  variant='solid'
-                >
+                <Button onClick={async () => {}} color='danger' variant='solid'>
                   Confirm
                 </Button>
               </ModalFooter>
@@ -105,6 +87,7 @@ export function ViewTag({ id }: { id: number }) {
       variant='bordered'
       as={Link}
       href={`/dashboard/tags/${id}`}
+      isDisabled
     >
       <EyeIcon className='h-5' />
     </Button>

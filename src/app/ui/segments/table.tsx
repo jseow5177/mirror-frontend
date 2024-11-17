@@ -26,23 +26,34 @@ export default function SegmentTable({ segments }: { segments: Segment[] }) {
         <TableColumn> </TableColumn>
       </TableHeader>
       <TableBody emptyContent={'No segments to display.'}>
-        {segments.map((segment, i) => (
-          <TableRow key={i}>
-            <TableCell>{segment.segment_name}</TableCell>
-            <TableCell>{segment.segment_desc}</TableCell>
-            <TableCell>
-              <BaseChip
-                label={segment.segment_status}
-                labelType='segmentStatus'
-              />
-            </TableCell>
-            <TableCell>{convertUnixToLocalTime(segment.create_time)}</TableCell>
-            <TableCell>{convertUnixToLocalTime(segment.update_time)}</TableCell>
-            <TableCell>
-              <SegmentActions segment={segment} />
-            </TableCell>
-          </TableRow>
-        ))}
+        {segments.map((segment, i) => {
+          const { date: updateDate, time: updateTime } = convertUnixToLocalTime(
+            segment.update_time
+          );
+          const { date: createDate, time: createTime } = convertUnixToLocalTime(
+            segment.create_time
+          );
+          return (
+            <TableRow key={i}>
+              <TableCell className='w-[20%]'>{segment.name}</TableCell>
+              <TableCell className='w-[30%]'>{segment.desc}</TableCell>
+              <TableCell className='w-[10%]'>
+                <BaseChip label={segment.status} labelType='segmentStatus' />
+              </TableCell>
+              <TableCell className='w-[15%]'>
+                <p>{createDate}</p>
+                <p className='mt-1 text-xs'>{createTime}</p>
+              </TableCell>
+              <TableCell className='w-[15%]'>
+                <p>{updateDate}</p>
+                <p className='mt-1 text-xs'>{updateTime}</p>
+              </TableCell>
+              <TableCell className='w-[10%]'>
+                <SegmentActions segment={segment} />
+              </TableCell>
+            </TableRow>
+          );
+        })}
       </TableBody>
     </Table>
   );

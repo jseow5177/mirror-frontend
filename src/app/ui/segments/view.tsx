@@ -9,7 +9,6 @@ import {
   Chip,
 } from '@nextui-org/react';
 import { CriteriaView } from './criteria';
-import { getCriteriaCount } from '@/app/lib/segment-data';
 
 export default async function SegmentView({
   segment,
@@ -18,36 +17,24 @@ export default async function SegmentView({
   segment: Segment;
   tags: Tag[];
 }) {
-  const fetchTaskData = async () => {
-    const [count] = await Promise.all([getCriteriaCount(segment.criteria)]);
-
-    return {
-      count,
-    };
-  };
-
-  const { count } = await fetchTaskData();
-
   return (
     <Card className='w-full'>
       <CardHeader className='flex justify-between'>
         <div className='flex flex-col items-start gap-2'>
-          <h1 className='text-xl'>{segment.segment_name}</h1>
-          <p className='text-sm text-default-500'>
-            Segment ID: {segment.segment_id}
-          </p>
+          <h1 className='text-xl'>{''}</h1>
+          <p className='text-sm text-default-500'>Segment ID: 0</p>
         </div>
         <Chip size='lg' color='primary'>
-          Count: {count}
+          Count: 0
         </Chip>
       </CardHeader>
       <Divider />
       <CardBody>
-        <p>{segment.segment_desc}</p>
+        <p>{''}</p>
       </CardBody>
       <Divider />
       <CardFooter className='flex flex-col items-center gap-2'>
-        <CriteriaView criteria={segment.criteria} tags={tags} />
+        <CriteriaView criteria={''} tags={tags} />
       </CardFooter>
     </Card>
   );

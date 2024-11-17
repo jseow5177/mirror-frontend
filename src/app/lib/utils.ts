@@ -1,4 +1,4 @@
-import { Criteria } from "./model/segment";
+import { Criteria } from './model/segment';
 
 export const generatePagination = (currentPage: number, totalPages: number) => {
   // If the total number of pages is 7 or less,
@@ -34,21 +34,24 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
 };
 
 export const convertUnixToLocalTime = (unixMilliseconds: number) => {
-  const date = new Date(unixMilliseconds);
+  const date = new Date(unixMilliseconds*1000);
 
-  return date.toLocaleString(undefined, {
+  const dateString = date.toLocaleDateString(undefined, {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
+  });
+
+  const timeString = date.toLocaleTimeString(undefined, {
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',
   });
+
+  return { date: dateString, time: timeString };
 };
 
-export function validateCriteria(c: string): boolean {
-  const criteria: Criteria = JSON.parse(c);
-
+export function validateCriteria(criteria: Criteria): boolean {
   if (!Array.isArray(criteria.queries) || criteria.queries.length === 0) {
     console.log('criteria has empty queries');
     return false;
@@ -61,7 +64,7 @@ export function validateCriteria(c: string): boolean {
         return false;
       }
 
-      if (lookup.eq && lookup.eq === "") {
+      if (lookup.eq && lookup.eq === '') {
         console.log('lookup eq is empty');
         return false;
       }
@@ -72,9 +75,14 @@ export function validateCriteria(c: string): boolean {
       }
 
       if (lookup.range) {
-        if (!lookup.range.gt && !lookup.range.gte && !lookup.range.lt && !lookup.range.lte) {
+        if (
+          !lookup.range.gt &&
+          !lookup.range.gte &&
+          !lookup.range.lt &&
+          !lookup.range.lte
+        ) {
           console.log('lookup range is empty');
-        return false;
+          return false;
         }
       }
     }

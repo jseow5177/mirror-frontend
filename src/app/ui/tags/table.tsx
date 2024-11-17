@@ -27,20 +27,34 @@ export default function TagTable({ tags }: { tags: Tag[] }) {
         <TableColumn> </TableColumn>
       </TableHeader>
       <TableBody emptyContent={'No tags to display.'}>
-        {tags.map((tag, i) => (
-          <TableRow key={i}>
-            <TableCell>{tag.name}</TableCell>
-            <TableCell>{tag.desc}</TableCell>
-            <TableCell>
-              <BaseChip label={tag.status} labelType='tagStatus' />
-            </TableCell>
-            <TableCell>{convertUnixToLocalTime(tag.create_time)}</TableCell>
-            <TableCell>{convertUnixToLocalTime(tag.update_time)}</TableCell>
-            <TableCell>
-              <TagActions tag={tag} />
-            </TableCell>
-          </TableRow>
-        ))}
+        {tags.map((tag, i) => {
+          const { date: updateDate, time: updateTime } = convertUnixToLocalTime(
+            tag.update_time
+          );
+          const { date: createDate, time: createTime } = convertUnixToLocalTime(
+            tag.create_time
+          );
+          return (
+            <TableRow key={i}>
+              <TableCell className='w-[20%]'>{tag.name}</TableCell>
+              <TableCell className='w-[30%]'>{tag.desc}</TableCell>
+              <TableCell className='w-[10%]'>
+                <BaseChip label={tag.status} labelType='tagStatus' />
+              </TableCell>
+              <TableCell className='w-[15%]'>
+                <p>{createDate}</p>
+                <p className='mt-1 text-xs'>{createTime}</p>
+              </TableCell>
+              <TableCell className='w-[15%]'>
+                <p>{updateDate}</p>
+                <p className='mt-1 text-xs'>{updateTime}</p>
+              </TableCell>
+              <TableCell className='w-[10%]'>
+                <TagActions tag={tag} />
+              </TableCell>
+            </TableRow>
+          );
+        })}
       </TableBody>
     </Table>
   );
