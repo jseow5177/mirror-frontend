@@ -41,7 +41,7 @@ const OperatorToggle = ({
   };
 
   const lineStyle = clsx('w-[2px] flex-grow bg-blue-400', {
-    'bg-green-400': selectedOp === 'AND',
+    'bg-green-400': selectedOp === OP_AND,
   });
 
   return (
@@ -63,7 +63,7 @@ const OperatorToggle = ({
           className={slots.wrapper({
             class: [
               'flex items-center justify-center rounded-lg',
-              selectedOp === 'AND'
+              selectedOp === OP_AND
                 ? 'bg-green-200 text-green-800'
                 : 'bg-blue-200 text-blue-800',
             ],
@@ -91,10 +91,10 @@ const emptyCriteria: Criteria = {
           tag_id: 0,
         },
       ],
-      op: '',
+      op: OP_AND,
     },
   ],
-  op: '',
+  op: OP_AND,
 };
 
 export const QueryBuilder = ({
@@ -102,7 +102,11 @@ export const QueryBuilder = ({
   initialCriteria = emptyCriteria,
   onChange = () => {},
 }: QueryProps) => {
-  const [criteria, setCriteria] = useState<Criteria>(initialCriteria);
+  const [criteria, setCriteria] = useState<Criteria>(
+    !initialCriteria.queries || initialCriteria.queries.length === 0
+      ? emptyCriteria
+      : initialCriteria
+  );
 
   useEffect(() => {
     onChange(criteria);
@@ -178,26 +182,32 @@ export const QueryBuilder = ({
               tag_id: 0,
             },
           ],
-          op: '',
+          op: OP_AND,
         },
       ],
     });
   };
 
   const deleteLookup = (queryIdx: number, lookupIdx: number) => {
+    const updatedQueries = criteria.queries
+      .map((query, index) => {
+        if (index === queryIdx) {
+          const updatedLookups = [
+            ...query.lookups.slice(0, lookupIdx),
+            ...query.lookups.slice(lookupIdx + 1),
+          ];
+
+          return updatedLookups.length > 0
+            ? { ...query, lookups: updatedLookups }
+            : null;
+        }
+        return query;
+      })
+      .filter((query) => query !== null);
+
     setCriteria({
       ...criteria,
-      queries: [
-        ...criteria.queries.slice(0, queryIdx),
-        {
-          lookups: [
-            ...criteria.queries[queryIdx].lookups.slice(0, lookupIdx),
-            ...criteria.queries[queryIdx].lookups.slice(lookupIdx + 1),
-          ],
-          op: criteria.queries[queryIdx].op,
-        },
-        ...criteria.queries.slice(queryIdx + 1),
-      ],
+      queries: updatedQueries,
     });
   };
 
@@ -228,12 +238,20 @@ export const QueryBuilder = ({
     );
   };
 
-  const hasReachedLookupLimit = () => {
+  const isMaxLookup = () => {
+    return getLookupCount() >= LOOKUP_LIMIT;
+  };
+
+  const isMinLookup = () => {
+    return getLookupCount() === 1;
+  };
+
+  const getLookupCount = () => {
     let count = 0;
     criteria?.queries.forEach((queries) => {
       count += queries.lookups.length;
     });
-    return count >= LOOKUP_LIMIT;
+    return count;
   };
 
   return (
@@ -249,52 +267,52 @@ export const QueryBuilder = ({
         <div className='flex w-full flex-col'>
           {criteria.queries &&
             criteria.queries.map((query, queryIdx) => (
-              <div>
-                <div className='mb-2 flex' key={queryIdx}>
-                  {query.lookups && query.lookups.length > 1 && (
-                    <OperatorToggle
-                      op={query.op}
-                      onOpChange={(op) => changeLookupOp(queryIdx, op)}
-                    />
-                  )}
-                  <div className='w-full'>
-                    <div className='flex flex-col gap-2'>
-                      {query.lookups &&
-                        query.lookups.map((lookup, lookupIdx) => (
-                          <LookupBuilder
-                            key={lookupIdx}
-                            tags={tags}
-                            lookup={lookup}
-                            onChange={(lookup) =>
-                              changeLookup(queryIdx, lookupIdx, lookup)
-                            }
-                            onDelete={() => deleteLookup(queryIdx, lookupIdx)}
-                            onCopy={() => copyLookup(queryIdx, lookupIdx)}
-                            disableCopy={hasReachedLookupLimit()}
-                          />
-                        ))}
-                    </div>
-                    <div>
-                      <Tooltip
-                        color='foreground'
-                        placement='right'
-                        showArrow
-                        isDisabled={!hasReachedLookupLimit()}
-                        content={`Max ${LOOKUP_LIMIT} lookups`}
-                      >
-                        <span>
-                          <Button
-                            color='primary'
-                            variant='light'
-                            fullWidth={false}
-                            onPress={(_) => addLookup(queryIdx)}
-                            isDisabled={hasReachedLookupLimit()}
-                          >
-                            + Add Lookup
-                          </Button>
-                        </span>
-                      </Tooltip>
-                    </div>
+              <div className='mb-2 flex' key={queryIdx}>
+                {query.lookups && query.lookups.length > 1 && (
+                  <OperatorToggle
+                    op={query.op}
+                    onOpChange={(op) => changeLookupOp(queryIdx, op)}
+                  />
+                )}
+                <div className='w-full'>
+                  <div className='flex flex-col gap-2'>
+                    {query.lookups &&
+                      query.lookups.map((lookup, lookupIdx) => (
+                        <LookupBuilder
+                          key={lookupIdx}
+                          tags={tags}
+                          lookup={lookup}
+                          onChange={(lookup) =>
+                            changeLookup(queryIdx, lookupIdx, lookup)
+                          }
+                          onDelete={() => deleteLookup(queryIdx, lookupIdx)}
+                          onCopy={() => copyLookup(queryIdx, lookupIdx)}
+                          disableCopy={isMaxLookup()}
+                          hideDelete={isMinLookup()}
+                        />
+                      ))}
+                  </div>
+                  <div>
+                    <Tooltip
+                      color='foreground'
+                      placement='right'
+                      showArrow
+                      isDisabled={!isMaxLookup()}
+                      content={`Max ${LOOKUP_LIMIT} lookups`}
+                    >
+                      <span>
+                        <Button
+                          color='primary'
+                          variant='light'
+                          size='sm'
+                          fullWidth={false}
+                          onPress={(_) => addLookup(queryIdx)}
+                          isDisabled={isMaxLookup()}
+                        >
+                          + Add Lookup
+                        </Button>
+                      </span>
+                    </Tooltip>
                   </div>
                 </div>
               </div>
@@ -306,17 +324,18 @@ export const QueryBuilder = ({
           color='foreground'
           placement='right'
           showArrow
-          isDisabled={!hasReachedLookupLimit()}
+          isDisabled={!isMaxLookup()}
           content={`Max ${LOOKUP_LIMIT} lookups`}
         >
           <span>
             <Button
-              className='mt-2'
+              className='mt-1'
+              size='sm'
               color='primary'
               variant='light'
               fullWidth={false}
               onPress={addQuery}
-              isDisabled={hasReachedLookupLimit()}
+              isDisabled={isMaxLookup()}
             >
               + Add Query
             </Button>

@@ -20,4 +20,4 @@ export type Query = {
 export type Criteria = {
   queries: Query[];
   op: string;
-}
+};

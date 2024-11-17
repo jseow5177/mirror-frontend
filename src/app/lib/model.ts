@@ -33,10 +33,10 @@ export const SegmentStatuses: Record<SegmentStatus, string> = {
 };
 
 export type Segment = {
-  segment_id: number;
-  segment_name: string;
-  segment_desc: string;
-  segment_status: SegmentStatus;
+  id?: number;
+  name: string;
+  desc: string;
+  status: SegmentStatus;
   criteria: string;
   create_time: number;
   update_time: number;

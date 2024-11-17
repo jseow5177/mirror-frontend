@@ -31,10 +31,10 @@ export default function TagForm({ tag }: { tag?: Tag }) {
   const [state, formAction, pending] = useActionState(createTag, initialState);
 
   const [tagFields, setTagFields] = useState({
-    id: '0',
-    name: '',
-    desc: '',
-    valueType: '0',
+    id: tag?.id ? `${tag?.id}` : '0',
+    name: tag?.name || '',
+    desc: tag?.desc || '',
+    valueType: tag?.value_type || '0',
   });
 
   useEffect(() => {
@@ -117,7 +117,7 @@ export default function TagForm({ tag }: { tag?: Tag }) {
             name='valueType'
             label='Tag Value Type'
             orientation='horizontal'
-            value={tagFields.valueType}
+            value={`${tagFields.valueType}`}
             isInvalid={state.fieldErrors?.valueType && true}
             errorMessage={
               state.fieldErrors?.valueType && state.fieldErrors?.valueType[0]

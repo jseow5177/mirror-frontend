@@ -17,14 +17,14 @@ export default async function RootLayout({
           toastOptions={{
             success: {
               style: {
-                backgroundColor: 'green',
+                backgroundColor: '#16a34a',
                 color: 'white',
               },
               icon: '👍',
             },
             error: {
               style: {
-                backgroundColor: 'red',
+                backgroundColor: '#dc2626',
                 color: 'white',
               },
               icon: '👎',
