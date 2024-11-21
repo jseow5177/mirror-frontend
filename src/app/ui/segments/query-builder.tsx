@@ -303,7 +303,7 @@ export const QueryBuilder = ({
                       <span>
                         <Link
                           href='#'
-                          className='mt-1'
+                          className='mt-2'
                           isDisabled={isMaxLookup()}
                           size='sm'
                           onClick={(_) => addLookup(queryIdx)}
@@ -330,7 +330,7 @@ export const QueryBuilder = ({
           <span>
             <Link
               href='#'
-              className='mt-1'
+              className='mt-2'
               isDisabled={isMaxLookup()}
               onClick={addQuery}
               size='sm'

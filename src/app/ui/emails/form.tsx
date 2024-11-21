@@ -104,14 +104,14 @@ export default function EmailForm({ email }: { email?: Email }) {
 
   return (
     <div className='flex w-full flex-col items-center'>
-      <form className='w-[80%] rounded-md' action={formAction}>
+      <form className='w-[90%] rounded-md' action={formAction}>
         <div className='flex w-full items-center justify-between'>
           <NumberCircles
             totalSteps={TOTAL_STEPS}
             currentStep={currentStep}
-            onPress={(s) => setCurrentStep(s)}
+            onClick={(s) => setCurrentStep(s)}
           />
-          <div className='flex h-12 items-center gap-4'>
+          <div className='flex items-center gap-4'>
             <Button
               href='/dashboard/emails'
               as={Link}
@@ -159,23 +159,21 @@ export default function EmailForm({ email }: { email?: Email }) {
           </div>
         </div>
 
-        <Divider className='my-8' />
+        <Divider className='my-10' />
 
         {currentStep === 1 ? (
-          <div className='relative'>
+          <>
             <div className={'mb-2 flex gap-2'}>
               <HandRaisedIcon className='w-5' />
               <p className='text-lg'>Drag and drop your email!</p>
             </div>
-            <>
-              <EmailEditor
-                ref={ref}
-                onReady={() => {
-                  loadEmailJson();
-                }}
-              />
-            </>
-          </div>
+            <EmailEditor
+              ref={ref}
+              onReady={() => {
+                loadEmailJson();
+              }}
+            />
+          </>
         ) : (
           <>
             {/* Email ID */}

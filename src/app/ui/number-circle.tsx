@@ -8,16 +8,16 @@ const NumberCircle = ({
   step,
   isActive,
   isCompleted,
-  onPress = () => {},
+  onClick = () => {},
 }: {
   step: number;
   isActive: boolean;
   isCompleted: boolean;
-  onPress?: (step: number) => void;
+  onClick?: (step: number) => void;
 }) => {
   return (
     <Button
-      onPress={() => onPress(step)}
+      onClick={() => onClick(step)}
       className={clsx(`h-10 w-10 rounded-full border-2`, {
         'border-green-300 bg-success text-white': isCompleted,
         'border-blue-300 bg-primary text-white': isActive,
@@ -32,11 +32,11 @@ const NumberCircle = ({
 export default function NumberCircles({
   totalSteps,
   currentStep,
-  onPress = () => {},
+  onClick = () => {},
 }: {
   totalSteps: number;
   currentStep: number;
-  onPress?: (step: number) => void;
+  onClick?: (step: number) => void;
 }) {
   const steps: number[] = [];
   for (let i = 0; i < totalSteps; i++) {
@@ -52,7 +52,7 @@ export default function NumberCircles({
             step={step}
             isActive={step === currentStep}
             isCompleted={step < currentStep}
-            onPress={onPress}
+            onClick={onClick}
           />
           {index < steps.length - 1 && (
             <ChevronRightIcon

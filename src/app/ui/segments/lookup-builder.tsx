@@ -208,7 +208,7 @@ export const LookupBuilder = ({
                 color='default'
                 aria-label='copy'
                 size='sm'
-                onPress={onCopy}
+                onClick={onCopy}
               >
                 <DocumentDuplicateIcon />
               </Button>
@@ -219,7 +219,7 @@ export const LookupBuilder = ({
                 color='danger'
                 aria-label='delete'
                 size='sm'
-                onPress={onDelete}
+                onClick={onDelete}
               >
                 <TrashIcon />
               </Button>

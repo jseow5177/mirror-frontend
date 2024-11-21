@@ -7,6 +7,7 @@ import {
   DocumentTextIcon,
   TagIcon,
   MagnifyingGlassIcon,
+  InformationCircleIcon,
 } from '@heroicons/react/24/outline';
 import { createSegment, SegmentState } from '@/app/lib/segment-action';
 import { useActionState } from 'react';
@@ -19,12 +20,16 @@ import {
   Textarea,
   Divider,
   Skeleton,
+  Tooltip,
 } from '@nextui-org/react';
 import { emptyCriteria, QueryBuilder } from './query-builder';
 import clsx from 'clsx';
 import { previewUd } from '@/app/lib/segment-data';
 import { validateCriteria } from '@/app/lib/utils';
 import { Criteria } from '@/app/lib/model/segment';
+import NumberCircles from '../number-circle';
+
+const TOTAL_STEPS = 2;
 
 export default function SegmentForm({
   segment,
@@ -37,6 +42,8 @@ export default function SegmentForm({
   if (segment) {
     isUpdate = true;
   }
+
+  const [currentStep, setCurrentStep] = useState(1);
 
   const initialState: SegmentState = {
     message: null,
@@ -108,14 +115,6 @@ export default function SegmentForm({
         toast.success(state.message);
         redirect('/dashboard/segments');
       }
-    } else {
-      if (
-        !state.fieldErrors.name &&
-        !state.fieldErrors.desc &&
-        state.fieldErrors.criteria
-      ) {
-        toast.error('Criteria is incomplete!');
-      }
     }
 
     // keep form state
@@ -127,127 +126,198 @@ export default function SegmentForm({
     });
   }, [state]);
 
+  const atLastStep = currentStep === TOTAL_STEPS;
+
+  const nextStep = () => {
+    if (!validateCriteria(segmentFields.criteria)) {
+      toast.error('Criteria is incomplete!');
+    } else {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
+  const previousStep = () => {
+    if (currentStep === 1) {
+      return;
+    }
+    setCurrentStep(currentStep - 1);
+  };
+
   return (
     <div className='flex w-full flex-col items-center'>
-      <form className='w-[80%] rounded-md' action={formAction}>
+      <form className='w-[90%] rounded-md' action={formAction}>
         <div className='flex w-full items-center justify-between'>
-          <div className='flex flex-col justify-center'>
-            <Skeleton isLoaded={!isPreviewLoading} className='rounded-lg'>
-              <h1 className='text-3xl text-slate-700'>
-                {segmentSize === -1 ? 'No Data' : segmentSize}
-              </h1>
-            </Skeleton>
-            <p className='mt-2 text-xs text-slate-500'>
-              Define criteria to preview size.
-            </p>
-          </div>
-          <div className='flex h-12 items-center gap-4'>
-            <Button
-              href='/dashboard/segments'
-              as={Link}
-              isDisabled={pending}
-              color='danger'
-              variant='solid'
-            >
-              Cancel
-            </Button>
-            <Button
-              type='submit'
-              isDisabled={pending}
-              isLoading={pending}
-              color='primary'
-              variant='solid'
-            >
-              Save
-            </Button>
-          </div>
-        </div>
-
-        <Divider className='my-8' />
-
-        <div>
-          {/* Segment Criteria */}
-          <div className={'mb-2 flex gap-2'}>
-            <MagnifyingGlassIcon className='w-5' />
-            <p className='text-lg'>Criteria</p>
-          </div>
-          <QueryBuilder
-            tags={tags}
-            initialCriteria={segmentFields.criteria}
-            onChange={(criteria) => {
-              setSegmentFields({
-                ...segmentFields,
-                criteria: criteria,
-              });
+          <NumberCircles
+            totalSteps={TOTAL_STEPS}
+            currentStep={currentStep}
+            onClick={(s) => {
+              if (
+                currentStep === 1 &&
+                !validateCriteria(segmentFields.criteria)
+              ) {
+                toast.error('Criteria is incomplete!');
+              } else {
+                setCurrentStep(s);
+              }
             }}
           />
+          <div className='flex items-center justify-end'>
+            <div className='flex gap-4'>
+              <Skeleton isLoaded={!isPreviewLoading} className='rounded-lg'>
+                <h1 className='text-right text-3xl text-slate-700'>
+                  {segmentSize === -1 ? 'No Data' : segmentSize}
+                </h1>
+              </Skeleton>
+              <Tooltip
+                showArrow
+                color='foreground'
+                content='Define criteria to preview size.'
+              >
+                <InformationCircleIcon className='w-4' />
+              </Tooltip>
+            </div>
 
-          <Divider className='my-8' />
+            <Divider orientation='vertical' className='ml-10 mr-5 h-10' />
 
-          {/* Segment ID */}
-          {isUpdate && (
-            <Input
-              className='hidden'
-              id='id'
-              name='id'
-              value={segmentFields.id}
-            />
-          )}
-
-          {/* Segment Name */}
-          <div
-            className={clsx('mb-2 flex gap-2', {
-              'text-danger': state.fieldErrors?.name,
-            })}
-          >
-            <TagIcon className='w-5' />
-            <p className='text-lg'>Name</p>
+            <div className='flex items-center gap-4'>
+              <Button
+                href='/dashboard/segments'
+                as={Link}
+                isDisabled={pending}
+                color='danger'
+                variant='light'
+              >
+                Cancel
+              </Button>
+              <Button
+                type='submit'
+                isDisabled={pending || currentStep == 1}
+                color='default'
+                variant='solid'
+                onClick={() => {
+                  previousStep();
+                }}
+              >
+                Previous
+              </Button>
+              {atLastStep ? (
+                <Button
+                  type='submit'
+                  isDisabled={pending}
+                  isLoading={pending}
+                  color='success'
+                  variant='solid'
+                >
+                  Save
+                </Button>
+              ) : (
+                <Button
+                  type='button'
+                  isDisabled={pending}
+                  color='primary'
+                  variant='solid'
+                  onClick={(e) => {
+                    e.preventDefault();
+                    nextStep();
+                  }}
+                >
+                  Next
+                </Button>
+              )}
+            </div>
           </div>
-          <Input
-            className='mb-6 w-1/2'
-            id='name'
-            name='name'
-            variant='bordered'
-            fullWidth={false}
-            size='lg'
-            value={segmentFields.name}
-            isInvalid={state.fieldErrors?.name && true}
-            errorMessage={state.fieldErrors?.name && state.fieldErrors?.name[0]}
-            onValueChange={(v) =>
-              setSegmentFields({
-                ...segmentFields,
-                name: v,
-              })
-            }
-          />
-
-          {/* Segment Description */}
-          <div
-            className={clsx('mb-2 flex gap-2', {
-              'text-danger': state.fieldErrors?.desc,
-            })}
-          >
-            <DocumentTextIcon className='w-5' />
-            <p className='text-lg'>Description</p>
-          </div>
-          <Textarea
-            className='w-1/2'
-            id='desc'
-            name='desc'
-            variant='bordered'
-            fullWidth={false}
-            size='lg'
-            value={segmentFields.desc}
-            isInvalid={state.fieldErrors?.desc && true}
-            errorMessage={state.fieldErrors?.desc && state.fieldErrors?.desc[0]}
-            onValueChange={(v) =>
-              setSegmentFields({
-                ...segmentFields,
-                desc: v,
-              })
-            }
-          />
         </div>
+
+        <Divider className='my-10' />
+
+        {currentStep === 1 ? (
+          <>
+            <div className={'mb-2 flex gap-2'}>
+              <MagnifyingGlassIcon className='w-5' />
+              <p className='text-lg'>Criteria</p>
+            </div>
+            <QueryBuilder
+              tags={tags}
+              initialCriteria={segmentFields.criteria}
+              onChange={(criteria) => {
+                setSegmentFields({
+                  ...segmentFields,
+                  criteria: criteria,
+                });
+              }}
+            />
+          </>
+        ) : (
+          <>
+            {/* Segment ID */}
+            {isUpdate && (
+              <Input
+                className='hidden'
+                id='id'
+                name='id'
+                value={segmentFields.id}
+              />
+            )}
+
+            {/* Segment Name */}
+            <div
+              className={clsx('mb-2 flex gap-2', {
+                'text-danger': state.fieldErrors?.name,
+              })}
+            >
+              <TagIcon className='w-5' />
+              <p className='text-lg'>Name</p>
+            </div>
+            <Input
+              className='mb-6 w-1/2'
+              id='name'
+              name='name'
+              variant='bordered'
+              fullWidth={false}
+              size='lg'
+              value={segmentFields.name}
+              isInvalid={state.fieldErrors?.name && true}
+              errorMessage={
+                state.fieldErrors?.name && state.fieldErrors?.name[0]
+              }
+              onValueChange={(v) =>
+                setSegmentFields({
+                  ...segmentFields,
+                  name: v,
+                })
+              }
+            />
+
+            {/* Segment Description */}
+            <div
+              className={clsx('mb-2 flex gap-2', {
+                'text-danger': state.fieldErrors?.desc,
+              })}
+            >
+              <DocumentTextIcon className='w-5' />
+              <p className='text-lg'>Description</p>
+            </div>
+            <Textarea
+              className='w-1/2'
+              id='desc'
+              name='desc'
+              variant='bordered'
+              fullWidth={false}
+              size='lg'
+              value={segmentFields.desc}
+              isInvalid={state.fieldErrors?.desc && true}
+              errorMessage={
+                state.fieldErrors?.desc && state.fieldErrors?.desc[0]
+              }
+              onValueChange={(v) =>
+                setSegmentFields({
+                  ...segmentFields,
+                  desc: v,
+                })
+              }
+            />
+          </>
+        )}
       </form>
     </div>
   );
