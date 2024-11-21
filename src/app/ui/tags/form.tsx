@@ -40,7 +40,7 @@ export default function TagForm({ tag }: { tag?: Tag }) {
   useEffect(() => {
     if (!state.fieldErrors) {
       if (state.error) {
-        toast.error(state.message ? state.message : 'Error encountered');
+        toast.error(state.error ? state.error : 'Error encountered');
       } else if (state.message) {
         toast.success(state.message);
         redirect('/dashboard/tags');

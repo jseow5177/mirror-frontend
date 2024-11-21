@@ -1,7 +1,6 @@
 'use client';
 
 import { Tag, TagValueType } from '@/app/lib/model/tag';
-import BaseChip from '../chip';
 import {
   Card,
   CardHeader,
@@ -33,7 +32,6 @@ export default function TagView({ tag }: { tag: Tag }) {
           <p className='text-sm text-default-500'>Tag ID: {tag.id}</p>
         </div>
         <div className='flex flex-col items-end gap-2'>
-          <BaseChip label={tag.value_type} labelType='tagValueType' />
           {tag.value_type === TagValueType.Float && (
             <p className='text-xs text-red-500'>(Max 5 decimal places)</p>
           )}

@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { TagValueType } from './model/tag';
 import axiosInstance from './axios';
+import { handleAxiosError } from './utils';
 
 export type TagState = {
   fieldErrors?: {
@@ -76,12 +77,9 @@ export async function createTag(_: TagState, formData: FormData) {
       message: 'Tag created',
     };
   } catch (error) {
-    console.log(`createTag err: ${error}`);
-
-    const errorMessage = error instanceof Error ? error.message : String(error);
+    const err = handleAxiosError(error, 'Failed to create tag.');
     return {
-      error: errorMessage,
-      message: 'Failed to create tag.',
+      error: err.error,
     };
   }
 }

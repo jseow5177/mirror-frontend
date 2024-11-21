@@ -3,8 +3,7 @@
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import axiosInstance from './axios';
-import axios from 'axios';
-import { validateCriteria } from './utils';
+import { handleAxiosError, validateCriteria } from './utils';
 
 export type SegmentState = {
   fieldErrors?: {
@@ -71,8 +70,8 @@ export async function createSegment(_: SegmentState, formData: FormData) {
 
   try {
     await axiosInstance.post('/create_segment', {
-      name: name,
-      desc: desc,
+      name,
+      desc,
       criteria: JSON.parse(criteria),
     });
     revalidatePath('/dashboard');
@@ -82,21 +81,9 @@ export async function createSegment(_: SegmentState, formData: FormData) {
       message: 'Segment created',
     };
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      let errMsg = 'Failed to create segment.';
-
-      const { status, data } = error.response;
-
-      if (status === axios.HttpStatusCode.UnprocessableEntity) {
-        errMsg = data.error || errMsg;
-      }
-      return {
-        error: errMsg,
-      };
-    } else {
-      return {
-        error: error instanceof Error ? error.message : String(error),
-      };
-    }
+    const err = handleAxiosError(error, 'Failed to create segment.');
+    return {
+      error: err.error,
+    };
   }
 }

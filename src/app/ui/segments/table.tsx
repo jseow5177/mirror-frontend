@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { convertUnixToLocalTime } from '@/app/lib/utils';
-import BaseChip from '../chip';
 import {
   Table,
   TableHeader,
@@ -10,9 +9,20 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  Chip,
 } from '@nextui-org/react';
-import { Segment } from '@/app/lib/model';
+import {
+  Segment,
+  SegmentStatus,
+  SegmentStatuses,
+} from '@/app/lib/model/segment';
 import { SegmentActions } from './buttons';
+import { ChipColors } from '../utils';
+
+const statusColors: Record<SegmentStatus, ChipColors> = {
+  [SegmentStatus.Normal]: 'success',
+  [SegmentStatus.Deleted]: 'danger',
+};
 
 export default function SegmentTable({ segments }: { segments: Segment[] }) {
   return (
@@ -38,7 +48,9 @@ export default function SegmentTable({ segments }: { segments: Segment[] }) {
               <TableCell className='w-[20%]'>{segment.name}</TableCell>
               <TableCell className='w-[30%]'>{segment.desc}</TableCell>
               <TableCell className='w-[10%]'>
-                <BaseChip label={segment.status} labelType='segmentStatus' />
+                <Chip color={statusColors[segment.status]}>
+                  {SegmentStatuses[segment.status]}
+                </Chip>
               </TableCell>
               <TableCell className='w-[15%]'>
                 <p>{createDate}</p>

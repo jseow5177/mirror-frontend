@@ -1,6 +1,6 @@
 import { Button, Link, ButtonGroup } from '@nextui-org/react';
 import { PlusIcon, EyeIcon } from '@heroicons/react/24/outline';
-import { Segment } from '@/app/lib/model';
+import { Segment } from '@/app/lib/model/segment';
 
 export function CreateSegment() {
   return (

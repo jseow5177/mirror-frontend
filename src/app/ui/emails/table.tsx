@@ -1,9 +1,5 @@
 'use client';
 
-import React from 'react';
-import { convertUnixToLocalTime } from '@/app/lib/utils';
-import { TagActions } from './buttons';
-
 import {
   Table,
   TableHeader,
@@ -13,17 +9,19 @@ import {
   TableCell,
   Chip,
 } from '@nextui-org/react';
-import { Tag, TagStatus, TagStatuses } from '@/app/lib/model/tag';
+import { convertUnixToLocalTime } from '@/app/lib/utils';
+import { Email, EmailStatus, EmailStatuses } from '@/app/lib/model/email';
 import { ChipColors } from '../utils';
+import { EmailActions } from './buttons';
 
-const statusColors: Record<TagStatus, ChipColors> = {
-  [TagStatus.Normal]: 'success',
-  [TagStatus.Deleted]: 'danger',
+const statusColors: Record<EmailStatus, ChipColors> = {
+  [EmailStatus.Normal]: 'success',
+  [EmailStatus.Deleted]: 'danger',
 };
 
-export default function TagTable({ tags }: { tags: Tag[] }) {
+export default function EmailTable({ emails }: { emails: Email[] }) {
   return (
-    <Table aria-label='tag-table'>
+    <Table aria-label='email-table'>
       <TableHeader>
         <TableColumn>Name</TableColumn>
         <TableColumn>Description</TableColumn>
@@ -32,21 +30,21 @@ export default function TagTable({ tags }: { tags: Tag[] }) {
         <TableColumn>Update Time</TableColumn>
         <TableColumn> </TableColumn>
       </TableHeader>
-      <TableBody emptyContent={'No tags to display.'}>
-        {tags.map((tag, i) => {
+      <TableBody emptyContent={'No emails to display.'}>
+        {emails.map((email, i) => {
           const { date: updateDate, time: updateTime } = convertUnixToLocalTime(
-            tag.update_time
+            email.update_time
           );
           const { date: createDate, time: createTime } = convertUnixToLocalTime(
-            tag.create_time
+            email.create_time
           );
           return (
             <TableRow key={i}>
-              <TableCell className='w-[20%]'>{tag.name}</TableCell>
-              <TableCell className='w-[30%]'>{tag.desc}</TableCell>
+              <TableCell className='w-[20%]'>{email.name}</TableCell>
+              <TableCell className='w-[30%]'>{email.email_desc}</TableCell>
               <TableCell className='w-[10%]'>
-                <Chip color={statusColors[tag.status]}>
-                  {TagStatuses[tag.status]}
+                <Chip color={statusColors[email.status]}>
+                  {EmailStatuses[email.status]}
                 </Chip>
               </TableCell>
               <TableCell className='w-[15%]'>
@@ -58,7 +56,7 @@ export default function TagTable({ tags }: { tags: Tag[] }) {
                 <p className='mt-1 text-xs'>{updateTime}</p>
               </TableCell>
               <TableCell className='w-[10%]'>
-                <TagActions tag={tag} />
+                <EmailActions email={email} />
               </TableCell>
             </TableRow>
           );

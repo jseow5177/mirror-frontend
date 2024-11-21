@@ -23,23 +23,3 @@ export type Task = {
   create_time: number;
   update_time: number;
 };
-
-export enum SegmentStatus {
-  Normal = 1,
-  Deleted = 2,
-}
-
-export const SegmentStatuses: Record<SegmentStatus, string> = {
-  [SegmentStatus.Normal]: 'Normal',
-  [SegmentStatus.Deleted]: 'Deleted',
-};
-
-export type Segment = {
-  id?: number;
-  name: string;
-  desc: string;
-  status: SegmentStatus;
-  criteria: Criteria;
-  create_time: number;
-  update_time: number;
-};

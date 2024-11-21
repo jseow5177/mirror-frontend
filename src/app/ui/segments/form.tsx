@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Segment } from '@/app/lib/model';
+import { Segment } from '@/app/lib/model/segment';
 import { Tag } from '@/app/lib/model/tag';
 import {
   DocumentTextIcon,
@@ -145,6 +145,7 @@ export default function SegmentForm({
             <Button
               href='/dashboard/segments'
               as={Link}
+              isDisabled={pending}
               color='danger'
               variant='solid'
             >
@@ -165,6 +166,24 @@ export default function SegmentForm({
         <Divider className='my-8' />
 
         <div>
+          {/* Segment Criteria */}
+          <div className={'mb-2 flex gap-2'}>
+            <MagnifyingGlassIcon className='w-5' />
+            <p className='text-lg'>Criteria</p>
+          </div>
+          <QueryBuilder
+            tags={tags}
+            initialCriteria={segmentFields.criteria}
+            onChange={(criteria) => {
+              setSegmentFields({
+                ...segmentFields,
+                criteria: criteria,
+              });
+            }}
+          />
+
+          <Divider className='my-8' />
+
           {/* Segment ID */}
           {isUpdate && (
             <Input
@@ -174,26 +193,6 @@ export default function SegmentForm({
               value={segmentFields.id}
             />
           )}
-
-          {/* Segment Criteria */}
-          <div className='w-8/10'>
-            <div className={'mb-2 flex gap-2'}>
-              <MagnifyingGlassIcon className='w-5' />
-              <p className='text-lg'>Criteria</p>
-            </div>
-            <QueryBuilder
-              tags={tags}
-              initialCriteria={segmentFields.criteria}
-              onChange={(criteria) => {
-                setSegmentFields({
-                  ...segmentFields,
-                  criteria: criteria,
-                });
-              }}
-            />
-          </div>
-
-          <Divider className='my-8' />
 
           {/* Segment Name */}
           <div

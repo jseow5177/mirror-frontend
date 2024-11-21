@@ -10,11 +10,18 @@ interface Breadcrumb {
 
 export default function BaseBreadcrumbs({
   breadcrumbs,
+  separator = '/',
 }: {
   breadcrumbs: Breadcrumb[];
+  separator?: string;
 }) {
   return (
-    <Breadcrumbs size='lg' underline='active' className='mb-8'>
+    <Breadcrumbs
+      size='lg'
+      underline='active'
+      className='mb-8'
+      separator={separator}
+    >
       {breadcrumbs.map((breadcrumb, i) => (
         <BreadcrumbItem
           href={breadcrumb.href}

@@ -49,6 +49,9 @@ importers:
       react-dom:
         specifier: 19.0.0-rc-f38c22b244-20240704
         version: 19.0.0-rc-f38c22b244-20240704(react@19.0.0-rc-f38c22b244-20240704)
+      react-email-editor:
+        specifier: ^1.7.11
+        version: 1.7.11(react@19.0.0-rc-f38c22b244-20240704)
       react-hot-toast:
         specifier: ^2.4.1
         version: 2.4.1(csstype@3.1.3)(react-dom@19.0.0-rc-f38c22b244-20240704(react@19.0.0-rc-f38c22b244-20240704))(react@19.0.0-rc-f38c22b244-20240704)
@@ -4887,6 +4890,15 @@ packages:
     peerDependencies:
       react: 19.0.0-rc-f38c22b244-20240704
 
+  react-email-editor@1.7.11:
+    resolution:
+      {
+        integrity: sha512-AyoKKtMEPhKdqUxFX1hyJMvEO+E5fzk88uNVGHhK1ymhLpcghYLkz1+pXKLcByjR6LHkfEbrCmoYFG8zyripug==,
+      }
+    engines: { node: '>=10' }
+    peerDependencies:
+      react: '>=15'
+
   react-hot-toast@2.4.1:
     resolution:
       {
@@ -5471,6 +5483,12 @@ packages:
         integrity: sha512-72RFADWFqKmUb2hmmvNODKL3p9hcB6Gt2DOQMis1SEBaV6a4MH8soBvzg+95CYhCKPFedut2JY9bMfrDl9D23g==,
       }
     engines: { node: '>=14.0' }
+
+  unlayer-types@1.157.0:
+    resolution:
+      {
+        integrity: sha512-D9xnoeQREgUxEkaFG3q90CVicmysu8REVIkQA3alHaTG3JM+LPzdq20vjrd6V4iGuvvUD8L5EDQybSsSRS/k+g==,
+      }
 
   update-browserslist-db@1.1.1:
     resolution:
@@ -9606,6 +9624,11 @@ snapshots:
       react: 19.0.0-rc-f38c22b244-20240704
       scheduler: 0.25.0-rc-f38c22b244-20240704
 
+  react-email-editor@1.7.11(react@19.0.0-rc-f38c22b244-20240704):
+    dependencies:
+      react: 19.0.0-rc-f38c22b244-20240704
+      unlayer-types: 1.157.0
+
   react-hot-toast@2.4.1(csstype@3.1.3)(react-dom@19.0.0-rc-f38c22b244-20240704(react@19.0.0-rc-f38c22b244-20240704))(react@19.0.0-rc-f38c22b244-20240704):
     dependencies:
       goober: 2.1.14(csstype@3.1.3)
@@ -10041,6 +10064,8 @@ snapshots:
   undici@5.28.4:
     dependencies:
       '@fastify/busboy': 2.1.1
+
+  unlayer-types@1.157.0: {}
 
   update-browserslist-db@1.1.1(browserslist@4.24.0):
     dependencies:

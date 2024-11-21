@@ -1,7 +1,13 @@
 'use client';
 
 import React from 'react';
-import { UserGroupIcon, HomeIcon, TagIcon } from '@heroicons/react/24/outline';
+import {
+  UserGroupIcon,
+  HomeIcon,
+  TagIcon,
+  InboxIcon,
+  SpeakerWaveIcon,
+} from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
@@ -17,6 +23,16 @@ const links = [
     name: 'Segments',
     href: '/dashboard/segments',
     icon: UserGroupIcon,
+  },
+  {
+    name: 'Emails',
+    href: '/dashboard/emails',
+    icon: InboxIcon,
+  },
+  {
+    name: 'Campaigns',
+    href: '/dashboard/campaigns',
+    icon: SpeakerWaveIcon,
   },
 ];
 

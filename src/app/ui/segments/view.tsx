@@ -1,4 +1,4 @@
-import { Segment } from '@/app/lib/model';
+import { Segment } from '@/app/lib/model/segment';
 import { Tag } from '@/app/lib/model/tag';
 import {
   Card,

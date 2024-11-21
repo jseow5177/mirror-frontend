@@ -1,14 +1,9 @@
 import axiosInstance from './axios';
 import axios from 'axios';
-import { Segment } from './model';
+import { Segment } from './model/segment';
 import { Criteria } from './model/segment';
-
-type Pagination = {
-  page?: number;
-  limit?: number;
-  has_next?: boolean;
-  total?: number;
-};
+import { handleAxiosError } from './utils';
+import { Pagination } from './tag-data';
 
 type PreviewUdResponse = {
   count: number;
@@ -23,7 +18,7 @@ type CountSegmentsResponse = {
   count: number;
 };
 
-const ITEMS_PER_PAGE = 5;
+const SEGMENTS_PER_PAGE = 10;
 
 export async function previewUd(criteria: Criteria, signal?: AbortSignal) {
   try {
@@ -42,8 +37,8 @@ export async function previewUd(criteria: Criteria, signal?: AbortSignal) {
     return body.count;
   } catch (error) {
     if (!axios.isCancel(error)) {
-      console.error('previewUd err:', error);
-      throw new Error('Failed to preview segment count.');
+      const err = handleAxiosError(error, 'Failed to preview segment count.');
+      throw new Error(err.error);
     }
     return -1;
   }
@@ -53,8 +48,8 @@ export async function getSegment(id: number) {
   try {
     return null;
   } catch (error) {
-    console.error('getSegment database error:', error);
-    throw new Error('Failed to get segment.');
+    const err = handleAxiosError(error, 'Failed to get segment.');
+    throw new Error(err.error);
   }
 }
 
@@ -68,16 +63,16 @@ export async function getSegments(
       desc: keyword,
       pagination: {
         page: currentPage,
-        limit: ITEMS_PER_PAGE,
+        limit: SEGMENTS_PER_PAGE,
       },
     });
 
     const body: GetSegmentsResponse = resp.data.body;
 
-    return [body, Math.ceil((body.pagination.total || 0) / ITEMS_PER_PAGE)];
+    return [body, Math.ceil((body.pagination.total || 0) / SEGMENTS_PER_PAGE)];
   } catch (error) {
-    console.error('getSegments err:', error);
-    throw new Error('Failed to get segments.');
+    const err = handleAxiosError(error, 'Fail to get segments.');
+    throw new Error(err.error);
   }
 }
 
@@ -89,9 +84,7 @@ export async function countTotalSegments() {
 
     return body.count;
   } catch (error) {
-    console.error('countTotalSegments database error:', error);
-    throw new Error('Failed to count total segments.');
+    const err = handleAxiosError(error, 'Failed to count total segments.');
+    throw new Error(err.error);
   }
 }
-
-

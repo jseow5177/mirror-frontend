@@ -2,8 +2,9 @@ import { sql } from '@vercel/postgres';
 import { Task } from './model';
 import { Tag, TagStatus } from './model/tag';
 import axiosInstance from './axios';
+import { handleAxiosError } from './utils';
 
-type Pagination = {
+export type Pagination = {
   page?: number;
   limit?: number;
   has_next?: boolean;
@@ -19,7 +20,7 @@ type CountTagsResponse = {
   count: number;
 };
 
-const ITEMS_PER_PAGE = 10;
+const TAGS_PER_PAGE = 10;
 
 export async function getTag(id: number) {
   try {
@@ -76,8 +77,8 @@ export async function countTotalTags() {
 
     return body.count;
   } catch (error) {
-    console.error('countTotalTags err:', error);
-    throw new Error('Failed to count total tags.');
+    const err = handleAxiosError(error, 'Failed to count total tags.');
+    throw new Error(err.error);
   }
 }
 
@@ -91,21 +92,21 @@ export async function getTags(
       desc: keyword,
       pagination: {
         page: currentPage,
-        limit: ITEMS_PER_PAGE,
+        limit: TAGS_PER_PAGE,
       },
     });
 
     const body: GetTagsResponse = resp.data.body;
 
-    return [body, Math.ceil((body.pagination.total || 0) / ITEMS_PER_PAGE)];
+    return [body, Math.ceil((body.pagination.total || 0) / TAGS_PER_PAGE)];
   } catch (error) {
-    console.error('getTags err:', error);
-    throw new Error('Failed to get tags.');
+    const err = handleAxiosError(error, 'Failed to get tags.');
+    throw new Error(err.error);
   }
 }
 
 export async function getTasks(tagID: number, currentPage: number) {
-  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+  const offset = (currentPage - 1) * TAGS_PER_PAGE;
 
   try {
     const data = await sql<Task>`
@@ -113,7 +114,7 @@ export async function getTasks(tagID: number, currentPage: number) {
             FROM task_tab
             WHERE tag_id = ${tagID}
             ORDER BY create_time DESC
-            LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+            LIMIT ${TAGS_PER_PAGE} OFFSET ${offset}
         `;
 
     const tasks = data.rows.map((task) => ({
@@ -138,7 +139,7 @@ export async function countTasksPages(tagID: number) {
             WHERE tag_id = ${tagID}
         `;
 
-    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+    const totalPages = Math.ceil(Number(count.rows[0].count) / TAGS_PER_PAGE);
     return totalPages;
   } catch (error) {
     console.error('countTasksPages database error:', error);
