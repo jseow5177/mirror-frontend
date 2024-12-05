@@ -35,10 +35,10 @@ export function DeleteTag({ id, name }: { id: number; name: string }) {
                 <p>This action is irreversible!</p>
               </ModalBody>
               <ModalFooter>
-                <Button onClick={onClose} color='default' variant='solid'>
+                <Button onPress={onClose} color='default' variant='solid'>
                   Cancel
                 </Button>
-                <Button onClick={async () => {}} color='danger' variant='solid'>
+                <Button onPress={async () => {}} color='danger' variant='solid'>
                   Confirm
                 </Button>
               </ModalFooter>
@@ -46,7 +46,7 @@ export function DeleteTag({ id, name }: { id: number; name: string }) {
           )}
         </ModalContent>
       </Modal>
-      <Button isIconOnly variant='bordered' onClick={onOpen}>
+      <Button isIconOnly variant='bordered' onPress={onOpen}>
         <TrashIcon className='h-5' />
       </Button>
     </>

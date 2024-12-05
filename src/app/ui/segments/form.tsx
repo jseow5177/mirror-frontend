@@ -28,6 +28,7 @@ import { previewUd } from '@/app/lib/segment-data';
 import { validateCriteria } from '@/app/lib/utils';
 import { Criteria } from '@/app/lib/model/segment';
 import NumberCircles from '../number-circle';
+import Title from '../title';
 
 const TOTAL_STEPS = 2;
 
@@ -150,7 +151,7 @@ export default function SegmentForm({
           <NumberCircles
             totalSteps={TOTAL_STEPS}
             currentStep={currentStep}
-            onClick={(s) => {
+            onPress={(s) => {
               if (
                 currentStep === 1 &&
                 !validateCriteria(segmentFields.criteria)
@@ -194,7 +195,7 @@ export default function SegmentForm({
                 isDisabled={pending || currentStep == 1}
                 color='default'
                 variant='solid'
-                onClick={() => {
+                onPress={() => {
                   previousStep();
                 }}
               >
@@ -232,10 +233,7 @@ export default function SegmentForm({
 
         {currentStep === 1 ? (
           <>
-            <div className={'mb-2 flex gap-2'}>
-              <MagnifyingGlassIcon className='w-5' />
-              <p className='text-lg'>Criteria</p>
-            </div>
+            <Title title='Segment Criteria' />
             <QueryBuilder
               tags={tags}
               initialCriteria={segmentFields.criteria}
@@ -249,6 +247,8 @@ export default function SegmentForm({
           </>
         ) : (
           <>
+            <Title title='Basic Info' />
+
             {/* Segment ID */}
             {isUpdate && (
               <Input

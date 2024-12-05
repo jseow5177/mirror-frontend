@@ -177,7 +177,7 @@ export const LookupBuilder = ({
           onSelectionChange={onTagChange}
         >
           {tags.map((tag) => (
-            <SelectItem key={`${tag.id!}`}>{tag.name}</SelectItem>
+            <SelectItem key={tag.id!}>{tag.name}</SelectItem>
           ))}
         </Select>
 
@@ -208,7 +208,7 @@ export const LookupBuilder = ({
                 color='default'
                 aria-label='copy'
                 size='sm'
-                onClick={onCopy}
+                onPress={onCopy}
               >
                 <DocumentDuplicateIcon />
               </Button>
@@ -219,7 +219,7 @@ export const LookupBuilder = ({
                 color='danger'
                 aria-label='delete'
                 size='sm'
-                onClick={onDelete}
+                onPress={onDelete}
               >
                 <TrashIcon />
               </Button>

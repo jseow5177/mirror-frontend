@@ -8,12 +8,9 @@ import { createEmail, EmailState } from '@/app/lib/email-action';
 import toast from 'react-hot-toast';
 import { redirect } from 'next/navigation';
 import clsx from 'clsx';
-import {
-  TagIcon,
-  HandRaisedIcon,
-  DocumentTextIcon,
-} from '@heroicons/react/24/outline';
+import { TagIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
 import NumberCircles from '../number-circle';
+import Title from '../title';
 
 const TOTAL_STEPS = 2;
 
@@ -37,11 +34,13 @@ export default function EmailForm({ email }: { email?: Email }) {
     id: email?.id ? `${email?.id}` : '0',
     name: email?.name || '',
     email_desc: email?.email_desc || '',
-    blob: email?.blob || '{}',
+    json: email?.json || '{}',
+    html: email?.html || '',
   });
 
   const handleCreateEmail = (s: EmailState, formData: FormData) => {
-    formData.append('blob', emailFields.blob);
+    formData.append('json', emailFields.json);
+    formData.append('html', emailFields.html);
     return createEmail(s, formData);
   };
 
@@ -65,7 +64,8 @@ export default function EmailForm({ email }: { email?: Email }) {
       id: emailFields.id,
       name: emailFields.name,
       email_desc: emailFields.email_desc,
-      blob: emailFields.blob,
+      json: emailFields.json,
+      html: emailFields.html,
     });
   }, [state]);
 
@@ -85,20 +85,31 @@ export default function EmailForm({ email }: { email?: Email }) {
   const extractEmailJson = () => {
     const unlayer = ref.current?.editor;
 
-    unlayer?.saveDesign((js: any) => {
-      setEmailFields({
-        ...emailFields,
-        blob: JSON.stringify(js),
+    if (!unlayer) return;
+
+    unlayer.saveDesign((js: any) => {
+      const json = JSON.stringify(js);
+
+      unlayer.exportHtml((data) => {
+        const { html } = data;
+        const encodedHtml = btoa(html);
+
+        setEmailFields((prevFields) => ({
+          ...prevFields,
+          json,
+          html: encodedHtml,
+        }));
+
+        nextStep();
       });
-      nextStep();
     });
   };
 
   const loadEmailJson = () => {
     const unlayer = ref.current?.editor;
 
-    if (emailFields.blob !== '{}') {
-      unlayer?.loadDesign(JSON.parse(emailFields.blob));
+    if (emailFields.json !== '{}') {
+      unlayer?.loadDesign(JSON.parse(emailFields.json));
     }
   };
 
@@ -109,7 +120,7 @@ export default function EmailForm({ email }: { email?: Email }) {
           <NumberCircles
             totalSteps={TOTAL_STEPS}
             currentStep={currentStep}
-            onClick={(s) => setCurrentStep(s)}
+            onPress={(s) => setCurrentStep(s)}
           />
           <div className='flex items-center gap-4'>
             <Button
@@ -126,7 +137,7 @@ export default function EmailForm({ email }: { email?: Email }) {
               isDisabled={pending || currentStep == 1}
               color='default'
               variant='solid'
-              onClick={() => {
+              onPress={() => {
                 previousStep();
               }}
             >
@@ -163,10 +174,8 @@ export default function EmailForm({ email }: { email?: Email }) {
 
         {currentStep === 1 ? (
           <>
-            <div className={'mb-2 flex gap-2'}>
-              <HandRaisedIcon className='w-5' />
-              <p className='text-lg'>Drag and drop your email!</p>
-            </div>
+            <Title title='Email Template' />
+
             <EmailEditor
               ref={ref}
               onReady={() => {
@@ -176,6 +185,8 @@ export default function EmailForm({ email }: { email?: Email }) {
           </>
         ) : (
           <>
+            <Title title='Basic Info' />
+
             {/* Email ID */}
             {isUpdate && (
               <Input

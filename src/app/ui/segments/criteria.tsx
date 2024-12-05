@@ -158,7 +158,7 @@ export function CriteriaInput({
                   }}
                 >
                   {tags.map((tag) => (
-                    <SelectItem key={tag.id || 0}>{tag.name}</SelectItem>
+                    <SelectItem key={tag.id!}>{tag.name}</SelectItem>
                   ))}
                 </Select>
                 <Select
@@ -201,7 +201,7 @@ export function CriteriaInput({
                 isIconOnly
                 color='danger'
                 variant='light'
-                onClick={() => deleteQuery(i)}
+                onPress={() => deleteQuery(i)}
               >
                 <TrashIcon className='w-5' />
               </Button>
@@ -213,7 +213,7 @@ export function CriteriaInput({
         <Button
           variant='light'
           startContent={<PlusIcon className='w-5' />}
-          onClick={() => {
+          onPress={() => {
             setQueries([
               ...queries,
               {

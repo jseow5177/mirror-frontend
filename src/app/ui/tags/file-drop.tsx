@@ -129,7 +129,7 @@ export default function DragAndDrop({ tag }: { tag: Tag }) {
                 aria-label='Like'
                 variant='light'
                 size='sm'
-                onClick={() => setFile(null)}
+                onPress={() => setFile(null)}
               >
                 <XMarkIcon className='w-5' />
               </Button>
@@ -148,7 +148,7 @@ export default function DragAndDrop({ tag }: { tag: Tag }) {
           <div className='flex flex-col gap-2'>
             <p>Drag & Drop file</p>
             <p>or</p>
-            <Button color='primary' onClick={openFileExplorer}>
+            <Button color='primary' onPress={openFileExplorer}>
               Select file
             </Button>
           </div>

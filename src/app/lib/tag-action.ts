@@ -1,9 +1,7 @@
 'use server';
 
-import { z } from 'zod';
-
 import { revalidatePath } from 'next/cache';
-import { TagValueType } from './model/tag';
+import { TagSchema, TagValueType } from './model/tag';
 import axiosInstance from './axios';
 import { handleAxiosError } from './utils';
 
@@ -16,33 +14,6 @@ export type TagState = {
   error?: string | null;
   message?: string | null;
 };
-
-const TagSchema = z.object({
-  id: z.coerce.number({
-    required_error: 'Tag ID is required.',
-    invalid_type_error: 'Tag ID must be a number.',
-  }),
-  name: z
-    .string({
-      required_error: 'Tag name is required.',
-      invalid_type_error: 'Tag name must be a string.',
-    })
-    .min(1, { message: 'Tag name is required.' })
-    .max(60, { message: 'Tag name cannot be more than 60 characters long.' }),
-  desc: z
-    .string({
-      required_error: 'Tag description is required',
-      invalid_type_error: 'Tag description must be a string.',
-    })
-    .min(1, { message: 'Tag description is required.' })
-    .max(200, {
-      message: 'Tag description cannot be more than 200 characters long.',
-    }),
-  valueType: z.nativeEnum(TagValueType, {
-    required_error: 'Tag value type is required',
-    invalid_type_error: 'Invalid tag value type.',
-  }),
-});
 
 const CreateTag = TagSchema.omit({
   id: true,

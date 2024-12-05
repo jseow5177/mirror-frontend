@@ -79,7 +79,7 @@ export const handleAxiosError = (err: any, defaultErrMsg?: string) => {
       errMsg = data.error || errMsg;
     }
 
-    console.log(`code: ${status}, errMsg: ${errMsg}`);
+    console.log(`code: ${status}, err: ${err.response.data.error}`);
 
     return {
       error: errMsg,

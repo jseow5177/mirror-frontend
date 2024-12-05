@@ -53,7 +53,7 @@ const OperatorToggle = ({
           className:
             'relative max-w-fit inline-flex items-center justify-start cursor-pointer touch-none tap-highlight-transparent select-none',
         }}
-        onClick={handleClick}
+        onPress={handleClick}
       >
         <VisuallyHidden>
           <input {...getInputProps()} />
@@ -303,10 +303,10 @@ export const QueryBuilder = ({
                       <span>
                         <Link
                           href='#'
-                          className='mt-2'
+                          className='mt-4'
                           isDisabled={isMaxLookup()}
                           size='sm'
-                          onClick={(_) => addLookup(queryIdx)}
+                          onPress={(_) => addLookup(queryIdx)}
                         >
                           + Add Lookup
                         </Link>
@@ -330,9 +330,9 @@ export const QueryBuilder = ({
           <span>
             <Link
               href='#'
-              className='mt-2'
+              className='mt-4'
               isDisabled={isMaxLookup()}
-              onClick={addQuery}
+              onPress={addQuery}
               size='sm'
             >
               + Add Query

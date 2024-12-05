@@ -17,7 +17,7 @@ export default function Error({
   return (
     <main className='flex h-full flex-col items-center justify-center gap-3'>
       <h2 className='text-center'>Something went wrong!</h2>
-      <Button variant='solid' color='primary' onClick={() => reset()}>
+      <Button variant='solid' color='primary' onPress={() => reset()}>
         Try again
       </Button>
     </main>

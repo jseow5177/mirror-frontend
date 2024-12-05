@@ -1,6 +1,23 @@
+import { getEmails } from '@/app/lib/email-data';
+import { getSegments } from '@/app/lib/segment-data';
 import Breadcrumbs from '@/app/ui/breadcrumbs';
+import CampaignForm from '@/app/ui/campaigns/form';
 
 export default async function Page() {
+  const fetchCampaignData = async () => {
+    const [emailsResp, segmentsResp] = await Promise.all([
+      getEmails(),
+      getSegments(),
+    ]);
+
+    return {
+      emails: emailsResp[0].emails,
+      segments: segmentsResp[0].segments,
+    };
+  };
+
+  const { emails, segments } = await fetchCampaignData();
+
   return (
     <main>
       <Breadcrumbs
@@ -13,6 +30,7 @@ export default async function Page() {
           },
         ]}
       />
+      <CampaignForm emails={emails} segments={segments} />
     </main>
   );
 }

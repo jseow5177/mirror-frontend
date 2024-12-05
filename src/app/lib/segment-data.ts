@@ -20,6 +20,30 @@ type CountSegmentsResponse = {
 
 const SEGMENTS_PER_PAGE = 10;
 
+export async function countUd(segmentID: number, signal?: AbortSignal) {
+  try {
+    const resp = await axiosInstance.post(
+      '/count_ud',
+      {
+        segment_id: segmentID,
+      },
+      {
+        signal: signal,
+      }
+    );
+
+    const body: PreviewUdResponse = resp.data.body;
+
+    return body.count;
+  } catch (error) {
+    if (!axios.isCancel(error)) {
+      const err = handleAxiosError(error, 'Failed to count segment size.');
+      throw new Error(err.error);
+    }
+    return -1;
+  }
+}
+
 export async function previewUd(criteria: Criteria, signal?: AbortSignal) {
   try {
     const resp = await axiosInstance.post(
