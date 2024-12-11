@@ -19,8 +19,9 @@ import { convertUnixToLocalTime } from '@/app/lib/utils';
 import { CampaignActions } from './buttons';
 
 const statusColors: Record<CampaignStatus, ChipColors> = {
-  [CampaignStatus.Normal]: 'success',
-  [CampaignStatus.Deleted]: 'danger',
+  [CampaignStatus.Pending]: 'default',
+  [CampaignStatus.Running]: 'success',
+  [CampaignStatus.Failed]: 'danger',
 };
 
 export default function CampaignTable({

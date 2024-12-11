@@ -1,16 +1,19 @@
 import { z } from 'zod';
 
 export enum CampaignStatus {
-  Normal = 1,
-  Deleted = 2,
+  Pending = 1,
+  Running = 2,
+  Failed = 3,
 }
 
 export const CampaignStatuses: Record<CampaignStatus, string> = {
-  [CampaignStatus.Normal]: 'Normal',
-  [CampaignStatus.Deleted]: 'Deleted',
+  [CampaignStatus.Pending]: 'Pending',
+  [CampaignStatus.Running]: 'Running',
+  [CampaignStatus.Failed]: 'Failed'
 };
 
 export type CampaignEmail = {
+  id?: number;
   email_id: number;
   subject: string;
   ratio: number;
@@ -22,6 +25,8 @@ export type Campaign = {
   campaign_desc: string;
   status: CampaignStatus;
   emails: CampaignEmail[];
+  segment_size: number;
+  progress: number;
   segment_id: number;
   schedule: number;
   create_time: number;

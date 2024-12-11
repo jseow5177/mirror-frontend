@@ -242,8 +242,6 @@ export default function CampaignForm({
     });
   }, [state]);
 
-  console.log(campaignFields.schedule);
-
   const atLastStep = currentStep === TOTAL_STEPS;
 
   const nextStep = (newStep?: number) => {
