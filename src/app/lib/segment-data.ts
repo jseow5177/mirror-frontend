@@ -5,20 +5,11 @@ import { Criteria } from './model/segment';
 import { handleAxiosError } from './utils';
 import { Pagination } from './tag-data';
 
+const SEGMENTS_PER_PAGE = 10;
+
 type PreviewUdResponse = {
   count: number;
 };
-
-type GetSegmentsResponse = {
-  segments: Segment[];
-  pagination: Pagination;
-};
-
-type CountSegmentsResponse = {
-  count: number;
-};
-
-const SEGMENTS_PER_PAGE = 10;
 
 export async function countUd(segmentID: number, signal?: AbortSignal) {
   try {
@@ -68,14 +59,29 @@ export async function previewUd(criteria: Criteria, signal?: AbortSignal) {
   }
 }
 
-export async function getSegment(id: number) {
+type GetSegmentResponse = {
+  segment: Segment;
+};
+
+export async function getSegment(segmentID: number) {
   try {
-    return null;
+    const resp = await axiosInstance.post('/get_segment', {
+      segment_id: segmentID,
+    });
+
+    const body: GetSegmentResponse = resp.data.body;
+
+    return body.segment;
   } catch (error) {
-    const err = handleAxiosError(error, 'Failed to get segment.');
+    const err = handleAxiosError(error, 'Fail to get segment.');
     throw new Error(err.error);
   }
 }
+
+type GetSegmentsResponse = {
+  segments: Segment[];
+  pagination: Pagination;
+};
 
 export async function getSegments(
   currentPage?: number,
@@ -99,6 +105,10 @@ export async function getSegments(
     throw new Error(err.error);
   }
 }
+
+type CountSegmentsResponse = {
+  count: number;
+};
 
 export async function countTotalSegments() {
   try {

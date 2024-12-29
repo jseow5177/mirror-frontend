@@ -24,7 +24,6 @@ export function ViewCampaign({ id }: { id: number }) {
       variant='bordered'
       as={Link}
       href={`/dashboard/campaigns/${id}`}
-      isDisabled
     >
       <EyeIcon className='h-5' />
     </Button>

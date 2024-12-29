@@ -8,7 +8,6 @@ import {
   sumRatioEquals100,
 } from '@/app/lib/model/campaign';
 import { Email } from '@/app/lib/model/email';
-import DOMPurify from 'dompurify';
 import { useActionState, useEffect, useState } from 'react';
 import NumberCircles from '../number-circle';
 import {
@@ -22,7 +21,6 @@ import {
   useDisclosure,
   Input,
   ModalFooter,
-  Image,
   Card,
   Select,
   SelectItem,
@@ -46,7 +44,6 @@ import {
   TagIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
-import { toSvg } from 'html-to-image';
 import { Segment } from '@/app/lib/model/segment';
 import { countUd } from '@/app/lib/segment-data';
 import toast from 'react-hot-toast';
@@ -57,6 +54,7 @@ import {
   DateValue,
   getLocalTimeZone,
 } from '@internationalized/date';
+import EmailHtml from '../email_html';
 
 const TOTAL_STEPS = 3;
 
@@ -105,7 +103,7 @@ export default function CampaignForm({
     id: campaign?.id ? `${campaign?.id}` : '0',
     name: campaign?.name || '',
     campaign_desc: campaign?.campaign_desc || '',
-    emails: campaign?.emails || [],
+    emails: campaign?.campaign_emails || [],
     segment_id: campaign?.segment_id ? `${campaign?.segment_id}` : '',
     schedule: campaign?.schedule ? `${campaign?.schedule}` : '0',
   });
@@ -128,7 +126,7 @@ export default function CampaignForm({
   const [currentStep, setCurrentStep] = useState(1);
 
   const [segmentSize, setSegmentSize] = useState(-1);
-  const [countLoading, setCountLoading] = useState(false);
+  const [isCountLoading, setIsCountLoading] = useState(false);
 
   const useDebouncedCount = (segmentID: number, delay = 500) => {
     useEffect(() => {
@@ -139,7 +137,7 @@ export default function CampaignForm({
 
       const debounce = setTimeout(async () => {
         try {
-          setCountLoading(true);
+          setIsCountLoading(true);
           const [count, _] = await Promise.all([
             countUd(segmentID, signal),
             new Promise((r) => setTimeout(r, 300)),
@@ -148,56 +146,19 @@ export default function CampaignForm({
         } catch (error) {
           toast.error(error instanceof Error ? error.message : String(error));
         } finally {
-          setCountLoading(false);
+          setIsCountLoading(false);
         }
       }, delay);
 
       return () => {
         clearTimeout(debounce);
         controller.abort();
-        setCountLoading(false);
+        setIsCountLoading(false);
       };
     }, [segmentID, delay]);
   };
 
   useDebouncedCount(Number(campaignFields.segment_id));
-
-  const [availableEmails, setAvailableEmails] = useState<Email[]>([]);
-  useEffect(() => {
-    setAvailableEmails([]);
-
-    const domParser = new DOMParser();
-
-    const fetchUrls = async () => {
-      const e: Email[] = [];
-
-      for (const email of emails) {
-        const html = DOMPurify.sanitize(atob(email.html));
-
-        try {
-          const url = await toSvg(
-            domParser.parseFromString(html, 'text/html').body,
-            {
-              width: 500,
-              height: 400,
-            }
-          );
-
-          e.push({
-            ...email,
-            img: url,
-          });
-        } catch (err) {
-          console.log(err);
-          throw new Error('fail to fetch html data url');
-        }
-      }
-
-      setAvailableEmails(e);
-    };
-
-    fetchUrls();
-  }, []);
 
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -314,26 +275,24 @@ export default function CampaignForm({
         <Title title='Select a Segment' />
 
         <Select
-          className='w-[40%]'
+          className='mb-4 w-[40%]'
           aria-label='Segment'
           placeholder='Segment'
           size='lg'
           variant='bordered'
           selectedKeys={[campaignFields.segment_id]}
           onSelectionChange={onSegmentChange}
-          description={
-            <Skeleton
-              isLoaded={!countLoading}
-              className='w-[10%] rounded-lg text-base'
-            >
-              <p>Size: {segmentSize === -1 ? '-' : segmentSize}</p>
-            </Skeleton>
-          }
         >
           {segments.map((segment) => (
             <SelectItem key={segment.id!}>{segment.name}</SelectItem>
           ))}
         </Select>
+        <Skeleton
+          isLoaded={!isCountLoading}
+          className='w-[10%] rounded-lg text-lg'
+        >
+          <p>Size: {segmentSize === -1 ? '-' : segmentSize}</p>
+        </Skeleton>
       </>
     );
   };
@@ -509,7 +468,7 @@ export default function CampaignForm({
             </ModalHeader>
             <ModalBody>
               <div className='grid grid-cols-2 gap-4'>
-                {availableEmails
+                {emails
                   .filter(
                     (email) =>
                       email.name.toLowerCase().indexOf(searchTerm) > -1 ||
@@ -521,14 +480,30 @@ export default function CampaignForm({
                         key={index}
                         radius='lg'
                         shadow='none'
-                        className='group relative border p-2'
+                        className='group relative flex flex-col border p-2'
+                        style={{ height: '300px' }} // Fixed height for each card
                       >
-                        <div className='relative'>
-                          <Image
-                            src={email.img}
-                            className='transition-all group-hover:blur-sm'
-                          />
-
+                        <div className='relative flex-1 overflow-hidden'>
+                          <div
+                            className='h-full transition-all group-hover:blur-sm'
+                            style={{
+                              display: 'flex',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}
+                          >
+                            <div
+                              style={{
+                                transform: 'scale(0.95)', // Scales down HTML content
+                                transformOrigin: 'top center',
+                                maxHeight: '100%',
+                                maxWidth: '100%',
+                                overflow: 'hidden',
+                              }}
+                            >
+                              <EmailHtml email={email} />
+                            </div>
+                          </div>
                           <div className='pointer-events-none absolute inset-0 z-10 flex items-center justify-center gap-4 bg-opacity-50 opacity-0 transition-all group-hover:pointer-events-auto group-hover:opacity-100'>
                             <Button
                               color='secondary'
@@ -735,7 +710,7 @@ export default function CampaignForm({
             ) : (
               <Button
                 type='button'
-                isDisabled={pending}
+                isDisabled={pending || isCountLoading}
                 color='primary'
                 variant='solid'
                 onClick={(e) => {

@@ -1,27 +1,27 @@
 import BaseBreadcrumbs from '@/app/ui/breadcrumbs';
 import { getSegment } from '@/app/lib/segment-data';
-import { getAllTags } from '@/app/lib/tag-data';
+import { getAllTags, getTags } from '@/app/lib/tag-data';
 import { notFound } from 'next/navigation';
 import SegmentView from '@/app/ui/segments/view';
 
 export default async function Page({ params }: { params: { id: string } }) {
   const id = params.id;
 
-  const fetchTaskData = async () => {
+  const fetchData = async () => {
     const segmentID = Number(id) | 0;
 
-    const [segment, tags] = await Promise.all([
+    const [segment, resp] = await Promise.all([
       getSegment(segmentID),
-      getAllTags(),
+      getTags(),
     ]);
 
     return {
       segment,
-      tags,
+      resp,
     };
   };
 
-  const { segment, tags } = await fetchTaskData();
+  const { segment, resp } = await fetchData();
 
   if (!segment) {
     notFound();
@@ -38,7 +38,7 @@ export default async function Page({ params }: { params: { id: string } }) {
           },
         ]}
       />
-      <SegmentView segment={segment} tags={tags} />
+      <SegmentView segment={segment} tags={resp[0].tags} />
     </main>
   );
 }

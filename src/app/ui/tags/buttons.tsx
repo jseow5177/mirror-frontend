@@ -24,7 +24,7 @@ export function DeleteTag({ id, name }: { id: number; name: string }) {
 
   return (
     <>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} backdrop='blur'>
         <ModalContent>
           {(onClose) => (
             <>

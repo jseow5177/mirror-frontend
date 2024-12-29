@@ -53,7 +53,7 @@ const OperatorToggle = ({
           className:
             'relative max-w-fit inline-flex items-center justify-start cursor-pointer touch-none tap-highlight-transparent select-none',
         }}
-        onPress={handleClick}
+        onClick={handleClick}
       >
         <VisuallyHidden>
           <input {...getInputProps()} />

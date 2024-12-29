@@ -1,4 +1,6 @@
 import { z } from 'zod';
+import { Email } from './email';
+import { Segment } from './segment';
 
 export enum CampaignStatus {
   Pending = 1,
@@ -9,7 +11,14 @@ export enum CampaignStatus {
 export const CampaignStatuses: Record<CampaignStatus, string> = {
   [CampaignStatus.Pending]: 'Pending',
   [CampaignStatus.Running]: 'Running',
-  [CampaignStatus.Failed]: 'Failed'
+  [CampaignStatus.Failed]: 'Failed',
+};
+
+export type CampaignResult = {
+  total_unique_open_count: number;
+  total_click_count: number;
+  click_counts_by_link: Record<string, number>;
+  avg_open_time: number;
 };
 
 export type CampaignEmail = {
@@ -17,6 +26,9 @@ export type CampaignEmail = {
   email_id: number;
   subject: string;
   ratio: number;
+
+  campaign_result?: CampaignResult;
+  email?: Email;
 };
 
 export type Campaign = {
@@ -24,13 +36,15 @@ export type Campaign = {
   name: string;
   campaign_desc: string;
   status: CampaignStatus;
-  emails: CampaignEmail[];
+  campaign_emails: CampaignEmail[];
   segment_size: number;
   progress: number;
   segment_id: number;
   schedule: number;
   create_time: number;
   update_time: number;
+
+  segment?: Segment;
 };
 
 export const CampaignEmailSchema = z.object({

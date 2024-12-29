@@ -1,11 +1,7 @@
 'use client';
 
-import {
-  Campaign,
-  CampaignStatus,
-  CampaignStatuses,
-} from '@/app/lib/model/campaign';
-import { ChipColors } from '../utils';
+import { Campaign, CampaignStatuses } from '@/app/lib/model/campaign';
+import { campaignStatusColors } from '../utils';
 import {
   Chip,
   Table,
@@ -17,12 +13,6 @@ import {
 } from '@nextui-org/react';
 import { convertUnixToLocalTime } from '@/app/lib/utils';
 import { CampaignActions } from './buttons';
-
-const statusColors: Record<CampaignStatus, ChipColors> = {
-  [CampaignStatus.Pending]: 'default',
-  [CampaignStatus.Running]: 'success',
-  [CampaignStatus.Failed]: 'danger',
-};
 
 export default function CampaignTable({
   campaigns,
@@ -54,7 +44,7 @@ export default function CampaignTable({
                 {campaign.campaign_desc}
               </TableCell>
               <TableCell className='w-[10%]'>
-                <Chip color={statusColors[campaign.status]}>
+                <Chip color={campaignStatusColors[campaign.status]}>
                   {CampaignStatuses[campaign.status]}
                 </Chip>
               </TableCell>
