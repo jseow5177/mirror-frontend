@@ -1,7 +1,7 @@
 import React from 'react';
 import { UserGroupIcon, TagIcon } from '@heroicons/react/24/outline';
-import { countTotalTags } from '@/app/lib/tag-data';
-import { countTotalSegments } from '@/app/lib/segment-data';
+import { countTotalTags } from '@/app/lib/data/tag-data';
+import { countTotalSegments } from '@/app/lib/data/segment-data';
 import {
   Card,
   CardHeader,
@@ -11,22 +11,16 @@ import {
 } from '@nextui-org/react';
 
 export async function NumberOfTagsCard() {
-  const numberOfTags = await countTotalTags();
-  return (
-    <DashboardCard
-      title='Number of Tags'
-      body={`${numberOfTags}`}
-      Icon={TagIcon}
-    />
-  );
+  //const numberOfTags = await countTotalTags();
+  return <DashboardCard title='Number of Tags' body={`${0}`} Icon={TagIcon} />;
 }
 
 export async function NumberOfSegmentsCard() {
-  const numberOfSegments = await countTotalSegments();
+  //const numberOfSegments = await countTotalSegments();
   return (
     <DashboardCard
       title='Number of Segments'
-      body={`${numberOfSegments}`}
+      body={`${0}`}
       Icon={UserGroupIcon}
     />
   );

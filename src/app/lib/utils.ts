@@ -1,5 +1,6 @@
 import { Criteria } from './model/segment';
 import axios from 'axios';
+import { redirect } from 'next/navigation';
 
 export const convertUnixToLocalTime = (unixMilliseconds: number) => {
   const date = new Date(unixMilliseconds * 1000);
@@ -75,8 +76,12 @@ export const handleAxiosError = (err: any, defaultErrMsg?: string) => {
 
     const { status, data } = err.response;
 
-    if (status === axios.HttpStatusCode.UnprocessableEntity) {
-      errMsg = data.error || errMsg;
+    switch (status) {
+      case axios.HttpStatusCode.UnprocessableEntity:
+        errMsg = data.error || errMsg;
+        break;
+      case axios.HttpStatusCode.Unauthorized:
+      //redirect('/');
     }
 
     console.log(`code: ${status}, err: ${err.response.data.error}`);

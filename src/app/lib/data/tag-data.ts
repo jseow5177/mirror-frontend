@@ -1,8 +1,8 @@
 import { sql } from '@vercel/postgres';
-import { Task } from './model';
-import { Tag, TagStatus } from './model/tag';
-import axiosInstance from './axios';
-import { handleAxiosError } from './utils';
+import { Task } from '../model';
+import { Tag, TagStatus } from '../model/tag';
+import axiosInstance from '../axios';
+import { handleAxiosError } from '../utils';
 
 export type Pagination = {
   page?: number;
@@ -43,29 +43,6 @@ export async function getTag(id: number) {
   } catch (error) {
     console.error('getTag database error:', error);
     throw new Error('Failed to get tag.');
-  }
-}
-
-export async function getAllTags() {
-  try {
-    const data = await sql<Tag>`
-            SELECT *
-            FROM tag_tab
-            WHERE tag_status != ${TagStatus.Deleted}
-            ORDER BY tag_name
-        `;
-
-    const tags = data.rows.map((tag) => ({
-      ...tag,
-      tag_id: Number(tag.id),
-      create_time: Number(tag.create_time),
-      update_time: Number(tag.update_time),
-    }));
-
-    return tags;
-  } catch (error) {
-    console.error('getAllTags database error:', error);
-    throw new Error('Failed to get all tags.');
   }
 }
 

@@ -4,7 +4,7 @@ import React, { useActionState, useEffect, useRef, useState } from 'react';
 import EmailEditor, { EditorRef } from 'react-email-editor';
 import { Button, Link, Divider, Input, Textarea } from '@nextui-org/react';
 import { Email } from '@/app/lib/model/email';
-import { createEmail, EmailState } from '@/app/lib/email-action';
+import { createEmail, EmailState } from '@/app/lib/action/email-action';
 import toast from 'react-hot-toast';
 import { redirect } from 'next/navigation';
 import clsx from 'clsx';

@@ -1,8 +1,8 @@
-import axiosInstance from './axios';
+import axiosInstance from '../axios';
 import axios from 'axios';
-import { Segment } from './model/segment';
-import { Criteria } from './model/segment';
-import { handleAxiosError } from './utils';
+import { Segment } from '../model/segment';
+import { Criteria } from '../model/segment';
+import { handleAxiosError } from '../utils';
 import { Pagination } from './tag-data';
 
 const SEGMENTS_PER_PAGE = 10;

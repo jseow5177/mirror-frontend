@@ -1,7 +1,7 @@
-import axiosInstance from './axios';
-import { handleAxiosError } from './utils';
+import axiosInstance from '../axios';
+import { handleAxiosError } from '../utils';
 import { Pagination } from './tag-data';
-import { Email } from './model/email';
+import { Email } from '../model/email';
 
 type GetEmailsResponse = {
   emails: Email[];

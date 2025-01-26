@@ -1,9 +1,9 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { TagSchema, TagValueType } from './model/tag';
-import axiosInstance from './axios';
-import { handleAxiosError } from './utils';
+import { TagSchema } from '../model/tag';
+import axiosInstance from '../axios';
+import { handleAxiosError } from '../utils';
 
 export type TagState = {
   fieldErrors?: {

@@ -1,9 +1,9 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { handleAxiosError } from './utils';
-import axiosInstance from './axios';
-import { EmailSchema } from './model/email';
+import { handleAxiosError } from '../utils';
+import axiosInstance from '../axios';
+import { EmailSchema } from '../model/email';
 
 export type EmailState = {
   fieldErrors?: {

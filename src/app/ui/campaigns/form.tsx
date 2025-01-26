@@ -1,6 +1,9 @@
 'use client';
 
-import { CampaignState, createCampaign } from '@/app/lib/campaign-action';
+import {
+  CampaignState,
+  createCampaign,
+} from '@/app/lib/action/campaign-action';
 import {
   Campaign,
   CampaignEmail,
@@ -45,7 +48,7 @@ import {
   TrashIcon,
 } from '@heroicons/react/24/outline';
 import { Segment } from '@/app/lib/model/segment';
-import { countUd } from '@/app/lib/segment-data';
+import { countUd } from '@/app/lib/data/segment-data';
 import toast from 'react-hot-toast';
 import clsx from 'clsx';
 import { redirect } from 'next/navigation';

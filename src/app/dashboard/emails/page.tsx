@@ -1,5 +1,5 @@
 import { CreateEmail } from '@/app/ui/emails/buttons';
-import { getEmails } from '@/app/lib/email-data';
+import { getEmails } from '@/app/lib/data/email-data';
 import EmailTable from '@/app/ui/emails/table';
 import BasePagination from '@/app/ui/pagination';
 import SearchBar from '@/app/ui/search-bar';

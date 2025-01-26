@@ -4,6 +4,7 @@ import {
   NumberOfSegmentsCard,
   DashboardCardSkeleton,
 } from '../ui/dashboard/cards';
+import { redirect } from 'next/navigation';
 
 export default async function Page() {
   return (

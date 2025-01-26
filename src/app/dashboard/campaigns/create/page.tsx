@@ -1,5 +1,5 @@
 import { getEmails } from '@/app/lib/email-data';
-import { getSegments } from '@/app/lib/segment-data';
+import { getSegments } from '@/app/lib/data/segment-data';
 import Breadcrumbs from '@/app/ui/breadcrumbs';
 import CampaignForm from '@/app/ui/campaigns/form';
 

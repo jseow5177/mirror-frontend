@@ -1,9 +1,9 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import axiosInstance from './axios';
-import { handleAxiosError } from './utils';
-import { SegmentSchema } from './model/segment';
+import axiosInstance from '../axios';
+import { handleAxiosError } from '../utils';
+import { SegmentSchema } from '../model/segment';
 
 export type SegmentState = {
   fieldErrors?: {

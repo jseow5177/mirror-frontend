@@ -1,9 +1,9 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { handleAxiosError } from './utils';
-import axiosInstance from './axios';
-import { CampaignSchema, sumRatioEquals100 } from './model/campaign';
+import { handleAxiosError } from '../utils';
+import axiosInstance from '../axios';
+import { CampaignSchema, sumRatioEquals100 } from '../model/campaign';
 
 export type CampaignState = {
   fieldErrors?: {

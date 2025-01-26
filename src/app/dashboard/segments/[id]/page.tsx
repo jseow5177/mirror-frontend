@@ -1,6 +1,6 @@
 import BaseBreadcrumbs from '@/app/ui/breadcrumbs';
-import { getSegment } from '@/app/lib/segment-data';
-import { getAllTags, getTags } from '@/app/lib/tag-data';
+import { getSegment } from '@/app/lib/data/segment-data';
+import { getTags } from '@/app/lib/data/tag-data';
 import { notFound } from 'next/navigation';
 import SegmentView from '@/app/ui/segments/view';
 

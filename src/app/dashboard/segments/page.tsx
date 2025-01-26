@@ -1,5 +1,5 @@
 import SearchBar from '@/app/ui/search-bar';
-import { getSegments } from '@/app/lib/segment-data';
+import { getSegments } from '@/app/lib/data/segment-data';
 import SegmentTable from '@/app/ui/segments/table';
 import BasePagination from '@/app/ui/pagination';
 import { CreateSegment } from '@/app/ui/segments/buttons';

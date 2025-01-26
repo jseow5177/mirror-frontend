@@ -1,7 +1,7 @@
-import axiosInstance from './axios';
-import { handleAxiosError } from './utils';
+import axiosInstance from '../axios';
+import { handleAxiosError } from '../utils';
 import { Pagination } from './tag-data';
-import { Campaign } from './model/campaign';
+import { Campaign } from '../model/campaign';
 
 const CAMPAIGNS_PER_PAGE = 10;
 

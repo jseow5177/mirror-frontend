@@ -2,7 +2,7 @@ import { CreateCampaign } from '@/app/ui/campaigns/buttons';
 import CampaignTable from '@/app/ui/campaigns/table';
 import BasePagination from '@/app/ui/pagination';
 import SearchBar from '@/app/ui/search-bar';
-import { getCampaigns } from '@/app/lib/campaign-data';
+import { getCampaigns } from '@/app/lib/data/campaign-data';
 
 export default async function Page({
   searchParams,

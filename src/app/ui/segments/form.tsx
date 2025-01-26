@@ -9,7 +9,7 @@ import {
   MagnifyingGlassIcon,
   InformationCircleIcon,
 } from '@heroicons/react/24/outline';
-import { createSegment, SegmentState } from '@/app/lib/segment-action';
+import { createSegment, SegmentState } from '@/app/lib/action/segment-action';
 import { useActionState } from 'react';
 import { redirect } from 'next/navigation';
 import toast from 'react-hot-toast';
@@ -24,7 +24,7 @@ import {
 } from '@nextui-org/react';
 import { emptyCriteria, QueryBuilder } from './query-builder';
 import clsx from 'clsx';
-import { previewUd } from '@/app/lib/segment-data';
+import { previewUd } from '@/app/lib/data/segment-data';
 import { validateCriteria } from '@/app/lib/utils';
 import { Criteria } from '@/app/lib/model/segment';
 import NumberCircles from '../number-circle';
