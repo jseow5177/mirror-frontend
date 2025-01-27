@@ -1,8 +1,8 @@
-import SearchBar from '@/app/ui/search-bar';
-import { getSegments } from '@/app/lib/data/segment-data';
-import SegmentTable from '@/app/ui/segments/table';
-import BasePagination from '@/app/ui/pagination';
-import { CreateSegment } from '@/app/ui/segments/buttons';
+import SearchBar from '@/app/_ui/search-bar';
+import { getSegments } from '@/app/_lib/data/segment';
+import SegmentTable from '@/app/_ui/segments/table';
+import BasePagination from '@/app/_ui/pagination';
+import { CreateSegment } from '@/app/_ui/segments/buttons';
 
 export default async function Page({
   searchParams,

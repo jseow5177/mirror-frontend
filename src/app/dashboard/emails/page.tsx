@@ -1,8 +1,8 @@
-import { CreateEmail } from '@/app/ui/emails/buttons';
-import { getEmails } from '@/app/lib/data/email-data';
-import EmailTable from '@/app/ui/emails/table';
-import BasePagination from '@/app/ui/pagination';
-import SearchBar from '@/app/ui/search-bar';
+import { CreateEmail } from '@/app/_ui/emails/buttons';
+import { getEmails } from '@/app/_lib/data/email';
+import EmailTable from '@/app/_ui/emails/table';
+import BasePagination from '@/app/_ui/pagination';
+import SearchBar from '@/app/_ui/search-bar';
 import React from 'react';
 
 export default async function Page({

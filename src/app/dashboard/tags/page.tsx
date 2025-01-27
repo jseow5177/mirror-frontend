@@ -1,8 +1,8 @@
-import SearchBar from '@/app/ui/search-bar';
-import { getTags } from '@/app/lib/tag-data';
-import TagTable from '@/app/ui/tags/table';
-import { CreateTag } from '@/app/ui/tags/buttons';
-import BasePagination from '@/app/ui/pagination';
+import SearchBar from '@/app/_ui/search-bar';
+import { getTags } from '@/app/_lib/data/tag';
+import TagTable from '@/app/_ui/tags/table';
+import { CreateTag } from '@/app/_ui/tags/buttons';
+import BasePagination from '@/app/_ui/pagination';
 
 export default async function Page({
   searchParams,

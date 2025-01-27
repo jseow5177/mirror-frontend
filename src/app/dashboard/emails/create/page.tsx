@@ -1,7 +1,9 @@
 import dynamic from 'next/dynamic';
-import Breadcrumbs from '@/app/ui/breadcrumbs';
+import Breadcrumbs from '@/app/_ui/breadcrumbs';
 
-const EmailForm = dynamic(() => import('@/app/ui/emails/form'), { ssr: false });
+const EmailForm = dynamic(() => import('@/app/_ui/emails/form'), {
+  ssr: false,
+});
 
 export default async function Page() {
   return (

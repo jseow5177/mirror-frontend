@@ -1,7 +1,7 @@
 import { getEmails } from '@/app/lib/email-data';
-import { getSegments } from '@/app/lib/data/segment-data';
-import Breadcrumbs from '@/app/ui/breadcrumbs';
-import CampaignForm from '@/app/ui/campaigns/form';
+import { getSegments } from '@/app/_lib/data/segment';
+import Breadcrumbs from '@/app/_ui/breadcrumbs';
+import CampaignForm from '@/app/_ui/campaigns/form';
 
 export default async function Page() {
   const fetchCampaignData = async () => {

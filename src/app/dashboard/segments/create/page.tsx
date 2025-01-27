@@ -1,6 +1,6 @@
-import Breadcrumbs from '@/app/ui/breadcrumbs';
-import SegmentForm from '@/app/ui/segments/form';
-import { getTags } from '@/app/lib/data/tag-data';
+import Breadcrumbs from '@/app/_ui/breadcrumbs';
+import SegmentForm from '@/app/_ui/segments/form';
+import { getTags } from '@/app/_lib/data/tag';
 
 export default async function Page() {
   const resp = await getTags();

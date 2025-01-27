@@ -3,8 +3,8 @@ import { put } from '@vercel/blob';
 import { sql } from '@vercel/postgres';
 
 import Queue from 'queue';
-import { TaskStatus } from '@/app/lib/model';
-import { Tag, TagStatus, TagValueType } from '@/app/lib/model/tag';
+import { TaskStatus } from '@/app/_lib/model';
+import { Tag, TagStatus, TagValueType } from '@/app/_lib/model/tag';
 
 const FLOAT_PRECISION = 5;
 const BATCH_SIZE = 1000;

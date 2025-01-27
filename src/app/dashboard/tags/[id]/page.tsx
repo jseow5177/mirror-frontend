@@ -1,9 +1,9 @@
 import { notFound } from 'next/navigation';
-import { getTag, getTasks, countTasksPages } from '@/app/lib/data/tag-data';
-import TagView from '@/app/ui/tags/tag-view';
-import BaseBreadcrumbs from '@/app/ui/breadcrumbs';
-import TaskTable from '@/app/ui/tags/task-table';
-import BasePagination from '@/app/ui/pagination';
+import { getTag, getTasks, countTasksPages } from '@/app/_lib/data/tag';
+import TagView from '@/app/_ui/tags/tag-view';
+import BaseBreadcrumbs from '@/app/_ui/breadcrumbs';
+import TaskTable from '@/app/_ui/tags/task-table';
+import BasePagination from '@/app/_ui/pagination';
 
 export default async function Page({
   params,

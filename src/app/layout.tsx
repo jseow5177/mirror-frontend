@@ -1,5 +1,5 @@
-import '@/app/ui/globals.css';
-import { roboto } from '@/app/ui/fonts';
+import '@/app/_ui/globals.css';
+import { roboto } from '@/app/_ui/fonts';
 import { Toaster } from 'react-hot-toast';
 import { NextUIProvider } from '@nextui-org/react';
 

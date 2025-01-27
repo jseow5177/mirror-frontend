@@ -1,8 +1,8 @@
-import { CreateCampaign } from '@/app/ui/campaigns/buttons';
-import CampaignTable from '@/app/ui/campaigns/table';
-import BasePagination from '@/app/ui/pagination';
-import SearchBar from '@/app/ui/search-bar';
-import { getCampaigns } from '@/app/lib/data/campaign-data';
+import { CreateCampaign } from '@/app/_ui/campaigns/buttons';
+import CampaignTable from '@/app/_ui/campaigns/table';
+import BasePagination from '@/app/_ui/pagination';
+import SearchBar from '@/app/_ui/search-bar';
+import { getCampaigns } from '@/app/_lib/data/campaign';
 
 export default async function Page({
   searchParams,

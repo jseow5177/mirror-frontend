@@ -1,8 +1,8 @@
 import React from 'react';
-import Breadcrumbs from '@/app/ui/breadcrumbs';
-import TagForm from '@/app/ui/tags/form';
+import Breadcrumbs from '@/app/_ui/breadcrumbs';
+import TagForm from '@/app/_ui/tags/form';
 import { notFound } from 'next/navigation';
-import { getTag } from '@/app/lib/data/tag-data';
+import { getTag } from '@/app/_lib/data/tag';
 
 export default async function Page({ params }: { params: { id: string } }) {
   const id = params.id;
