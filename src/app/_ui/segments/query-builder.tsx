@@ -22,22 +22,26 @@ const OP_OR = 'OR';
 interface OperatorToggleProps extends SwitchProps {
   op?: string;
   onOpChange?: (op: string) => void;
+  readonly?: boolean;
 }
 
 const OperatorToggle = ({
   op = OP_AND,
   onOpChange = () => {},
+  readonly = false,
   ...props
 }: OperatorToggleProps) => {
   const { Component, slots, getBaseProps, getInputProps, getWrapperProps } =
-    useSwitch(props);
+    useSwitch({ ...props, isDisabled: readonly });
 
   const [selectedOp, setSelectedOp] = useState(op === '' ? OP_AND : op);
 
   const handleClick = () => {
-    const newOp = selectedOp === OP_AND ? OP_OR : OP_AND;
-    setSelectedOp(newOp);
-    onOpChange(newOp);
+    if (!readonly) {
+      const newOp = selectedOp === OP_AND ? OP_OR : OP_AND;
+      setSelectedOp(newOp);
+      onOpChange(newOp);
+    }
   };
 
   const lineStyle = clsx('w-[2px] flex-grow bg-blue-400', {
@@ -50,8 +54,13 @@ const OperatorToggle = ({
       <Component
         {...{
           ...getBaseProps(), // remove group class
-          className:
-            'relative max-w-fit inline-flex items-center justify-start cursor-pointer touch-none tap-highlight-transparent select-none',
+          className: clsx(
+            'relative max-w-fit inline-flex items-center justify-start touch-none tap-highlight-transparent select-none',
+            {
+              'cursor-default': readonly,
+              'cursor-pointer': !readonly,
+            }
+          ),
         }}
         onClick={handleClick}
       >
@@ -81,6 +90,7 @@ type QueryProps = {
   tags: Tag[];
   initialCriteria: Criteria;
   onChange?: (criteria: Criteria) => void;
+  readonly?: boolean;
 };
 
 export const emptyCriteria: Criteria = {
@@ -101,6 +111,7 @@ export const QueryBuilder = ({
   tags,
   initialCriteria,
   onChange = () => {},
+  readonly = false,
 }: QueryProps) => {
   const [criteria, setCriteria] = useState<Criteria>(
     !initialCriteria.queries || initialCriteria.queries.length === 0
@@ -229,8 +240,13 @@ export const QueryBuilder = ({
     });
   };
 
+  const showAddLookup = () => {
+    return !readonly;
+  };
+
   const showAddQuery = () => {
     return (
+      !readonly &&
       criteria?.queries &&
       (criteria.queries.length > 1 ||
         (criteria.queries.length == 1 &&
@@ -261,6 +277,7 @@ export const QueryBuilder = ({
           <OperatorToggle
             op={criteria.op}
             onOpChange={(op) => changeQueryOp(op)}
+            readonly={readonly}
           />
         )}
 
@@ -272,6 +289,7 @@ export const QueryBuilder = ({
                   <OperatorToggle
                     op={query.op}
                     onOpChange={(op) => changeLookupOp(queryIdx, op)}
+                    readonly={readonly}
                   />
                 )}
                 <div className='w-full'>
@@ -289,30 +307,33 @@ export const QueryBuilder = ({
                           onCopy={() => copyLookup(queryIdx, lookupIdx)}
                           disableCopy={isMaxLookup()}
                           hideDelete={isMinLookup()}
+                          readonly={readonly}
                         />
                       ))}
                   </div>
-                  <div>
-                    <Tooltip
-                      color='foreground'
-                      placement='right'
-                      showArrow
-                      isDisabled={!isMaxLookup()}
-                      content={`Max ${LOOKUP_LIMIT} lookups`}
-                    >
-                      <span>
-                        <Link
-                          href='#'
-                          className='mt-4'
-                          isDisabled={isMaxLookup()}
-                          size='sm'
-                          onPress={(_) => addLookup(queryIdx)}
-                        >
-                          + Add Lookup
-                        </Link>
-                      </span>
-                    </Tooltip>
-                  </div>
+                  {showAddLookup() && (
+                    <div>
+                      <Tooltip
+                        color='foreground'
+                        placement='right'
+                        showArrow
+                        isDisabled={!isMaxLookup()}
+                        content={`Max ${LOOKUP_LIMIT} lookups`}
+                      >
+                        <span>
+                          <Link
+                            href='#'
+                            className='mt-4'
+                            isDisabled={isMaxLookup()}
+                            size='sm'
+                            onPress={(_) => addLookup(queryIdx)}
+                          >
+                            + Add Lookup
+                          </Link>
+                        </span>
+                      </Tooltip>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}

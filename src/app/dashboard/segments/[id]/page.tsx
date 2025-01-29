@@ -10,14 +10,18 @@ export default async function Page({ params }: { params: { id: string } }) {
   const fetchData = async () => {
     const segmentID = Number(id) | 0;
 
-    const [segment] = await Promise.all([getSegment(segmentID)]);
+    const [segment, resp] = await Promise.all([
+      getSegment(segmentID),
+      getTags(),
+    ]);
 
     return {
       segment,
+      resp,
     };
   };
 
-  const { segment } = await fetchData();
+  const { segment, resp } = await fetchData();
 
   if (!segment) {
     notFound();
@@ -34,7 +38,7 @@ export default async function Page({ params }: { params: { id: string } }) {
           },
         ]}
       />
-      <SegmentView segment={segment} />
+      <SegmentView segment={segment} tags={resp[0].tags} />
     </main>
   );
 }

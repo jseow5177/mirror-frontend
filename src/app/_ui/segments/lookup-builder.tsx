@@ -33,6 +33,7 @@ type LookupProps = {
   onChange?: (lookup: Lookup) => void;
   onDelete?: () => void;
   onCopy?: () => void;
+  readonly?: boolean;
 };
 
 export const LookupBuilder = ({
@@ -43,6 +44,7 @@ export const LookupBuilder = ({
   onChange = () => {},
   onDelete = () => {},
   onCopy = () => {},
+  readonly = false,
 }: LookupProps) => {
   const [showActionButtons, setShowActionButtons] = useState(false);
 
@@ -70,7 +72,7 @@ export const LookupBuilder = ({
     if (!e.currentKey) {
       return;
     }
-    setShowActionButtons(false);
+    toggleShowActionButtons(false);
 
     const tagID = Number(e.currentKey);
     setTag(findTag(tagID)!);
@@ -81,7 +83,7 @@ export const LookupBuilder = ({
     if (!e.currentKey) {
       return;
     }
-    setShowActionButtons(false);
+    toggleShowActionButtons(false);
 
     const oldOp = getLookupOp();
     const oldVal = getNonInLookupValue(oldOp);
@@ -137,6 +139,7 @@ export const LookupBuilder = ({
           initialValues={lookup.in || []}
           onChange={(v) => setLookupValue(op, v)}
           isNumeric={isTagNumeric(tag)}
+          isDisabled={readonly}
         />
       );
     } else {
@@ -147,11 +150,17 @@ export const LookupBuilder = ({
           size='lg'
           variant='bordered'
           type={isTagNumeric(tag) ? 'number' : 'text'}
-          isDisabled={op === ''}
+          isDisabled={op === '' || readonly}
           value={getNonInLookupValue(op)}
           onChange={(e) => setLookupValue(op, e.target.value)}
         />
       );
+    }
+  };
+
+  const toggleShowActionButtons = (b: boolean) => {
+    if (!readonly) {
+      setShowActionButtons(b);
     }
   };
 
@@ -163,8 +172,8 @@ export const LookupBuilder = ({
           'bg-gray-100': showActionButtons,
         }
       )}
-      onMouseEnter={() => setShowActionButtons(true)}
-      onMouseLeave={() => setShowActionButtons(false)}
+      onMouseEnter={() => toggleShowActionButtons(true)}
+      onMouseLeave={() => toggleShowActionButtons(false)}
     >
       <div className='flex w-[80%] items-start gap-4'>
         <Select
@@ -175,6 +184,7 @@ export const LookupBuilder = ({
           variant='bordered'
           selectedKeys={[`${lookup.tag_id ? lookup.tag_id : ''}`]}
           onSelectionChange={onTagChange}
+          isDisabled={readonly}
         >
           {tags.map((tag) => (
             <SelectItem key={tag.id!}>{tag.name}</SelectItem>
@@ -189,7 +199,7 @@ export const LookupBuilder = ({
           variant='bordered'
           selectedKeys={[getLookupOp() ? `${getLookupOp()}` : '']}
           onSelectionChange={onOpChange}
-          isDisabled={!tag.id}
+          isDisabled={!tag.id || readonly}
         >
           {getLookupSupportedOps().map((op) => (
             <SelectItem key={op.key}>{op.label}</SelectItem>
@@ -199,8 +209,8 @@ export const LookupBuilder = ({
         <div className='w-[40%]'>{getValueInput(getLookupOp())}</div>
       </div>
 
-      <div className='flex w-[20%] justify-end'>
-        {showActionButtons && (
+      {showActionButtons && (
+        <div className='flex w-[20%] justify-end'>
           <ButtonGroup variant='light' size='md' className='gap-2'>
             {!disableCopy && (
               <Button
@@ -225,8 +235,8 @@ export const LookupBuilder = ({
               </Button>
             )}
           </ButtonGroup>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

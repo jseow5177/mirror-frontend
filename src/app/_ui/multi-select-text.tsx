@@ -19,10 +19,12 @@ export default function MultiSelectTextInput({
   initialValues = [],
   isNumeric = false,
   onChange = () => {},
+  isDisabled = false,
 }: {
   initialValues?: string[];
   isNumeric?: boolean;
   onChange?: (values: string[]) => void;
+  isDisabled?: boolean;
 }) {
   const [inputValue, setInputValue] = useState('');
   const [values, setValues] = useState<readonly Option[]>(
@@ -66,6 +68,7 @@ export default function MultiSelectTextInput({
         inputValue={inputValue}
         isClearable
         isMulti
+        isDisabled={isDisabled}
         menuIsOpen={false}
         onChange={(newValue) => setValues(newValue)}
         onInputChange={(newValue) => setInputValue(newValue)}

@@ -1,7 +1,15 @@
 import { Segment } from '@/app/_lib/model/segment';
+import { Tag } from '@/app/_lib/model/tag';
 import { convertUnixToLocalTime } from '@/app/_lib/utils';
+import { QueryBuilder } from './query-builder';
 
-export default async function SegmentView({ segment }: { segment: Segment }) {
+export default async function SegmentView({
+  segment,
+  tags,
+}: {
+  segment: Segment;
+  tags: Tag[];
+}) {
   const segmentCreateTime = convertUnixToLocalTime(segment.create_time);
   const segmentUpdateTime = convertUnixToLocalTime(segment.update_time);
 
@@ -38,7 +46,12 @@ export default async function SegmentView({ segment }: { segment: Segment }) {
         <p>
           {segmentUpdateTime.date}, {segmentUpdateTime.time}
         </p>
+
+        <p>
+          <strong>Criteria:</strong>
+        </p>
       </div>
+      <QueryBuilder tags={tags} initialCriteria={segment.criteria} readonly />
     </div>
   );
 }
