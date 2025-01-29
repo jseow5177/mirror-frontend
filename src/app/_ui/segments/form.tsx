@@ -6,7 +6,6 @@ import { Tag } from '@/app/_lib/model/tag';
 import {
   DocumentTextIcon,
   TagIcon,
-  MagnifyingGlassIcon,
   InformationCircleIcon,
 } from '@heroicons/react/24/outline';
 import { createSegment, SegmentState } from '@/app/_lib/action/segment';
@@ -55,7 +54,7 @@ export default function SegmentForm({
   const [segmentFields, setSegmentFields] = useState({
     id: segment?.id ? `${segment?.id}` : '0',
     name: segment?.name || '',
-    desc: segment?.desc || '',
+    segment_desc: segment?.segment_desc || '',
     criteria: segment?.criteria || emptyCriteria,
   });
 
@@ -76,9 +75,6 @@ export default function SegmentForm({
     useEffect(() => {
       if (!criteria) return;
 
-      const controller = new AbortController();
-      const { signal } = controller;
-
       const debounce = setTimeout(async () => {
         if (!validateCriteria(criteria)) {
           return;
@@ -87,7 +83,7 @@ export default function SegmentForm({
         try {
           setPreviewLoading(true);
           const [count, _] = await Promise.all([
-            previewUd(criteria, signal),
+            previewUd(criteria),
             new Promise((r) => setTimeout(r, 300)),
           ]);
           setSegmentSize(count);
@@ -100,7 +96,6 @@ export default function SegmentForm({
 
       return () => {
         clearTimeout(debounce);
-        controller.abort();
         setPreviewLoading(false);
       };
     }, [criteria, delay]);
@@ -124,7 +119,7 @@ export default function SegmentForm({
     setSegmentFields({
       id: segmentFields.id,
       name: segmentFields.name,
-      desc: segmentFields.desc,
+      segment_desc: segmentFields.segment_desc,
       criteria: segmentFields.criteria,
     });
   }, [state]);
@@ -293,7 +288,7 @@ export default function SegmentForm({
             {/* Segment Description */}
             <div
               className={clsx('mb-2 flex gap-2', {
-                'text-danger': state.fieldErrors?.desc,
+                'text-danger': state.fieldErrors?.segment_desc,
               })}
             >
               <DocumentTextIcon className='w-5' />
@@ -301,20 +296,21 @@ export default function SegmentForm({
             </div>
             <Textarea
               className='w-1/2'
-              id='desc'
-              name='desc'
+              id='segment_desc'
+              name='segment_desc'
               variant='bordered'
               fullWidth={false}
               size='lg'
-              value={segmentFields.desc}
-              isInvalid={state.fieldErrors?.desc && true}
+              value={segmentFields.segment_desc}
+              isInvalid={state.fieldErrors?.segment_desc && true}
               errorMessage={
-                state.fieldErrors?.desc && state.fieldErrors?.desc[0]
+                state.fieldErrors?.segment_desc &&
+                state.fieldErrors?.segment_desc[0]
               }
               onValueChange={(v) =>
                 setSegmentFields({
                   ...segmentFields,
-                  desc: v,
+                  segment_desc: v,
                 })
               }
             />

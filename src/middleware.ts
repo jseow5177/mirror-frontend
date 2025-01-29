@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import axiosInstance from './app/_lib/axios';
+import { cookies } from 'next/headers';
 
 export async function middleware(req: NextRequest) {
   const currentPath = req.nextUrl.pathname;
   const method = req.method;
-
 
   if (currentPath.startsWith('/dashboard')) {
     const isLoggedIn = await isUserLoggedIn();

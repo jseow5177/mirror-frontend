@@ -1,6 +1,6 @@
 import { Spinner } from '@nextui-org/react';
 
-export default function Loading() {
+export default function BaseLoading() {
   return (
     <main className='flex h-full flex-col items-center justify-center'>
       <Spinner size='lg' color='primary' />

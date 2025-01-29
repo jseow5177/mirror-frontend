@@ -46,7 +46,7 @@ export default function SegmentTable({ segments }: { segments: Segment[] }) {
           return (
             <TableRow key={i}>
               <TableCell className='w-[20%]'>{segment.name}</TableCell>
-              <TableCell className='w-[30%]'>{segment.desc}</TableCell>
+              <TableCell className='w-[30%]'>{segment.segment_desc}</TableCell>
               <TableCell className='w-[10%]'>
                 <Chip color={statusColors[segment.status]}>
                   {SegmentStatuses[segment.status]}

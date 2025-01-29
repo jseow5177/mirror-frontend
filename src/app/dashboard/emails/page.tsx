@@ -28,7 +28,7 @@ export default async function Page({
 
   return (
     <main className='w-full'>
-      <h1 className='mb-8 text-2xl'>Segments</h1>
+      <h1 className='mb-8 text-2xl'>Emails</h1>
       <div className='mb-5 flex items-center justify-between gap-2'>
         <SearchBar placeholder='Search segments...' />
         <CreateEmail />

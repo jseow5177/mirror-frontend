@@ -38,7 +38,7 @@ export const SegmentStatuses: Record<SegmentStatus, string> = {
 export type Segment = {
   id?: number;
   name: string;
-  desc: string;
+  segment_desc: string;
   status: SegmentStatus;
   criteria: Criteria;
   create_time: number;
@@ -59,7 +59,7 @@ export const SegmentSchema = z.object({
     .max(60, {
       message: 'Segment name cannot be more than 64 characters long.',
     }),
-  desc: z
+  segment_desc: z
     .string({
       required_error: 'Segment description is required',
       invalid_type_error: 'Segment description must be a string.',

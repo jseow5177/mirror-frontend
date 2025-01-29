@@ -1,3 +1,5 @@
+'use server';
+
 import { sql } from '@vercel/postgres';
 import { Task } from '../model';
 import { Tag, TagStatus } from '../model/tag';
@@ -65,8 +67,7 @@ export async function getTags(
 ): Promise<[GetTagsResponse, number]> {
   try {
     const resp = await axiosInstance.post('/get_tags', {
-      name: keyword,
-      desc: keyword,
+      keyword: keyword,
       pagination: {
         page: currentPage,
         limit: TAGS_PER_PAGE,

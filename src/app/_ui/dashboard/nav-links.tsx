@@ -7,10 +7,13 @@ import {
   TagIcon,
   InboxIcon,
   SpeakerWaveIcon,
+  ArrowLeftStartOnRectangleIcon,
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { redirect, usePathname } from 'next/navigation';
 import clsx from 'clsx';
+import { Button } from '@nextui-org/react';
+import { logOut } from '@/app/_lib/action/user';
 
 const links = [
   { name: 'Home', href: '/dashboard', icon: HomeIcon },
@@ -36,6 +39,9 @@ const links = [
   },
 ];
 
+const navStyle =
+  'flex h-[48px] flex-none items-center justify-start gap-2 rounded-md bg-gray-50 p-2 px-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600';
+
 export default function NavLinks() {
   const pathname = usePathname();
 
@@ -47,12 +53,9 @@ export default function NavLinks() {
           <Link
             key={link.name}
             href={link.href}
-            className={clsx(
-              'flex h-[48px] flex-none items-center justify-start gap-2 rounded-md bg-gray-50 p-2 px-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600',
-              {
-                'bg-sky-100 text-blue-600': pathname === link.href,
-              }
-            )}
+            className={clsx(navStyle, {
+              'bg-sky-100 text-blue-600': pathname === link.href,
+            })}
           >
             <LinkIcon className='w-6' />
             <p className='block'>{link.name}</p>
@@ -60,5 +63,20 @@ export default function NavLinks() {
         );
       })}
     </>
+  );
+}
+
+export function LogOutButton() {
+  const logOutUser = async () => {
+    await logOut();
+  };
+  return (
+    <Button
+      startContent={<ArrowLeftStartOnRectangleIcon className='w-6' />}
+      className={navStyle}
+      onPress={logOutUser}
+    >
+      LogOut
+    </Button>
   );
 }

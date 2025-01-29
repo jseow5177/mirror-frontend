@@ -4,6 +4,7 @@ import { cookies } from 'next/headers';
 import axiosInstance from '../axios';
 import { LogInSchema, Session } from '../model/user';
 import { handleAxiosError } from '../utils';
+import { redirect } from 'next/navigation';
 
 const cookie = {
   name: 'session',
@@ -64,6 +65,22 @@ export async function logIn(_: LogInState, formData: FormData) {
     };
   } catch (error) {
     const err = handleAxiosError(error, 'Failed to log in.');
+    return {
+      error: err.error,
+    };
+  }
+}
+
+export async function logOut() {
+  try {
+    await axiosInstance.post('/log_out', {});
+
+    const cookieStore = await cookies();
+    cookieStore.delete(cookie.name);
+
+    redirect('/');
+  } catch (error) {
+    const err = handleAxiosError(error, 'Failed to log out.');
     return {
       error: err.error,
     };

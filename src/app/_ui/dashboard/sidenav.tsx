@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import NavLinks from '@/app/_ui/dashboard/nav-links';
+import NavLinks, { LogOutButton } from '@/app/_ui/dashboard/nav-links';
 import MirrorLogo from '@/app/_ui/mirror-logo';
 
 export default function SideNav() {
@@ -16,6 +16,7 @@ export default function SideNav() {
       <div className='flex grow flex-col justify-between space-x-0 space-y-2'>
         <NavLinks />
         <div className='block h-auto w-full grow rounded-md bg-gray-50'></div>
+        <LogOutButton />
       </div>
     </div>
   );

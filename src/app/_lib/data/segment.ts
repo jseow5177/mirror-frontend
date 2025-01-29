@@ -1,3 +1,5 @@
+'use server';
+
 import axiosInstance from '../axios';
 import axios from 'axios';
 import { Segment } from '../model/segment';
@@ -11,17 +13,11 @@ type PreviewUdResponse = {
   count: number;
 };
 
-export async function countUd(segmentID: number, signal?: AbortSignal) {
+export async function countUd(segmentID: number) {
   try {
-    const resp = await axiosInstance.post(
-      '/count_ud',
-      {
-        segment_id: segmentID,
-      },
-      {
-        signal: signal,
-      }
-    );
+    const resp = await axiosInstance.post('/count_ud', {
+      segment_id: segmentID,
+    });
 
     const body: PreviewUdResponse = resp.data.body;
 
@@ -35,16 +31,17 @@ export async function countUd(segmentID: number, signal?: AbortSignal) {
   }
 }
 
-export async function previewUd(criteria: Criteria, signal?: AbortSignal) {
+export async function previewUd(criteria: Criteria) {
+  console.log('preview');
   try {
     const resp = await axiosInstance.post(
       '/preview_ud',
       {
         criteria: criteria,
-      },
-      {
-        signal: signal,
       }
+      // {
+      //   signal: signal,
+      // }
     );
 
     const body: PreviewUdResponse = resp.data.body;
@@ -89,8 +86,7 @@ export async function getSegments(
 ): Promise<[GetSegmentsResponse, number]> {
   try {
     const resp = await axiosInstance.post('/get_segments', {
-      name: keyword,
-      desc: keyword,
+      keyword: keyword,
       pagination: {
         page: currentPage,
         limit: SEGMENTS_PER_PAGE,

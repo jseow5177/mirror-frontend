@@ -1,3 +1,5 @@
+'use server';
+
 import axiosInstance from '../axios';
 import { handleAxiosError } from '../utils';
 import { Pagination } from './tag';
@@ -16,8 +18,7 @@ export async function getEmails(
 ): Promise<[GetEmailsResponse, number]> {
   try {
     const resp = await axiosInstance.post('/get_emails', {
-      name: keyword,
-      desc: keyword,
+      keyword: keyword,
       pagination: {
         page: currentPage,
         limit: EMAILS_PER_PAGE,

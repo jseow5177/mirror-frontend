@@ -45,6 +45,7 @@ export async function createCampaign(_: CampaignState, formData: FormData) {
       campaign_desc,
       emails,
       segment_id,
+      schedule: Math.ceil(schedule / 1000),
     });
     revalidatePath('/dashboard');
     revalidatePath('/dashboard/campaigns');

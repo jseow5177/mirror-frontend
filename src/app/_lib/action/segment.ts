@@ -8,7 +8,7 @@ import { SegmentSchema } from '../model/segment';
 export type SegmentState = {
   fieldErrors?: {
     name?: string[];
-    desc?: string[];
+    segment_desc?: string[];
   };
   error?: string | null;
   message?: string | null;
@@ -21,7 +21,7 @@ const CreateSegment = SegmentSchema.omit({
 export async function createSegment(_: SegmentState, formData: FormData) {
   const fields = CreateSegment.safeParse({
     name: formData.get('name'),
-    desc: formData.get('desc'),
+    segment_desc: formData.get('segment_desc'),
     criteria: formData.get('criteria'),
   });
 
@@ -32,12 +32,12 @@ export async function createSegment(_: SegmentState, formData: FormData) {
     };
   }
 
-  const { name, desc, criteria } = fields.data;
+  const { name, segment_desc, criteria } = fields.data;
 
   try {
     await axiosInstance.post('/create_segment', {
       name,
-      desc,
+      segment_desc,
       criteria: JSON.parse(criteria),
     });
     revalidatePath('/dashboard');

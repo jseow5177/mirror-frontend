@@ -117,6 +117,7 @@ export default function LogInForm() {
           id='password'
           name='password'
           variant='bordered'
+          type='password'
           fullWidth
           size='lg'
           value={logInFields.password}

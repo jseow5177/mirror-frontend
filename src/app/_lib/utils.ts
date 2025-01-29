@@ -1,6 +1,6 @@
 import { Criteria } from './model/segment';
 import axios from 'axios';
-import { redirect } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 
 export const convertUnixToLocalTime = (unixMilliseconds: number) => {
   const date = new Date(unixMilliseconds * 1000);
@@ -70,19 +70,25 @@ export function validateCriteria(criteria: Criteria): boolean {
   return true;
 }
 
-export const handleAxiosError = (err: any, defaultErrMsg?: string) => {
+export const handleAxiosError = (
+  err: any,
+  defaultErrMsg?: string
+): { error: string } => {
   if (axios.isAxiosError(err) && err.response) {
     let errMsg = defaultErrMsg ? defaultErrMsg : 'Error encountered.';
 
     const { status, data } = err.response;
 
     switch (status) {
+      // use backend error messages for certain codes
       case axios.HttpStatusCode.Conflict:
       case axios.HttpStatusCode.UnprocessableEntity:
         errMsg = data.error || errMsg;
         break;
       case axios.HttpStatusCode.Unauthorized:
         redirect('/');
+      case axios.HttpStatusCode.NotFound:
+        notFound();
     }
 
     console.log(`code: ${status}, err: ${err.response.data.error}`);
@@ -92,7 +98,7 @@ export const handleAxiosError = (err: any, defaultErrMsg?: string) => {
     };
   } else {
     return {
-      error: err instanceof Error ? err.message : String(err),
+      error: err.message === '' ? 'Something bad has happened!' : err.message,
     };
   }
 };

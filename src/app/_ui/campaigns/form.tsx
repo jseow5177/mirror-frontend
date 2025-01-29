@@ -132,14 +132,11 @@ export default function CampaignForm({
     useEffect(() => {
       if (isNaN(segmentID) || segmentID === 0) return;
 
-      const controller = new AbortController();
-      const { signal } = controller;
-
       const debounce = setTimeout(async () => {
         try {
           setIsCountLoading(true);
           const [count, _] = await Promise.all([
-            countUd(segmentID, signal),
+            countUd(segmentID),
             new Promise((r) => setTimeout(r, 300)),
           ]);
           setSegmentSize(count);
@@ -152,7 +149,6 @@ export default function CampaignForm({
 
       return () => {
         clearTimeout(debounce);
-        controller.abort();
         setIsCountLoading(false);
       };
     }, [segmentID, delay]);
@@ -413,7 +409,7 @@ export default function CampaignForm({
                     </div>
                     <Input
                       className='mb-6 w-full'
-                      id='subject'
+                      id={`subject-${index}`}
                       name='subject'
                       variant='bordered'
                       fullWidth={false}
@@ -429,7 +425,7 @@ export default function CampaignForm({
                     </div>
                     <Input
                       className='mb-6 w-[30%]'
-                      id='ratio'
+                      id={`ratio-${index}`}
                       name='ratio'
                       variant='bordered'
                       fullWidth={false}
@@ -458,6 +454,8 @@ export default function CampaignForm({
             <ModalHeader className='flex-col gap-2'>
               <h1 className='text-xl'>Select an Email</h1>
               <Input
+                id='keyword'
+                name='keyword'
                 variant='bordered'
                 className='w-[80%]'
                 size='md'
