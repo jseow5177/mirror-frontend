@@ -87,7 +87,6 @@ export function ViewTag({ id }: { id: number }) {
       variant='bordered'
       as={Link}
       href={`/dashboard/tags/${id}`}
-      isDisabled
     >
       <EyeIcon className='h-5' />
     </Button>

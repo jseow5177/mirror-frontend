@@ -1,9 +1,11 @@
-import { Segment } from '@/app/_lib/model/segment';
+'use client';
+
+import { Tag, TagValueTypes } from '@/app/_lib/model/tag';
 import { convertUnixToLocalTime } from '@/app/_lib/utils';
 
-export default async function SegmentView({ segment }: { segment: Segment }) {
-  const segmentCreateTime = convertUnixToLocalTime(segment.create_time);
-  const segmentUpdateTime = convertUnixToLocalTime(segment.update_time);
+export default function TagView({ tag }: { tag: Tag }) {
+  const tagCreateTime = convertUnixToLocalTime(tag.create_time);
+  const tagUpdateTime = convertUnixToLocalTime(tag.update_time);
 
   return (
     <div>
@@ -18,25 +20,30 @@ export default async function SegmentView({ segment }: { segment: Segment }) {
         <p>
           <strong>Name:</strong>
         </p>
-        <p>{segment.name}</p>
+        <p>{tag.name}</p>
 
         <p>
           <strong>Description:</strong>
         </p>
-        <p>{segment.segment_desc}</p>
+        <p>{tag.tag_desc}</p>
+
+        <p>
+          <strong>Tag Value Type:</strong>
+        </p>
+        <p>{TagValueTypes[tag.value_type]}</p>
 
         <p>
           <strong>Create Time:</strong>
         </p>
         <p>
-          {segmentCreateTime.date}, {segmentCreateTime.time}
+          {tagCreateTime.date}, {tagCreateTime.time}
         </p>
 
         <p>
           <strong>Update Time:</strong>
         </p>
         <p>
-          {segmentUpdateTime.date}, {segmentUpdateTime.time}
+          {tagUpdateTime.date}, {tagUpdateTime.time}
         </p>
       </div>
     </div>

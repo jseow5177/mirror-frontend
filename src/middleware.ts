@@ -1,18 +1,19 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import axiosInstance from './app/_lib/axios';
-import { cookies } from 'next/headers';
 
 export async function middleware(req: NextRequest) {
   const currentPath = req.nextUrl.pathname;
   const method = req.method;
 
+  const isLoggedIn = await isUserLoggedIn();
   if (currentPath.startsWith('/dashboard')) {
-    const isLoggedIn = await isUserLoggedIn();
-    if (!isLoggedIn) {
-      if (method === 'GET') {
-        return NextResponse.redirect(new URL('/', req.url));
-      }
+    if (!isLoggedIn && method === 'GET') {
+      return NextResponse.redirect(new URL('/', req.url));
+    }
+  } else if (currentPath === '/') {
+    if (isLoggedIn && method === 'GET') {
+      return NextResponse.redirect(new URL('/dashboard', req.url));
     }
   }
 

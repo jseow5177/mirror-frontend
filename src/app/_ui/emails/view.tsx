@@ -1,9 +1,12 @@
-import { Segment } from '@/app/_lib/model/segment';
-import { convertUnixToLocalTime } from '@/app/_lib/utils';
+'use client';
 
-export default async function SegmentView({ segment }: { segment: Segment }) {
-  const segmentCreateTime = convertUnixToLocalTime(segment.create_time);
-  const segmentUpdateTime = convertUnixToLocalTime(segment.update_time);
+import { Email } from '@/app/_lib/model/email';
+import { convertUnixToLocalTime } from '@/app/_lib/utils';
+import EmailHtml from '../email_html';
+
+export default function EmailView({ email }: { email: Email }) {
+  const emailCreateTime = convertUnixToLocalTime(email.create_time);
+  const emailUpdateTime = convertUnixToLocalTime(email.update_time);
 
   return (
     <div>
@@ -18,27 +21,32 @@ export default async function SegmentView({ segment }: { segment: Segment }) {
         <p>
           <strong>Name:</strong>
         </p>
-        <p>{segment.name}</p>
+        <p>{email.name}</p>
 
         <p>
           <strong>Description:</strong>
         </p>
-        <p>{segment.segment_desc}</p>
+        <p>{email.email_desc}</p>
 
         <p>
           <strong>Create Time:</strong>
         </p>
         <p>
-          {segmentCreateTime.date}, {segmentCreateTime.time}
+          {emailCreateTime.date}, {emailCreateTime.time}
         </p>
 
         <p>
           <strong>Update Time:</strong>
         </p>
         <p>
-          {segmentUpdateTime.date}, {segmentUpdateTime.time}
+          {emailUpdateTime.date}, {emailUpdateTime.time}
+        </p>
+
+        <p>
+          <strong>Email:</strong>
         </p>
       </div>
+      <EmailHtml email={email} />
     </div>
   );
 }

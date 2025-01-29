@@ -23,7 +23,6 @@ export function ViewSegment({ id }: { id: number }) {
       variant='bordered'
       as={Link}
       href={`/dashboard/segments/${id}`}
-      isDisabled
     >
       <EyeIcon className='h-5' />
     </Button>

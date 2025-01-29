@@ -1,7 +1,6 @@
-import { CampaignEmail } from '../_lib/model/campaign';
 import parse, { DOMNode, Element, domToReact } from 'html-react-parser';
 import { renderToString } from 'react-dom/server';
-import DOMPurify from 'dompurify';
+import DOMPurify from 'isomorphic-dompurify';
 import { Email } from '../_lib/model/email';
 
 const defaultHtml = 'PGRpdj48L2Rpdj4='; // <div></div>

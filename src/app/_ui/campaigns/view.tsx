@@ -206,7 +206,6 @@ export default function CampaignView({ campaign }: { campaign: Campaign }) {
         <p>
           <strong>Results:</strong>
         </p>
-        <p></p>
       </div>
 
       <Table

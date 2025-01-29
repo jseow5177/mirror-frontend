@@ -23,7 +23,6 @@ export function ViewEmail({ id }: { id: number }) {
       variant='bordered'
       as={Link}
       href={`/dashboard/emails/${id}`}
-      isDisabled
     >
       <EyeIcon className='h-5' />
     </Button>

@@ -5,12 +5,33 @@ import { handleAxiosError } from '../utils';
 import { Pagination } from './tag';
 import { Email } from '../model/email';
 
+type GetEmailResponse = {
+  email: Email;
+}
+
 type GetEmailsResponse = {
   emails: Email[];
   pagination: Pagination;
 };
 
 const EMAILS_PER_PAGE = 5;
+
+export async function getEmail(
+  id: number
+): Promise<Email> {
+  try {
+    const resp = await axiosInstance.post('/get_email', {
+      "email_id": id,
+    });
+
+    const body: GetEmailResponse = resp.data.body;
+
+    return body.email;
+  } catch (error) {
+    const err = handleAxiosError(error, 'Fail to get email.');
+    throw new Error(err.error);
+  }
+}
 
 export async function getEmails(
   currentPage?: number,
