@@ -1,18 +1,10 @@
 import { z } from 'zod';
 import { validateCriteria } from '../utils';
 
-export type LRange = {
-  lte?: string;
-  lt?: string;
-  gte?: string;
-  gt?: string;
-};
-
 export type Lookup = {
   tag_id?: number;
-  eq?: string;
-  in?: string[];
-  range?: LRange;
+  op?: string;
+  val?: any;
 };
 
 export type Query = {

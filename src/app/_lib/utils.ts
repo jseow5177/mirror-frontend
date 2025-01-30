@@ -28,42 +28,17 @@ export function validateCriteria(criteria: Criteria): boolean {
 
   for (const query of criteria.queries) {
     for (const lookup of query.lookups) {
-      if (!lookup.tag_id || (!lookup.eq && !lookup.in && !lookup.range)) {
-        console.log('lookup fields are incomplete');
+      if (!lookup.tag_id || !lookup.op || !lookup.val) {
         return false;
-      }
-
-      if (lookup.eq && lookup.eq === '') {
-        console.log('lookup eq is empty');
-        return false;
-      }
-
-      if (lookup.in && lookup.in.length === 0) {
-        console.log('lookup in is empty');
-        return false;
-      }
-
-      if (lookup.range) {
-        if (
-          !lookup.range.gt &&
-          !lookup.range.gte &&
-          !lookup.range.lt &&
-          !lookup.range.lte
-        ) {
-          console.log('lookup range is empty');
-          return false;
-        }
       }
     }
 
     if (!query.op) {
-      console.log('query op is missing');
       return false;
     }
   }
 
   if (!criteria.op) {
-    console.log('criteria op is missing');
     return false;
   }
 

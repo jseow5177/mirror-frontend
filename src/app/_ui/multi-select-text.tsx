@@ -1,4 +1,4 @@
-import React, { KeyboardEventHandler, useState } from 'react';
+import React, { KeyboardEventHandler, useEffect, useState } from 'react';
 import CreatableSelect from 'react-select/creatable';
 
 const components = {
@@ -41,7 +41,7 @@ export default function MultiSelectTextInput({
       case 'Tab':
         const cleanedValue = inputValue.trim();
 
-        if (isNumeric && isNaN(parseFloat(cleanedValue))) {
+        if (isNumeric && Number.isNaN(Number(cleanedValue))) {
           setError('only numbers are allowed');
         } else {
           const iv = createOption(cleanedValue);
@@ -70,7 +70,10 @@ export default function MultiSelectTextInput({
         isMulti
         isDisabled={isDisabled}
         menuIsOpen={false}
-        onChange={(newValue) => setValues(newValue)}
+        onChange={(newValue) => {
+          setValues(newValue);
+          onChange(newValue.map((v) => v.value));
+        }}
         onInputChange={(newValue) => setInputValue(newValue)}
         onKeyDown={handleKeyDown}
         placeholder='Enter multiple values...'
@@ -91,6 +94,16 @@ export default function MultiSelectTextInput({
               outlineColor: 'red',
               padding: '4px',
               borderRadius: '12px',
+              backgroundColor: 'white',
+            };
+          },
+          multiValue: (baseStyles, state) => {
+            return {
+              ...baseStyles,
+              backgroundColor: 'white',
+              borderColor: '#E4E7EB',
+              borderWidth: '1px',
+              borderRadius: '8px',
             };
           },
         }}

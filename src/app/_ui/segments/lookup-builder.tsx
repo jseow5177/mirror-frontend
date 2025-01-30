@@ -1,6 +1,6 @@
 'use client';
 
-import { Lookup, LRange } from '@/app/_lib/model/segment';
+import { Lookup } from '@/app/_lib/model/segment';
 import { isTagNumeric, Tag } from '@/app/_lib/model/tag';
 import {
   Input,
@@ -15,12 +15,12 @@ import { useState } from 'react';
 import MultiSelectTextInput from '../multi-select-text';
 import clsx from 'clsx';
 
-const OP_EQ = { label: '=', key: 'eq' };
-const OP_IN = { label: 'include', key: 'in' };
-const OP_GT = { label: '>', key: 'gt' };
-const OP_GTE = { label: '>=', key: 'gte' };
-const OP_LT = { label: '<', key: 'lt' };
-const OP_LTE = { label: '<=', key: 'lte' };
+const OP_EQ = '=';
+const OP_IN = 'in';
+const OP_GT = '>';
+const OP_GTE = '>=';
+const OP_LT = '<';
+const OP_LTE = '<=';
 
 const strOps = [OP_EQ, OP_IN];
 const numOps = [...strOps, OP_GT, OP_GTE, OP_LT, OP_LTE];
@@ -54,18 +54,17 @@ export const LookupBuilder = ({
 
   const [tag, setTag] = useState<Tag>(findTag(lookup.tag_id || 0) || Object);
 
-  const getLookupOp = () => {
-    if (lookup?.eq !== undefined) return OP_EQ.key;
-    if (lookup?.in !== undefined) return OP_IN.key;
-
-    if (lookup?.range !== undefined) {
-      if (lookup.range.gt !== undefined) return OP_GT.key;
-      if (lookup.range.gte !== undefined) return OP_GTE.key;
-      if (lookup.range.lt !== undefined) return OP_LT.key;
-      if (lookup.range.lte !== undefined) return OP_LTE.key;
+  const getLookupSupportedOps = () => {
+    if (isTagNumeric(tag)) {
+      return numOps;
+    } else {
+      return strOps;
     }
+  };
 
-    return '';
+  const getLookupOp = () => {
+    const op = getLookupSupportedOps().find((op) => op === lookup.op);
+    return op || '';
   };
 
   const onTagChange = (e: SharedSelection) => {
@@ -85,21 +84,10 @@ export const LookupBuilder = ({
     }
     toggleShowActionButtons(false);
 
-    const oldOp = getLookupOp();
-    const oldVal = getNonInLookupValue(oldOp);
-
-    if (e.currentKey === OP_IN.key) {
+    if (e.currentKey === OP_IN) {
       setLookupValue(e.currentKey, []);
     } else {
-      setLookupValue(e.currentKey, oldVal); // retain old value
-    }
-  };
-
-  const getLookupSupportedOps = () => {
-    if (isTagNumeric(tag)) {
-      return numOps;
-    } else {
-      return strOps;
+      setLookupValue(e.currentKey, lookup.val); // retain old value
     }
   };
 
@@ -108,35 +96,14 @@ export const LookupBuilder = ({
       return;
     }
 
-    // save only the newest op
-    if (strOps.some((v) => v.key === op)) {
-      onChange({ tag_id: lookup.tag_id, [op]: v });
-    } else {
-      onChange({ tag_id: lookup.tag_id, range: { [op]: v } });
-    }
-  };
-
-  const getNonInLookupValue = (op: string) => {
-    if (op === undefined || op === OP_IN.key) {
-      return '';
-    }
-
-    if (strOps.some((v) => v.key === op)) {
-      const v = lookup[op as keyof Lookup];
-      return v ? `${v}` : '';
-    } else if (lookup.range) {
-      const v = lookup.range[op as keyof LRange];
-      return v ? `${v}` : '';
-    }
-
-    return '';
+    onChange({ tag_id: lookup.tag_id, op: op, val: v });
   };
 
   const getValueInput = (op: string) => {
-    if (op === OP_IN.key) {
+    if (op === OP_IN) {
       return (
         <MultiSelectTextInput
-          initialValues={lookup.in || []}
+          initialValues={lookup.val || []}
           onChange={(v) => setLookupValue(op, v)}
           isNumeric={isTagNumeric(tag)}
           isDisabled={readonly}
@@ -151,7 +118,7 @@ export const LookupBuilder = ({
           variant='bordered'
           type={isTagNumeric(tag) ? 'number' : 'text'}
           isDisabled={op === '' || readonly}
-          value={getNonInLookupValue(op)}
+          value={lookup.val || ''}
           onChange={(e) => setLookupValue(op, e.target.value)}
         />
       );
@@ -202,7 +169,7 @@ export const LookupBuilder = ({
           isDisabled={!tag.id || readonly}
         >
           {getLookupSupportedOps().map((op) => (
-            <SelectItem key={op.key}>{op.label}</SelectItem>
+            <SelectItem key={op}>{op}</SelectItem>
           ))}
         </Select>
 

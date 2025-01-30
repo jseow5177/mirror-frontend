@@ -77,6 +77,7 @@ export default function SegmentForm({
 
       const debounce = setTimeout(async () => {
         if (!validateCriteria(criteria)) {
+          setSegmentSize(-1);
           return;
         }
 
