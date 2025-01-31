@@ -79,6 +79,7 @@ export default function CampaignForm({
     message: null,
     fieldErrors: {},
     error: null,
+    campaignID: null,
   };
 
   const toDateValue = (unix: number): DateValue => {
@@ -403,7 +404,7 @@ export default function CampaignForm({
                   <Divider />
                   <CardBody>
                     {/* Email subject */}
-                    <div className={clsx('mb-2 flex gap-2', {})}>
+                    <div className='mb-2 flex gap-2'>
                       <TagIcon className='w-5' />
                       <p className='text-base'>Email Subject</p>
                     </div>
@@ -419,7 +420,7 @@ export default function CampaignForm({
                     />
 
                     {/* Ratio */}
-                    <div className={clsx('mb-2 flex gap-2', {})}>
+                    <div className='mb-2 flex gap-2'>
                       <TagIcon className='w-5' />
                       <p className='text-base'>Ratio</p>
                     </div>

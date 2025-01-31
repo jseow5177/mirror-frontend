@@ -49,6 +49,7 @@ export default function SegmentForm({
     message: null,
     fieldErrors: {},
     error: null,
+    segmentID: null,
   };
 
   const [segmentFields, setSegmentFields] = useState({
@@ -112,7 +113,7 @@ export default function SegmentForm({
         if (state.message) {
           toast.success(state.message);
         }
-        redirect('/dashboard/segments');
+        redirect(`/dashboard/segments/${state.segmentID}`);
       }
     }
 

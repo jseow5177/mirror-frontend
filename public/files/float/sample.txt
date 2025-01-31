@@ -1,2 +1,0 @@
-john.doe@gmail.com,3.142
-jane.doe@gmail.com,0.1234

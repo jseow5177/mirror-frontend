@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { handleAxiosError } from '../utils';
 import axiosInstance from '../axios';
-import { EmailSchema } from '../model/email';
+import { Email, EmailSchema } from '../model/email';
 
 export type EmailState = {
   fieldErrors?: {
@@ -12,11 +12,16 @@ export type EmailState = {
   };
   error?: string | null;
   message?: string | null;
+  emailID?: number | null;
 };
 
 const CreateEmail = EmailSchema.omit({
   id: true,
 });
+
+type CreateEmailResponse = {
+  email: Email;
+};
 
 export async function createEmail(_: EmailState, formData: FormData) {
   const fields = CreateEmail.safeParse({
@@ -36,17 +41,19 @@ export async function createEmail(_: EmailState, formData: FormData) {
   const { name, email_desc, json, html } = fields.data;
 
   try {
-    await axiosInstance.post('/create_email', {
+    const resp = await axiosInstance.post('/create_email', {
       name,
       email_desc,
       json,
       html,
     });
-
     revalidatePath('/dashboard');
     revalidatePath('/dashboard/emails');
 
+    const body: CreateEmailResponse = resp.data.body;
+
     return {
+      emailID: body.email.id,
       message: 'Email created',
     };
   } catch (error) {

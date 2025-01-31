@@ -27,6 +27,7 @@ export default function TagForm({ tag }: { tag?: Tag }) {
     message: null,
     fieldErrors: {},
     error: null,
+    tagID: null,
   };
   const [state, formAction, pending] = useActionState(createTag, initialState);
 
@@ -45,7 +46,7 @@ export default function TagForm({ tag }: { tag?: Tag }) {
         if (state.message) {
           toast.success(state.message);
         }
-        redirect('/dashboard/tags');
+        redirect(`/dashboard/tags/${state.tagID}`);
       }
     }
 

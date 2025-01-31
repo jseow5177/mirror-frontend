@@ -28,6 +28,7 @@ export default function EmailForm({ email }: { email?: Email }) {
     message: null,
     fieldErrors: {},
     error: null,
+    emailID: null,
   };
 
   const [emailFields, setEmailFields] = useState({
@@ -57,7 +58,7 @@ export default function EmailForm({ email }: { email?: Email }) {
         if (state.message) {
           toast.success(state.message);
         }
-        redirect('/dashboard/emails');
+        redirect(`/dashboard/emails/${state.emailID}`);
       }
     }
 

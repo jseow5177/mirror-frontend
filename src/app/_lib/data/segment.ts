@@ -33,12 +33,9 @@ export async function countUd(segmentID: number) {
 
 export async function previewUd(criteria: Criteria) {
   try {
-    const resp = await axiosInstance.post(
-      '/preview_ud',
-      {
-        criteria: criteria,
-      }
-    );
+    const resp = await axiosInstance.post('/preview_ud', {
+      criteria: criteria,
+    });
 
     const body: PreviewUdResponse = resp.data.body;
 

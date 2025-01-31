@@ -1,8 +1,8 @@
-import React from 'react';
-import Breadcrumbs from '@/app/_ui/breadcrumbs';
-import TagForm from '@/app/_ui/tags/form';
-import { notFound } from 'next/navigation';
 import { getTag } from '@/app/_lib/data/tag';
+import Breadcrumbs from '@/app/_ui/breadcrumbs';
+import DragAndDrop from '@/app/_ui/tags/file-drop';
+import { notFound } from 'next/navigation';
+import React from 'react';
 
 export default async function Page({ params }: { params: { id: string } }) {
   const id = params.id;
@@ -22,13 +22,13 @@ export default async function Page({ params }: { params: { id: string } }) {
             href: `/dashboard/tags/${id}`,
           },
           {
-            label: 'Edit',
-            href: `/dashboard/tags/${id}/edit`,
+            label: 'Upload',
+            href: `/dashboard/tags/${id}/upload`,
             isCurrent: true,
           },
         ]}
       />
-      <TagForm tag={tag} />
+      <DragAndDrop tag={tag} />
     </main>
   );
 }

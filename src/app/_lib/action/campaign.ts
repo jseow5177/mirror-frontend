@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { handleAxiosError } from '../utils';
 import axiosInstance from '../axios';
-import { CampaignSchema, sumRatioEquals100 } from '../model/campaign';
+import { Campaign, CampaignSchema, sumRatioEquals100 } from '../model/campaign';
 
 export type CampaignState = {
   fieldErrors?: {
@@ -12,6 +12,7 @@ export type CampaignState = {
   };
   error?: string | null;
   message?: string | null;
+  campaignID?: number | null;
 };
 
 const CreateCampaign = CampaignSchema.omit({
@@ -20,6 +21,10 @@ const CreateCampaign = CampaignSchema.omit({
   message: 'Ratio must add to 100%',
   path: ['emails'],
 });
+
+type CreateCampaignResponse = {
+  campaign: Campaign;
+};
 
 export async function createCampaign(_: CampaignState, formData: FormData) {
   const fields = CreateCampaign.safeParse({
@@ -40,7 +45,7 @@ export async function createCampaign(_: CampaignState, formData: FormData) {
   const { name, campaign_desc, emails, segment_id, schedule } = fields.data;
 
   try {
-    await axiosInstance.post('/create_campaign', {
+    const resp = await axiosInstance.post('/create_campaign', {
       name,
       campaign_desc,
       emails,
@@ -50,7 +55,10 @@ export async function createCampaign(_: CampaignState, formData: FormData) {
     revalidatePath('/dashboard');
     revalidatePath('/dashboard/campaigns');
 
+    const body: CreateCampaignResponse = resp.data.body;
+
     return {
+      campaignID: body.campaign.id,
       message: 'Campaign created',
     };
   } catch (error) {

@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import axiosInstance from '../axios';
 import { handleAxiosError } from '../utils';
-import { SegmentSchema } from '../model/segment';
+import { Segment, SegmentSchema } from '../model/segment';
 
 export type SegmentState = {
   fieldErrors?: {
@@ -12,11 +12,16 @@ export type SegmentState = {
   };
   error?: string | null;
   message?: string | null;
+  segmentID?: number | null;
 };
 
 const CreateSegment = SegmentSchema.omit({
   id: true,
 });
+
+type CreateSegmentResponse = {
+  segment: Segment;
+};
 
 export async function createSegment(_: SegmentState, formData: FormData) {
   const fields = CreateSegment.safeParse({
@@ -35,7 +40,7 @@ export async function createSegment(_: SegmentState, formData: FormData) {
   const { name, segment_desc, criteria } = fields.data;
 
   try {
-    await axiosInstance.post('/create_segment', {
+    const resp = await axiosInstance.post('/create_segment', {
       name,
       segment_desc,
       criteria: JSON.parse(criteria),
@@ -43,7 +48,10 @@ export async function createSegment(_: SegmentState, formData: FormData) {
     revalidatePath('/dashboard');
     revalidatePath('/dashboard/segments');
 
+    const body: CreateSegmentResponse = resp.data.body;
+
     return {
+      segmentID: body.segment.id,
       message: 'Segment created',
     };
   } catch (error) {

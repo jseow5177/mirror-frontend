@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { TagSchema } from '../model/tag';
+import { Tag, TagSchema } from '../model/tag';
 import axiosInstance from '../axios';
 import { handleAxiosError } from '../utils';
 
@@ -13,11 +13,16 @@ export type TagState = {
   };
   error?: string | null;
   message?: string | null;
+  tagID?: number | null;
 };
 
 const CreateTag = TagSchema.omit({
   id: true,
 });
+
+type CreateTagResponse = {
+  tag: Tag;
+};
 
 export async function createTag(_: TagState, formData: FormData) {
   const fields = CreateTag.safeParse({
@@ -36,7 +41,7 @@ export async function createTag(_: TagState, formData: FormData) {
   const { name, tag_desc, valueType } = fields.data;
 
   try {
-    await axiosInstance.post('/create_tag', {
+    const resp = await axiosInstance.post('/create_tag', {
       name: name,
       tag_desc: tag_desc,
       value_type: valueType,
@@ -44,7 +49,10 @@ export async function createTag(_: TagState, formData: FormData) {
     revalidatePath('/dashboard');
     revalidatePath('/dashboard/tags');
 
+    const body: CreateTagResponse = resp.data.body;
+
     return {
+      tagID: body.tag.id,
       message: 'Tag created',
     };
   } catch (error) {

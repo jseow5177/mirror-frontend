@@ -7,7 +7,7 @@ import { Email } from '../model/email';
 
 type GetEmailResponse = {
   email: Email;
-}
+};
 
 type GetEmailsResponse = {
   emails: Email[];
@@ -16,12 +16,10 @@ type GetEmailsResponse = {
 
 const EMAILS_PER_PAGE = 5;
 
-export async function getEmail(
-  id: number
-): Promise<Email> {
+export async function getEmail(id: number): Promise<Email> {
   try {
     const resp = await axiosInstance.post('/get_email', {
-      "email_id": id,
+      email_id: id,
     });
 
     const body: GetEmailResponse = resp.data.body;
