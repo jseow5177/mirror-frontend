@@ -6,6 +6,7 @@ import {
   TrashIcon,
   PlusIcon,
   EyeIcon,
+  ArrowUpTrayIcon,
 } from '@heroicons/react/24/outline';
 import {
   Modal,
@@ -93,10 +94,24 @@ export function ViewTag({ id }: { id: number }) {
   );
 }
 
+export function UploadTag({ id }: { id: number }) {
+  return (
+    <Button
+      isIconOnly
+      variant='bordered'
+      as={Link}
+      href={`/dashboard/tags/${id}/upload`}
+    >
+      <ArrowUpTrayIcon className='h-5' />
+    </Button>
+  );
+}
+
 export function TagActions({ tag }: { tag: Tag }) {
   return (
     <ButtonGroup>
       <ViewTag id={tag.id || 0} />
+      <UploadTag id={tag.id || 0} />
     </ButtonGroup>
   );
 }

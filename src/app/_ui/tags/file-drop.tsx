@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useRef, useState } from 'react';
+import { useActionState, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Button,
   Pagination,
@@ -18,7 +18,7 @@ import { InformationCircleIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Tag, TagValueType } from '../../_lib/model/tag';
 import { redirect } from 'next/navigation';
 import clsx from 'clsx';
-import { uploadFile } from '@/app/_lib/action/file';
+import { createFileUploadTask, TaskState } from '@/app/_lib/action/task';
 
 const COL_ID = 'id';
 const COL_VAL = 'value';
@@ -29,8 +29,8 @@ const MAX_PREVIEW_ROWS = 100;
 
 export default function DragAndDrop({ tag }: { tag: Tag }) {
   const inputRef = useRef<HTMLInputElement>(null);
+
   const [file, setFile] = useState<File | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
   const [hoverActive, setHoverActive] = useState(false);
   const [previewData, setPreviewData] = useState<string[][]>([]);
@@ -57,39 +57,39 @@ export default function DragAndDrop({ tag }: { tag: Tag }) {
 
   const pages = Math.ceil(previewData.length / ROWS_PER_PAGE);
 
-  const handleDragLeave = (e: React.DragEvent<HTMLFormElement>) => {
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
   };
 
-  const handleDragOver = (e: React.DragEvent<HTMLFormElement>) => {
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     handleDragEnter(e);
   };
 
-  const handleDragEnter = (e: React.DragEvent<HTMLFormElement>) => {
+  const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(true);
   };
 
-  const handleMouseLeave = (e: React.DragEvent<HTMLFormElement>) => {
+  const handleMouseLeave = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setHoverActive(false);
   };
 
-  const handleMouseOver = (e: React.DragEvent<HTMLFormElement>) => {
+  const handleMouseOver = (e: React.DragEvent<HTMLDivElement>) => {
     handleMouseEnter(e);
   };
 
-  const handleMouseEnter = (e: React.DragEvent<HTMLFormElement>) => {
+  const handleMouseEnter = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setHoverActive(true);
   };
 
-  const handleDrop = (e: React.DragEvent<HTMLFormElement>) => {
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
@@ -113,6 +113,11 @@ export default function DragAndDrop({ tag }: { tag: Tag }) {
     setPage(1);
   };
 
+  const removeFile = () => {
+    setFile(null);
+    resetOnChange();
+  };
+
   const validateAndSetFile = (file: File) => {
     if (!['text/plain', 'text/csv'].includes(file.type)) {
       setErrMsg('File type not supported');
@@ -125,6 +130,7 @@ export default function DragAndDrop({ tag }: { tag: Tag }) {
     }
 
     const reader = new FileReader();
+
     reader.onload = (event) => {
       if (!event.target?.result) {
         setErrMsg('Failed to read file');
@@ -167,122 +173,129 @@ export default function DragAndDrop({ tag }: { tag: Tag }) {
     }
   };
 
-  const handleSubmit = async () => {
-    if (file !== null) {
-      setIsLoading(true);
+  const initialState: TaskState = {
+    fieldErrors: {},
+    message: null,
+    error: null,
+  };
 
-      const state = await uploadFile(tag, file);
+  const handleFileUpload = (s: TaskState, formData: FormData) => {
+    if (file) {
+      formData.append('file', file);
+    }
+    formData.append('resource_id', `${tag.id}`);
+    return createFileUploadTask(s, formData);
+  };
+
+  const [state, formAction, pending] = useActionState(
+    handleFileUpload,
+    initialState
+  );
+
+  useEffect(() => {
+    if (!state.fieldErrors) {
       if (state.error) {
-        toast.error('File upload fail');
+        toast.error(state.error ? state.error : 'Error encountered');
       } else {
+        if (state.message) {
+          toast.success(state.message);
+        }
         redirect(`/dashboard/tags/${tag.id}`);
       }
-
-      setIsLoading(false);
     }
-  };
+  }, [state]);
 
   return (
     <div className='w-[35rem]'>
-      {file ? (
-        <div>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '200px auto',
-              rowGap: '16px',
-              marginBottom: '16px',
-              alignItems: 'center',
-            }}
-          >
-            <p>
-              <strong>File:</strong>
-            </p>
-            <div className='flex flex-row items-center'>
-              <p>{file.name}</p>
-              <Button
-                isIconOnly
-                color='danger'
-                onPress={() => setFile(null)}
-                size='sm'
-                variant='light'
-                className='ml-2'
-              >
-                <TrashIcon />
-              </Button>
-            </div>
-
-            <p className='flex gap-1'>
-              <strong>Preview:</strong>
-              <Tooltip
-                showArrow
-                content='First 100 rows only'
-                color='default'
-                placement='right'
-              >
-                <InformationCircleIcon className='w-4' />
-              </Tooltip>
-            </p>
-          </div>
-          <Table
-            aria-label='preview-table'
-            className='my-4'
-            fullWidth
-            bottomContent={
-              <div className='flex w-full justify-center'>
-                <Pagination
-                  isCompact
+      <form action={formAction}>
+        {file ? (
+          <div>
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: '200px auto',
+                rowGap: '16px',
+                marginBottom: '16px',
+                alignItems: 'center',
+              }}
+            >
+              <p>
+                <strong>File:</strong>
+              </p>
+              <div className='flex flex-row items-center'>
+                <p>{file.name}</p>
+                <Button
+                  isIconOnly
+                  color='danger'
+                  onPress={() => removeFile()}
                   size='sm'
-                  showControls
-                  color='primary'
-                  page={page}
-                  total={pages}
-                  onChange={(page) => setPage(page)}
-                />
+                  variant='light'
+                  className='ml-2'
+                >
+                  <TrashIcon />
+                </Button>
               </div>
-            }
-          >
-            <TableHeader>
-              <TableColumn>{COL_ID}</TableColumn>
-              <TableColumn>{COL_VAL}</TableColumn>
-            </TableHeader>
-            <TableBody>
-              {items.map((row, index) => (
-                <TableRow key={index}>
-                  <TableCell>{row[0]}</TableCell>
-                  <TableCell>{row[1]}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
 
-          <Button
-            type='submit'
-            color='primary'
-            className='mt-3'
-            disabled={file === null}
-            isLoading={isLoading}
-            fullWidth
-            onClick={handleSubmit}
-          >
-            Submit
-          </Button>
-        </div>
-      ) : (
-        <>
-          <form
-            onDragEnter={handleDragEnter}
-            onDrop={handleDrop}
-            onDragLeave={handleDragLeave}
-            onDragOver={handleDragOver}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-            onMouseOver={handleMouseOver}
-            onClick={openFileExplorer}
-          >
+              <p className='flex gap-1'>
+                <strong>Preview:</strong>
+                <Tooltip
+                  showArrow
+                  content='First 100 rows only'
+                  color='default'
+                  placement='right'
+                >
+                  <InformationCircleIcon className='w-4' />
+                </Tooltip>
+              </p>
+            </div>
+            <Table
+              aria-label='preview-table'
+              className='my-4'
+              fullWidth
+              bottomContent={
+                <div className='flex w-full justify-center'>
+                  <Pagination
+                    isCompact
+                    size='sm'
+                    showControls
+                    color='primary'
+                    page={page}
+                    total={pages}
+                    onChange={(page) => setPage(page)}
+                  />
+                </div>
+              }
+            >
+              <TableHeader>
+                <TableColumn>{COL_ID}</TableColumn>
+                <TableColumn>{COL_VAL}</TableColumn>
+              </TableHeader>
+              <TableBody>
+                {items.map((row, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{row[0]}</TableCell>
+                    <TableCell>{row[1]}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+
+            <Button
+              type='submit'
+              color='primary'
+              className='mt-3'
+              disabled={file === null}
+              isLoading={pending}
+              fullWidth
+            >
+              Submit
+            </Button>
+          </div>
+        ) : (
+          <>
             <input
-              id='inputFile'
-              name='inputFile'
+              id='file'
+              name='file'
               className='hidden'
               ref={inputRef}
               type='file'
@@ -298,23 +311,31 @@ export default function DragAndDrop({ tag }: { tag: Tag }) {
                     dragActive || hoverActive,
                 }
               )}
+              onDragEnter={handleDragEnter}
+              onDrop={handleDrop}
+              onDragLeave={handleDragLeave}
+              onDragOver={handleDragOver}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+              onMouseOver={handleMouseOver}
+              onClick={openFileExplorer}
             >
               <p>Drop file here, or click to select</p>
               <p className='text-sm text-gray-500'>
                 Accepts .csv or .txt, max 5MB
               </p>
             </div>
-          </form>
-          <p className='mt-2 text-sm text-red-600'>{errMsg}</p>
+            <p className='mt-2 text-sm text-red-600'>{errMsg}</p>
 
-          <Image
-            alt='Sample'
-            className='mt-2'
-            src={`/files/${sampleDir()}/sample.png`}
-            width={800}
-          />
-        </>
-      )}
+            <Image
+              alt='Sample'
+              className='mt-2'
+              src={`/files/${sampleDir()}/sample.png`}
+              width={800}
+            />
+          </>
+        )}
+      </form>
     </div>
   );
 }
