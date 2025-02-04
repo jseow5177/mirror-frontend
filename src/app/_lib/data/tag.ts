@@ -1,7 +1,6 @@
 'use server';
 
-import { sql } from '@vercel/postgres';
-import { Tag, TagStatus } from '../model/tag';
+import { Tag } from '../model/tag';
 import axiosInstance from '../axios';
 import { handleAxiosError } from '../utils';
 

@@ -4,19 +4,23 @@ import axiosInstance from '../axios';
 import { handleAxiosError } from '../utils';
 
 export type TaskState = {
-  fieldErrors?: {}
+  fieldErrors?: {};
   error?: string | null;
   message?: string | null;
 };
 
-export async function createFileUploadTask(_: TaskState, formData: FormData): Promise<TaskState> {
+export async function createFileUploadTask(
+  _: TaskState,
+  formData: FormData
+): Promise<TaskState> {
   try {
     await axiosInstance.post(
-      `/create_file_upload_task?resource_id=${formData.get("resource_id")}&resource_type=${1}`, formData,
+      `/create_file_upload_task?resource_id=${formData.get('resource_id')}&resource_type=${1}`,
+      formData,
       {
         headers: {
-            'Content-Type': 'multipart/form-data'
-          }
+          'Content-Type': 'multipart/form-data',
+        },
       }
     );
 

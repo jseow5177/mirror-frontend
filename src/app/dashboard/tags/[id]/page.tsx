@@ -5,21 +5,37 @@ import BaseBreadcrumbs from '@/app/_ui/breadcrumbs';
 import { Button } from '@nextui-org/react';
 import Link from 'next/link';
 import { ArrowUpTrayIcon } from '@heroicons/react/24/outline';
+import { getTagFileUploadTasks } from '@/app/_lib/data/task';
+import TaskTable from '@/app/_ui/tags/task-table';
+import BasePagination from '@/app/_ui/pagination';
 
-export default async function Page({ params }: { params: { id: string } }) {
+export default async function Page({
+  params,
+  searchParams,
+}: {
+  params: { id: string };
+  searchParams?: {
+    page?: string;
+  };
+}) {
   const id = params.id;
+  const currentTaskPage = Number(searchParams?.page) || 1;
 
-  const fetchTag = async () => {
+  const fetchTagData = async () => {
     const tagID = Number(id) | 0;
 
-    const [tag] = await Promise.all([getTag(tagID)]);
+    const [tag, resp] = await Promise.all([
+      getTag(tagID),
+      getTagFileUploadTasks(tagID, currentTaskPage),
+    ]);
 
     return {
       tag,
+      resp,
     };
   };
 
-  const { tag } = await fetchTag();
+  const { tag, resp } = await fetchTagData();
 
   if (!tag) {
     notFound();
@@ -47,7 +63,7 @@ export default async function Page({ params }: { params: { id: string } }) {
           Upload Data
         </Button>
       </div>
-      <TagView tag={tag} />
+      <TagView tag={tag} tasks={resp[0].tasks || []} totalTasks={resp[1]} />
     </main>
   );
 }

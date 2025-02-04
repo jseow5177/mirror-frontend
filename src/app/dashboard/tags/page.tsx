@@ -1,6 +1,6 @@
 import SearchBar from '@/app/_ui/search-bar';
 import { getTags } from '@/app/_lib/data/tag';
-import TagTable from '@/app/_ui/tags/table';
+import TagTable from '@/app/_ui/tags/tag-table';
 import { CreateTag } from '@/app/_ui/tags/buttons';
 import BasePagination from '@/app/_ui/pagination';
 
