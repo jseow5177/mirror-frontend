@@ -9,6 +9,7 @@ import {
   TableRow,
   TableCell,
   Chip,
+  CircularProgress,
 } from '@nextui-org/react';
 import { Task, TaskStatus, TaskStatuses } from '@/app/_lib/model/task';
 import { ChipColors } from '../utils';
@@ -21,11 +22,10 @@ const statusColors: Record<TaskStatus, ChipColors> = {
   [TaskStatus.Failed]: 'danger',
 };
 
-export default async function TaskTable({ tasks }: { tasks: Task[] }) {
+export default function TaskTable({ tasks }: { tasks: Task[] }) {
   return (
     <Table aria-label='task-table'>
       <TableHeader>
-        <TableColumn>Task ID</TableColumn>
         <TableColumn>File Name</TableColumn>
         <TableColumn>Status</TableColumn>
         <TableColumn>Size</TableColumn>
@@ -41,9 +41,9 @@ export default async function TaskTable({ tasks }: { tasks: Task[] }) {
           const { date: updateDate, time: updateTime } = convertUnixToLocalTime(
             task.update_time
           );
+
           return (
             <TableRow key={i}>
-              <TableCell>{task.id}</TableCell>
               <TableCell>{task.ext_info.ori_file_name || ''}</TableCell>
               <TableCell>
                 <Chip color={statusColors[task.status]}>
@@ -51,7 +51,14 @@ export default async function TaskTable({ tasks }: { tasks: Task[] }) {
                 </Chip>
               </TableCell>
               <TableCell>{task.ext_info.size || 0}</TableCell>
-              <TableCell>{task.ext_info.progress || 0}</TableCell>
+              <TableCell>
+                <CircularProgress
+                  aria-label='Task progress'
+                  color={task.ext_info.progress === 100 ? 'success' : 'primary'}
+                  showValueLabel
+                  value={task.ext_info.progress}
+                />
+              </TableCell>
               <TableCell>
                 <p>{createDate}</p>
                 <p className='mt-1 text-xs'>{createTime}</p>

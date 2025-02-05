@@ -39,12 +39,6 @@ export default function CampaignView({ campaign }: { campaign: Campaign }) {
   const campaignCreateTime = convertUnixToLocalTime(campaign.create_time);
   const campaignSchedule = convertUnixToLocalTime(campaign.schedule);
 
-  const progress = Math.round(
-    campaign.segment_size > 0
-      ? (campaign.progress * 100) / campaign.segment_size
-      : 0
-  );
-
   const [emailSortDescriptor, setEmailSortDescriptor] =
     useState<SortDescriptor>({
       column: keyUniqueOpenCount,
@@ -175,15 +169,13 @@ export default function CampaignView({ campaign }: { campaign: Campaign }) {
           <strong>Progress:</strong>
         </p>
         <div className='flex-col justify-center'>
-          <p className='mb-2'>
-            {campaign.progress} ({progress}%)
-          </p>
+          <p className='mb-2'>{campaign.progress}%</p>
           <Progress
             aria-label='Send email progress'
             className='max-w-md'
-            color={progress === 100 ? 'success' : 'primary'}
+            color={campaign.progress === 100 ? 'success' : 'primary'}
             size='sm'
-            value={progress}
+            value={campaign.progress}
           />
         </div>
 
