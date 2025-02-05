@@ -7,6 +7,7 @@ import TaskTable from './task-table';
 import BasePagination from '../pagination';
 import { Divider, Tab, Tabs } from '@nextui-org/react';
 import LogTable from './log-table';
+import { DetailGrid, DetailRow } from '../detail';
 
 export default function TagView({
   tag,
@@ -22,42 +23,19 @@ export default function TagView({
 
   return (
     <>
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '200px auto',
-          rowGap: '16px',
-        }}
-      >
-        <p>
-          <strong>Name:</strong>
-        </p>
-        <p>{tag.name}</p>
-
-        <p>
-          <strong>Description:</strong>
-        </p>
-        <p>{tag.tag_desc}</p>
-
-        <p>
-          <strong>Tag Value Type:</strong>
-        </p>
-        <p>{TagValueTypes[tag.value_type]}</p>
-
-        <p>
-          <strong>Create Time:</strong>
-        </p>
-        <p>
-          {tagCreateTime.date}, {tagCreateTime.time}
-        </p>
-
-        <p>
-          <strong>Update Time:</strong>
-        </p>
-        <p>
-          {tagUpdateTime.date}, {tagUpdateTime.time}
-        </p>
-      </div>
+      <DetailGrid>
+        <DetailRow label='Name' value={tag.name} />
+        <DetailRow label='Description' value={tag.tag_desc} />
+        <DetailRow label='Value Type' value={TagValueTypes[tag.value_type]} />
+        <DetailRow
+          label='Create Time'
+          value={`${tagCreateTime.date}, ${tagCreateTime.time}`}
+        />
+        <DetailRow
+          label='Update Time'
+          value={`${tagUpdateTime.date}, ${tagUpdateTime.time}`}
+        />
+      </DetailGrid>
       <Divider className='my-8' />
       <Tabs
         aria-label='tag-data'

@@ -29,6 +29,7 @@ import { campaignStatusColors } from '../utils';
 import { useState } from 'react';
 import { EyeIcon } from '@heroicons/react/24/outline';
 import EmailHtml from '../email_html';
+import { DetailGrid, DetailRow } from '../detail';
 
 const keyUniqueOpenCount = 'uniqueOpenCount';
 const keyTotalLinkClickCount = 'totalLinkClickCount';
@@ -121,85 +122,60 @@ export default function CampaignView({ campaign }: { campaign: Campaign }) {
   );
 
   return (
-    <div>
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '200px auto',
-          rowGap: '16px',
-          marginBottom: '16px',
-        }}
-      >
-        <p>
-          <strong>Name:</strong>
-        </p>
-        <p>{campaign.name}</p>
-
-        <p>
-          <strong>Description:</strong>
-        </p>
-        <p>{campaign.campaign_desc}</p>
-
-        <p>
-          <strong>Status:</strong>
-        </p>
-        <Chip color={campaignStatusColors[campaign.status]} size='md'>
-          {CampaignStatuses[campaign.status]}
-        </Chip>
-
-        <p>
-          <strong>Segment:</strong>
-        </p>
-        <p>
-          <Link
-            isExternal
-            showAnchorIcon
-            href={`/dashboard/segments/${campaign.segment_id}`}
-          >
-            {campaign.segment?.name}
-          </Link>
-        </p>
-
-        <p>
-          <strong>Emails to be Sent:</strong>
-        </p>
-        <p>{campaign.segment_size}</p>
-
-        <p>
-          <strong>Progress:</strong>
-        </p>
-        <div className='flex-col justify-center'>
-          <p className='mb-2'>{campaign.progress}%</p>
-          <Progress
-            aria-label='Send email progress'
-            className='max-w-md'
-            color={campaign.progress === 100 ? 'success' : 'primary'}
-            size='sm'
-            value={campaign.progress}
-          />
-        </div>
-
-        <p>
-          <strong>Create Time:</strong>
-        </p>
-        <p>
-          {campaignCreateTime.date}, {campaignCreateTime.time}
-        </p>
-
-        <p>
-          <strong>Schedule:</strong>
-        </p>
-        <p>
-          {campaign.schedule === 0
-            ? `${campaignCreateTime.date}, ${campaignCreateTime.time}`
-            : `${campaignSchedule.date}, ${campaignSchedule.time}`}
-        </p>
-
-        <p>
-          <strong>Results:</strong>
-        </p>
-      </div>
-
+    <>
+      <DetailGrid>
+        <DetailRow label='Name' value={campaign.name} />
+        <DetailRow label='Description' value={campaign.campaign_desc} />
+        <DetailRow
+          label='Status'
+          value={
+            <Chip color={campaignStatusColors[campaign.status]} size='md'>
+              {CampaignStatuses[campaign.status]}
+            </Chip>
+          }
+        />
+        <DetailRow
+          label='Segment'
+          value={
+            <Link
+              isExternal
+              showAnchorIcon
+              href={`/dashboard/segments/${campaign.segment_id}`}
+            >
+              {campaign.segment?.name}
+            </Link>
+          }
+        />
+        <DetailRow label='Emails to be Sent' value={campaign.segment_size} />
+        <DetailRow
+          label='Progress'
+          value={
+            <div className='flex-col justify-center'>
+              <p className='mb-2'>{campaign.progress}%</p>
+              <Progress
+                aria-label='Send email progress'
+                className='max-w-md'
+                color={campaign.progress === 100 ? 'success' : 'primary'}
+                size='sm'
+                value={campaign.progress}
+              />
+            </div>
+          }
+        />
+        <DetailRow
+          label='Create Time'
+          value={`${campaignCreateTime.date}, ${campaignCreateTime.time}`}
+        />
+        <DetailRow
+          label='Schedule'
+          value={
+            campaign.schedule === 0
+              ? `${campaignCreateTime.date}, ${campaignCreateTime.time}`
+              : `${campaignSchedule.date}, ${campaignSchedule.time}`
+          }
+        />
+        <DetailRow label='Results' value={''} />
+      </DetailGrid>
       <Table
         aria-label='campaign-email-table'
         sortDescriptor={emailSortDescriptor}
@@ -370,6 +346,6 @@ export default function CampaignView({ campaign }: { campaign: Campaign }) {
           )}
         </ModalContent>
       </Modal>
-    </div>
+    </>
   );
 }
