@@ -43,7 +43,7 @@ export default function EmailHtml({
                     style={{
                       position: 'absolute',
                       top: '-5px',
-                      right: '-20px',
+                      right: '-14px',
                       backgroundColor: '#f04e4e',
                       color: 'white',
                       fontSize: '10px',

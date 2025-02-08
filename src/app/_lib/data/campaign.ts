@@ -4,6 +4,7 @@ import axiosInstance from '../axios';
 import { handleAxiosError } from '../utils';
 import { Pagination } from './tag';
 import { Campaign } from '../model/campaign';
+import { Segment } from '../model/segment';
 
 const CAMPAIGNS_PER_PAGE = 10;
 
@@ -36,9 +37,10 @@ export async function getCampaigns(
 
 type GetCampaignResponse = {
   campaign: Campaign;
+  segment: Segment;
 };
 
-export async function getCampaign(campaignID: number): Promise<Campaign> {
+export async function getCampaign(campaignID: number): Promise<[Campaign, Segment]> {
   try {
     const resp = await axiosInstance.post('/get_campaign', {
       campaign_id: campaignID,
@@ -46,7 +48,7 @@ export async function getCampaign(campaignID: number): Promise<Campaign> {
 
     const body: GetCampaignResponse = resp.data.body;
 
-    return body.campaign;
+    return [body.campaign, body.segment];
   } catch (error) {
     const err = handleAxiosError(error, 'Fail to get campaign.');
     throw new Error(err.error);

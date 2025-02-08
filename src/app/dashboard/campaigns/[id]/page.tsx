@@ -1,4 +1,5 @@
 import { getCampaign } from '@/app/_lib/data/campaign';
+import { getSegment } from '@/app/_lib/data/segment';
 import BaseBreadcrumbs from '@/app/_ui/breadcrumbs';
 import CampaignView from '@/app/_ui/campaigns/view';
 import { notFound } from 'next/navigation';
@@ -9,14 +10,15 @@ export default async function Page({ params }: { params: { id: string } }) {
   const fetchData = async () => {
     const campaignID = Number(id) | 0;
 
-    const [campaign] = await Promise.all([getCampaign(campaignID)]);
+    const [resp] = await Promise.all([getCampaign(campaignID)]);
 
     return {
-      campaign,
+      campaign: resp[0],
+      segment: resp[1],
     };
   };
 
-  const { campaign } = await fetchData();
+  const { campaign, segment } = await fetchData();
 
   if (!campaign) {
     notFound();
@@ -33,7 +35,7 @@ export default async function Page({ params }: { params: { id: string } }) {
           },
         ]}
       />
-      <CampaignView campaign={campaign} />
+      <CampaignView campaign={campaign} segment={segment} />
     </main>
   );
 }

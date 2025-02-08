@@ -30,13 +30,20 @@ import { useState } from 'react';
 import { EyeIcon } from '@heroicons/react/24/outline';
 import EmailHtml from '../email_html';
 import { DetailGrid, DetailRow } from '../detail';
+import { Segment } from '@/app/_lib/model/segment';
 
 const keyUniqueOpenCount = 'uniqueOpenCount';
 const keyTotalLinkClickCount = 'totalLinkClickCount';
 const keyRatio = 'ratio';
 const keyLinkClickCount = 'linkClickCount';
 
-export default function CampaignView({ campaign }: { campaign: Campaign }) {
+export default function CampaignView({
+  campaign,
+  segment,
+}: {
+  campaign: Campaign;
+  segment: Segment;
+}) {
   const campaignCreateTime = convertUnixToLocalTime(campaign.create_time);
   const campaignSchedule = convertUnixToLocalTime(campaign.schedule);
 
@@ -142,7 +149,7 @@ export default function CampaignView({ campaign }: { campaign: Campaign }) {
               showAnchorIcon
               href={`/dashboard/segments/${campaign.segment_id}`}
             >
-              {campaign.segment?.name}
+              {segment.name}
             </Link>
           }
         />
