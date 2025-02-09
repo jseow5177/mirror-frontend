@@ -10,6 +10,7 @@ export async function middleware(req: NextRequest) {
   const method = req.method;
 
   const isLoggedIn = await isUserLoggedIn();
+  console.log(isLoggedIn)
   if (currentPath.startsWith('/dashboard')) {
     if (!isLoggedIn && method === 'GET') {
       return NextResponse.redirect(new URL('/', req.url));
@@ -28,14 +29,21 @@ export async function middleware(req: NextRequest) {
 async function isUserLoggedIn() {
   const cookieStore = cookies();
   try {
-    await fetch(`${getBaseUrl()}/is_logged_in`, {
+    const response = await fetch(`${getBaseUrl()}/is_logged_in`, {
       headers: {
         Cookie: `session=${cookieStore.get('session')?.value};`,
       },
     });
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        throw new Error('Unauthorized');
+      }
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
     return true;
   } catch (error) {
-    console.log(error);
     return false;
   }
 }
