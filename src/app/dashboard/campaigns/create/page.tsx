@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { getEmails } from '@/app/_lib/data/email';
 import { getSegments } from '@/app/_lib/data/segment';
 import Breadcrumbs from '@/app/_ui/breadcrumbs';

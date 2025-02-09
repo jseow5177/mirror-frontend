@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import Title from './_ui/title';
 import LogInForm from './_ui/user/form';
 
