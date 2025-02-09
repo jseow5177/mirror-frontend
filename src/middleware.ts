@@ -10,7 +10,7 @@ export async function middleware(req: NextRequest) {
   const method = req.method;
 
   const isLoggedIn = await isUserLoggedIn();
-  console.log(isLoggedIn)
+  console.log(isLoggedIn);
   if (currentPath.startsWith('/dashboard')) {
     if (!isLoggedIn && method === 'GET') {
       return NextResponse.redirect(new URL('/', req.url));
