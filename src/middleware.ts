@@ -26,15 +26,16 @@ export async function middleware(req: NextRequest) {
 // Cannot use Axios in Middleware
 // Error: A Node.js API is used (setImmediate at line: 677) which is not supported in the Edge Runtime.
 async function isUserLoggedIn() {
+  const cookieStore = cookies();
   try {
-    const cookieStore = cookies();
     await fetch(`${getBaseUrl()}/is_logged_in`, {
       headers: {
-        'Cookie': `session=${cookieStore.get('session')?.value};`
-      }
+        Cookie: `session=${cookieStore.get('session')?.value};`,
+      },
     });
     return true;
-  } catch {
+  } catch (error) {
+    console.log(error);
     return false;
   }
 }

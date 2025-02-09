@@ -3,11 +3,11 @@
 import axios from 'axios';
 import { cookies } from 'next/headers';
 
-const baseUrl = process.env.BACKEND_URL || 'http://localhost:8080/api/v1'
+const baseUrl = process.env.BACKEND_URL || 'http://localhost:8080/api/v1';
 
 export const getBaseUrl = () => {
-  return baseUrl
-}
+  return baseUrl;
+};
 
 const axiosInstance = axios.create({
   baseURL: baseUrl,
@@ -16,7 +16,7 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use(
-  async (config) => {
+  (config) => {
     const cookieStore = cookies();
     config.headers['Cookie'] = `session=${cookieStore.get('session')?.value};`;
 
