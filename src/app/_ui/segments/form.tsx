@@ -9,7 +9,7 @@ import {
   InformationCircleIcon,
 } from '@heroicons/react/24/outline';
 import { createSegment, SegmentState } from '@/app/_lib/action/segment';
-import { useActionState } from 'react';
+import { useFormState } from 'react-dom';
 import { redirect } from 'next/navigation';
 import toast from 'react-hot-toast';
 import {
@@ -64,7 +64,7 @@ export default function SegmentForm({
     return createSegment(s, formData);
   };
 
-  const [state, formAction, pending] = useActionState(
+  const [state, formAction, pending] = useFormState(
     handleCreateSegment,
     initialState
   );
@@ -84,7 +84,7 @@ export default function SegmentForm({
 
         try {
           setPreviewLoading(true);
-          const [count, _] = await Promise.all([
+          const [count] = await Promise.all([
             previewUd(criteria),
             new Promise((r) => setTimeout(r, 300)),
           ]);
@@ -106,24 +106,18 @@ export default function SegmentForm({
   useDebouncedPreview(segmentFields.criteria, 1000);
 
   useEffect(() => {
-    if (!state.fieldErrors) {
-      if (state.error) {
-        toast.error(state.error ? state.error : 'Error encountered');
-      } else {
-        if (state.message) {
-          toast.success(state.message);
-        }
-        redirect(`/dashboard/segments/${state.segmentID}`);
-      }
+    if (state.fieldErrors) {
+      return;
     }
 
-    // keep form state
-    setSegmentFields({
-      id: segmentFields.id,
-      name: segmentFields.name,
-      segment_desc: segmentFields.segment_desc,
-      criteria: segmentFields.criteria,
-    });
+    if (state.error) {
+      toast.error(state.error ? state.error : 'Error encountered');
+    } else {
+      if (state.message) {
+        toast.success(state.message);
+      }
+      redirect(`/dashboard/segments/${state.segmentID}`);
+    }
   }, [state]);
 
   const atLastStep = currentStep === TOTAL_STEPS;

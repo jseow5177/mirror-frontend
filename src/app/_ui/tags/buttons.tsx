@@ -20,7 +20,7 @@ import {
 import { Button, Link } from '@nextui-org/react';
 import { Tag } from '@/app/_lib/model/tag';
 
-export function DeleteTag({ id, name }: { id: number; name: string }) {
+export function DeleteTag({ name }: { name: string }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   return (

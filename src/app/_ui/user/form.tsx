@@ -5,7 +5,8 @@ import { TagIcon } from '@heroicons/react/24/outline';
 import { Button, Input } from '@nextui-org/react';
 import clsx from 'clsx';
 import { redirect } from 'next/navigation';
-import React, { useActionState, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useFormState } from 'react-dom';
 import toast from 'react-hot-toast';
 
 export default function LogInForm() {
@@ -14,7 +15,7 @@ export default function LogInForm() {
     fieldErrors: {},
     error: null,
   };
-  const [state, formAction, pending] = useActionState(logIn, initialState);
+  const [state, formAction, pending] = useFormState(logIn, initialState);
 
   const [logInFields, setLogInFields] = useState({
     tenant_name: '',
@@ -23,23 +24,18 @@ export default function LogInForm() {
   });
 
   useEffect(() => {
-    if (!state.fieldErrors) {
-      if (state.error) {
-        toast.error(state.error ? state.error : 'Error encountered');
-      } else {
-        if (state.message) {
-          toast.success(state.message);
-        }
-        redirect('/dashboard');
-      }
+    if (state.fieldErrors) {
+      return;
     }
 
-    // keep form state
-    setLogInFields({
-      tenant_name: logInFields.tenant_name,
-      username: logInFields.username,
-      password: logInFields.password,
-    });
+    if (state.error) {
+      toast.error(state.error ? state.error : 'Error encountered');
+    } else {
+      if (state.message) {
+        toast.success(state.message);
+      }
+      redirect('/dashboard');
+    }
   }, [state]);
 
   return (
@@ -131,6 +127,7 @@ export default function LogInForm() {
               password: v,
             })
           }
+          autoComplete='on'
         />
 
         <div className='flex justify-end'>

@@ -6,7 +6,7 @@ import { Tag, TagValueType, TagValueTypes } from '@/app/_lib/model/tag';
 import { DocumentTextIcon, TagIcon } from '@heroicons/react/24/outline';
 import { useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { useActionState } from 'react';
+import { useFormState } from 'react-dom';
 import { redirect } from 'next/navigation';
 import {
   Link,
@@ -29,34 +29,28 @@ export default function TagForm({ tag }: { tag?: Tag }) {
     error: null,
     tagID: null,
   };
-  const [state, formAction, pending] = useActionState(createTag, initialState);
+  const [state, formAction, pending] = useFormState(createTag, initialState);
 
   const [tagFields, setTagFields] = useState({
     id: tag?.id ? `${tag?.id}` : '0',
     name: tag?.name || '',
     tag_desc: tag?.tag_desc || '',
-    valueType: tag?.value_type || '0',
+    value_type: tag?.value_type || '0',
   });
 
   useEffect(() => {
-    if (!state.fieldErrors) {
-      if (state.error) {
-        toast.error(state.error ? state.error : 'Error encountered');
-      } else {
-        if (state.message) {
-          toast.success(state.message);
-        }
-        redirect(`/dashboard/tags/${state.tagID}`);
-      }
+    if (state.fieldErrors) {
+      return;
     }
 
-    // keep form state
-    setTagFields({
-      id: tagFields.id,
-      name: tagFields.name,
-      tag_desc: tagFields.tag_desc,
-      valueType: tagFields.valueType,
-    });
+    if (state.error) {
+      toast.error(state.error ? state.error : 'Error encountered');
+    } else {
+      if (state.message) {
+        toast.success(state.message);
+      }
+      redirect(`/dashboard/tags/${state.tagID}`);
+    }
   }, [state]);
 
   return (
@@ -122,7 +116,7 @@ export default function TagForm({ tag }: { tag?: Tag }) {
             name='valueType'
             label='Tag Value Type'
             orientation='horizontal'
-            value={`${tagFields.valueType}`}
+            value={`${tagFields.value_type}`}
             isInvalid={state.fieldErrors?.valueType && true}
             errorMessage={
               state.fieldErrors?.valueType && state.fieldErrors?.valueType[0]
@@ -130,7 +124,7 @@ export default function TagForm({ tag }: { tag?: Tag }) {
             onValueChange={(v) =>
               setTagFields({
                 ...tagFields,
-                valueType: v,
+                value_type: v,
               })
             }
           >

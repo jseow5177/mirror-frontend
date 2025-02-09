@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect } from 'react';
 import { Criteria, Lookup } from '@/app/_lib/model/segment';
 import { Tag } from '@/app/_lib/model/tag';
 import { useState } from 'react';
@@ -119,16 +118,17 @@ export const QueryBuilder = ({
       : initialCriteria
   );
 
-  useEffect(() => {
+  const handleCriteriaChange = (newCriteria: Criteria) => {
+    setCriteria(newCriteria);
     onChange(criteria);
-  }, [criteria]);
+  };
 
   const changeQueryOp = (op: string) => {
-    setCriteria({ ...criteria, op: op });
+    handleCriteriaChange({ ...criteria, op: op });
   };
 
   const changeLookupOp = (queryIdx: number, op: string) => {
-    setCriteria({
+    handleCriteriaChange({
       ...criteria,
       queries: [
         ...criteria.queries.slice(0, queryIdx),
@@ -146,7 +146,7 @@ export const QueryBuilder = ({
     lookupIdx: number,
     lookup: Lookup
   ) => {
-    setCriteria({
+    handleCriteriaChange({
       ...criteria,
       queries: [
         ...criteria.queries.slice(0, queryIdx),
@@ -164,7 +164,7 @@ export const QueryBuilder = ({
   };
 
   const addLookup = (queryIdx: number) => {
-    setCriteria({
+    handleCriteriaChange({
       ...criteria,
       queries: [
         ...criteria.queries.slice(0, queryIdx),
@@ -183,7 +183,7 @@ export const QueryBuilder = ({
   };
 
   const addQuery = () => {
-    setCriteria({
+    handleCriteriaChange({
       ...criteria,
       queries: [
         ...criteria.queries,
@@ -216,14 +216,14 @@ export const QueryBuilder = ({
       })
       .filter((query) => query !== null);
 
-    setCriteria({
+    handleCriteriaChange({
       ...criteria,
       queries: updatedQueries,
     });
   };
 
   const copyLookup = (queryIdx: number, lookupIdx: number) => {
-    setCriteria({
+    handleCriteriaChange({
       ...criteria,
       queries: [
         ...criteria.queries.slice(0, queryIdx),
@@ -326,7 +326,7 @@ export const QueryBuilder = ({
                             className='mt-4'
                             isDisabled={isMaxLookup()}
                             size='sm'
-                            onPress={(_) => addLookup(queryIdx)}
+                            onPress={() => addLookup(queryIdx)}
                           >
                             + Add Lookup
                           </Link>

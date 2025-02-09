@@ -1,5 +1,4 @@
 import { getCampaign } from '@/app/_lib/data/campaign';
-import { getSegment } from '@/app/_lib/data/segment';
 import BaseBreadcrumbs from '@/app/_ui/breadcrumbs';
 import CampaignView from '@/app/_ui/campaigns/view';
 import { notFound } from 'next/navigation';

@@ -1,6 +1,7 @@
 'use client';
 
-import { useActionState, useEffect, useMemo, useRef, useState } from 'react';
+import { useFormState } from 'react-dom';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Button,
   Pagination,
@@ -174,7 +175,6 @@ export default function DragAndDrop({ tag }: { tag: Tag }) {
   };
 
   const initialState: TaskState = {
-    fieldErrors: {},
     message: null,
     error: null,
   };
@@ -187,23 +187,21 @@ export default function DragAndDrop({ tag }: { tag: Tag }) {
     return createFileUploadTask(s, formData);
   };
 
-  const [state, formAction, pending] = useActionState(
+  const [state, formAction, pending] = useFormState(
     handleFileUpload,
     initialState
   );
 
   useEffect(() => {
-    if (!state.fieldErrors) {
-      if (state.error) {
-        toast.error(state.error ? state.error : 'Error encountered');
-      } else {
-        if (state.message) {
-          toast.success(state.message);
-        }
-        redirect(`/dashboard/tags/${tag.id}`);
+    if (state.error) {
+      toast.error(state.error ? state.error : 'Error encountered');
+    } else {
+      if (state.message) {
+        toast.success(state.message);
       }
+      redirect(`/dashboard/tags/${tag.id}`);
     }
-  }, [state]);
+  }, [state, tag.id]);
 
   return (
     <div className='w-[35rem]'>

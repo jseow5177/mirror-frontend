@@ -9,8 +9,11 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang='en'>
-      <body className={`${roboto.className} antialiased`}>
+    <html lang='en' suppressHydrationWarning={true}>
+      <body
+        className={`${roboto.className} antialiased`}
+        suppressHydrationWarning={true}
+      >
         <NextUIProvider>{children}</NextUIProvider>
         <Toaster
           position='top-center'

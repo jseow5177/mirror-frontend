@@ -24,7 +24,7 @@ async function isUserLoggedIn() {
   try {
     await axiosInstance.get('/is_logged_in');
     return true;
-  } catch (error) {
+  } catch {
     return false;
   }
 }

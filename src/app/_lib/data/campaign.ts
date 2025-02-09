@@ -40,7 +40,9 @@ type GetCampaignResponse = {
   segment: Segment;
 };
 
-export async function getCampaign(campaignID: number): Promise<[Campaign, Segment]> {
+export async function getCampaign(
+  campaignID: number
+): Promise<[Campaign, Segment]> {
   try {
     const resp = await axiosInstance.post('/get_campaign', {
       campaign_id: campaignID,

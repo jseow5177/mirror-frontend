@@ -10,7 +10,7 @@ import {
   ArrowLeftStartOnRectangleIcon,
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-import { redirect, usePathname } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 import { Button } from '@nextui-org/react';
 import { logOut } from '@/app/_lib/action/user';

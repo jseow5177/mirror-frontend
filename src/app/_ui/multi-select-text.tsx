@@ -1,4 +1,4 @@
-import React, { KeyboardEventHandler, useEffect, useState } from 'react';
+import React, { KeyboardEventHandler, useState } from 'react';
 import CreatableSelect from 'react-select/creatable';
 
 const components = {
@@ -97,7 +97,7 @@ export default function MultiSelectTextInput({
               backgroundColor: 'white',
             };
           },
-          multiValue: (baseStyles, state) => {
+          multiValue: (baseStyles) => {
             return {
               ...baseStyles,
               backgroundColor: 'white',

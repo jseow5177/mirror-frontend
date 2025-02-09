@@ -6,8 +6,6 @@ import { Button } from '@nextui-org/react';
 import Link from 'next/link';
 import { ArrowUpTrayIcon } from '@heroicons/react/24/outline';
 import { getTagFileUploadTasks } from '@/app/_lib/data/task';
-import TaskTable from '@/app/_ui/tags/task-table';
-import BasePagination from '@/app/_ui/pagination';
 
 export default async function Page({
   params,

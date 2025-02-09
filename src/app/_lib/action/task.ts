@@ -4,7 +4,6 @@ import axiosInstance from '../axios';
 import { handleAxiosError } from '../utils';
 
 export type TaskState = {
-  fieldErrors?: {};
   error?: string | null;
   message?: string | null;
 };

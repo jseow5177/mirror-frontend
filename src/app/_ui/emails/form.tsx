@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useActionState, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { useFormState } from 'react-dom';
 import EmailEditor, { EditorRef } from 'react-email-editor';
 import { Button, Link, Divider, Input, Textarea } from '@nextui-org/react';
 import { Email } from '@/app/_lib/model/email';
@@ -45,31 +46,24 @@ export default function EmailForm({ email }: { email?: Email }) {
     return createEmail(s, formData);
   };
 
-  const [state, formAction, pending] = useActionState(
+  const [state, formAction, pending] = useFormState(
     handleCreateEmail,
     initialState
   );
 
   useEffect(() => {
-    if (!state.fieldErrors) {
-      if (state.error) {
-        toast.error(state.error ? state.error : 'Error encountered');
-      } else {
-        if (state.message) {
-          toast.success(state.message);
-        }
-        redirect(`/dashboard/emails/${state.emailID}`);
-      }
+    if (state.fieldErrors) {
+      return;
     }
 
-    // keep form state
-    setEmailFields({
-      id: emailFields.id,
-      name: emailFields.name,
-      email_desc: emailFields.email_desc,
-      json: emailFields.json,
-      html: emailFields.html,
-    });
+    if (state.error) {
+      toast.error(state.error ? state.error : 'Error encountered');
+    } else {
+      if (state.message) {
+        toast.success(state.message);
+      }
+      redirect(`/dashboard/emails/${state.emailID}`);
+    }
   }, [state]);
 
   const atLastStep = currentStep === TOTAL_STEPS;

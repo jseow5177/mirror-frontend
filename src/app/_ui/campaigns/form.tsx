@@ -8,7 +8,8 @@ import {
   sumRatioEquals100,
 } from '@/app/_lib/model/campaign';
 import { Email } from '@/app/_lib/model/email';
-import { useActionState, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useFormState } from 'react-dom';
 import NumberCircles from '../number-circle';
 import {
   Button,
@@ -136,7 +137,7 @@ export default function CampaignForm({
       const debounce = setTimeout(async () => {
         try {
           setIsCountLoading(true);
-          const [count, _] = await Promise.all([
+          const [count] = await Promise.all([
             countUd(segmentID),
             new Promise((r) => setTimeout(r, 300)),
           ]);
@@ -168,38 +169,24 @@ export default function CampaignForm({
     return createCampaign(s, formData);
   };
 
-  const [state, formAction, pending] = useActionState(
+  const [state, formAction, pending] = useFormState(
     handleCreateCampaign,
     initialState
   );
 
   useEffect(() => {
-    if (!state.fieldErrors) {
-      if (state.error) {
-        toast.error(state.error ? state.error : 'Error encountered');
-      } else {
-        if (state.message) {
-          toast.success(state.message);
-        }
-        redirect('/dashboard/campaigns');
-      }
+    if (state.fieldErrors) {
+      return;
     }
 
-    if (campaignFields.schedule !== '0') {
-      setCampaignStartOption(CAMPAIGN_START_SCHEDULE);
+    if (state.error) {
+      toast.error(state.error ? state.error : 'Error encountered');
     } else {
-      setCampaignStartOption(CAMPAIGN_START_NOW);
+      if (state.message) {
+        toast.success(state.message);
+      }
+      redirect('/dashboard/campaigns');
     }
-
-    // keep form state
-    setCampaignFields({
-      id: campaignFields.id,
-      name: campaignFields.name,
-      campaign_desc: campaignFields.campaign_desc,
-      emails: campaignFields.emails,
-      segment_id: campaignFields.segment_id,
-      schedule: campaignFields.schedule,
-    });
   }, [state]);
 
   const atLastStep = currentStep === TOTAL_STEPS;
