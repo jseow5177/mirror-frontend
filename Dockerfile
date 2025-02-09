@@ -1,45 +1,21 @@
-FROM node:18-alpine AS base
-
-FROM base AS deps
-RUN apk add --no-cache libc6-compat
+FROM node:20 AS base
 WORKDIR /app
-
-# Install pnpm globally
-RUN npm install -g pnpm
-
-# Copy package.json and pnpm-lock.yaml before installing dependencies
+RUN npm i -g pnpm
 COPY package.json pnpm-lock.yaml ./
 
-# Install dependencies using pnpm
-RUN pnpm install --frozen-lockfile
+RUN pnpm install
 
-FROM base AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-
-ENV NEXT_TELEMETRY_DISABLED 1
-
 RUN pnpm build
 
-FROM base AS runner
+FROM node:20-alpine3.19 as release
 WORKDIR /app
+RUN npm i -g pnpm
 
-ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
-
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-
-COPY --from=builder /app/public ./public
-COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
-
-USER nextjs
+COPY --from=base /app/node_modules ./node_modules
+COPY --from=base /app/package.json ./package.json
+COPY --from=base /app/.next ./.next
 
 EXPOSE 3000
-
-ENV PORT 3000
 
 CMD ["pnpm", "start"]
