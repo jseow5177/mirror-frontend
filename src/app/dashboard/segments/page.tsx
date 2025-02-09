@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import SearchBar from '@/app/_ui/search-bar';
 import { getSegments } from '@/app/_lib/data/segment';
 import SegmentTable from '@/app/_ui/segments/table';

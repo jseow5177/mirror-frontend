@@ -1,5 +1,3 @@
-export const dynamic = 'force-dynamic';
-
 import { CreateEmail } from '@/app/_ui/emails/buttons';
 import { getEmails } from '@/app/_lib/data/email';
 import EmailTable from '@/app/_ui/emails/table';
