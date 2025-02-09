@@ -11,7 +11,7 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   async (config) => {
-    const cookieStore = await cookies();
+    const cookieStore = cookies();
     config.headers['Cookie'] = `session=${cookieStore.get('session')?.value};`;
 
     return config;

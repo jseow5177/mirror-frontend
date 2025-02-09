@@ -54,7 +54,7 @@ export async function logIn(_: LogInState, formData: FormData) {
 
     const body: LogInResponse = resp.data.body;
 
-    const cookieStore = await cookies();
+    const cookieStore = cookies();
     cookieStore.set(cookie.name, body.session.token, {
       ...cookie.options,
       expires: new Date(body.session.expire_time * 1000),
@@ -75,7 +75,7 @@ export async function logOut() {
   try {
     await axiosInstance.post('/log_out', {});
 
-    const cookieStore = await cookies();
+    const cookieStore = cookies();
     cookieStore.delete(cookie.name);
 
     redirect('/');
