@@ -4,7 +4,7 @@ import axios from 'axios';
 import { cookies } from 'next/headers';
 
 const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:9090/api/v1',
+  baseURL: process.env.BACKEND_URL || 'http://localhost:9090/api/v1',
   timeout: 30000,
   withCredentials: true, // TODO: NOT WORKING?
 });
