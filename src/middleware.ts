@@ -43,7 +43,7 @@ async function isUserLoggedIn() {
     }
 
     return true;
-  } catch (error) {
+  } catch {
     return false;
   }
 }
