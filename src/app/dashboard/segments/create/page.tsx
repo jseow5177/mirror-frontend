@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import Breadcrumbs from '@/app/_ui/breadcrumbs';
 import SegmentForm from '@/app/_ui/segments/form';
 import { getTags } from '@/app/_lib/data/tag';
