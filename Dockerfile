@@ -16,8 +16,8 @@ RUN pnpm install
 # Copy the rest of the application code
 COPY . .
 
-COPY next.config.js .sentryclirc app-pocketup-fr.json .env.local tsconfig.json sentry.* ./
-COPY tailwind.config.js ecosystem.config.js postcss.config.js ./
+COPY next.config.mjs tsconfig.json ./
+COPY tailwind.config.js postcss.config.js ./
 
 # Build the Next.js app
 RUN pnpm build
