@@ -53,6 +53,8 @@ export default function TagForm({ tag }: { tag?: Tag }) {
     }
   }, [state]);
 
+  console.log('tag form is pending? ', pending);
+
   return (
     <form className='w-1/2' action={formAction}>
       <div className='border-gray-60 rounded-md border-2 p-6'>
