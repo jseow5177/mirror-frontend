@@ -1,12 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { startTransition, useActionState, useState } from 'react';
 import { createTag, TagState } from '@/app/_lib/action/tag';
 import { Tag, TagValueType, TagValueTypes } from '@/app/_lib/model/tag';
 import { DocumentTextIcon, TagIcon } from '@heroicons/react/24/outline';
 import { useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { useFormState } from 'react-dom';
 import { redirect } from 'next/navigation';
 import {
   Link,
@@ -29,7 +28,7 @@ export default function TagForm({ tag }: { tag?: Tag }) {
     error: null,
     tagID: null,
   };
-  const [state, formAction, pending] = useFormState(createTag, initialState);
+  const [state, formAction, pending] = useActionState(createTag, initialState);
 
   const [tagFields, setTagFields] = useState({
     id: tag?.id ? `${tag?.id}` : '0',
@@ -53,10 +52,14 @@ export default function TagForm({ tag }: { tag?: Tag }) {
     }
   }, [state]);
 
-  console.log('tag form is pending? ', pending);
-
   return (
-    <form className='w-1/2' action={formAction}>
+    <form
+      className='w-1/2'
+      onSubmit={(e) => {
+        e.preventDefault();
+        startTransition(() => formAction(new FormData(e.currentTarget)));
+      }}
+    >
       <div className='border-gray-60 rounded-md border-2 p-6'>
         {/* Tag ID */}
         {isUpdate && (

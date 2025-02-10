@@ -24,7 +24,7 @@
     "html-react-parser": "^5.2.1",
     "html-to-image": "^1.11.11",
     "isomorphic-dompurify": "^2.20.0",
-    "next": "^14.0.0",
+    "next": "15.1.6",
     "next-auth": "^4.24.8",
     "pg": "^8.13.0",
     "queue": "^7.0.0",

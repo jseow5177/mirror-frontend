@@ -1,7 +1,13 @@
 'use client';
 
-import { useFormState } from 'react-dom';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import {
+  startTransition,
+  useActionState,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   Button,
   Pagination,
@@ -187,7 +193,7 @@ export default function DragAndDrop({ tag }: { tag: Tag }) {
     return createFileUploadTask(s, formData);
   };
 
-  const [state, formAction, pending] = useFormState(
+  const [state, formAction, pending] = useActionState(
     handleFileUpload,
     initialState
   );
@@ -205,7 +211,12 @@ export default function DragAndDrop({ tag }: { tag: Tag }) {
 
   return (
     <div className='w-[35rem]'>
-      <form action={formAction}>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          startTransition(() => formAction(new FormData(e.currentTarget)));
+        }}
+      >
         {file ? (
           <div>
             <div

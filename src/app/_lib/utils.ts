@@ -2,6 +2,9 @@ import { Criteria } from './model/segment';
 import axios from 'axios';
 import { notFound, redirect } from 'next/navigation';
 
+export const baseUrl =
+  process.env.BACKEND_URL || 'http://localhost:8080/api/v1';
+
 export const convertUnixToLocalTime = (unixMilliseconds: number) => {
   const date = new Date(unixMilliseconds * 1000);
 

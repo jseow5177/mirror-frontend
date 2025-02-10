@@ -2,12 +2,7 @@
 
 import axios from 'axios';
 import { cookies } from 'next/headers';
-
-const baseUrl = process.env.BACKEND_URL || 'http://localhost:8080/api/v1';
-
-export const getBaseUrl = () => {
-  return baseUrl;
-};
+import { baseUrl } from './utils';
 
 const axiosInstance = axios.create({
   baseURL: baseUrl,
@@ -16,8 +11,8 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use(
-  (config) => {
-    const cookieStore = cookies();
+  async (config) => {
+    const cookieStore = await cookies();
     config.headers['Cookie'] = `session=${cookieStore.get('session')?.value};`;
 
     return config;

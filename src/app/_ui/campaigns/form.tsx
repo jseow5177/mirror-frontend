@@ -8,8 +8,7 @@ import {
   sumRatioEquals100,
 } from '@/app/_lib/model/campaign';
 import { Email } from '@/app/_lib/model/email';
-import { useEffect, useState } from 'react';
-import { useFormState } from 'react-dom';
+import { useEffect, useState, useActionState, startTransition } from 'react';
 import NumberCircles from '../number-circle';
 import {
   Button,
@@ -169,7 +168,7 @@ export default function CampaignForm({
     return createCampaign(s, formData);
   };
 
-  const [state, formAction, pending] = useFormState(
+  const [state, formAction, pending] = useActionState(
     handleCreateCampaign,
     initialState
   );
@@ -657,7 +656,13 @@ export default function CampaignForm({
 
   return (
     <div className='flex w-full flex-col items-center'>
-      <form className='w-[90%] rounded-md' action={formAction}>
+      <form
+        className='w-[90%] rounded-md'
+        onSubmit={(e) => {
+          e.preventDefault();
+          startTransition(() => formAction(new FormData(e.currentTarget)));
+        }}
+      >
         <div className='flex w-full items-center justify-between'>
           <NumberCircles
             totalSteps={TOTAL_STEPS}

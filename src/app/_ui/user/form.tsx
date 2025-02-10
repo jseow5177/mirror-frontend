@@ -5,8 +5,12 @@ import { TagIcon } from '@heroicons/react/24/outline';
 import { Button, Input } from '@nextui-org/react';
 import clsx from 'clsx';
 import { redirect } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
-import { useFormState } from 'react-dom';
+import React, {
+  startTransition,
+  useActionState,
+  useEffect,
+  useState,
+} from 'react';
 import toast from 'react-hot-toast';
 
 export default function LogInForm() {
@@ -15,7 +19,7 @@ export default function LogInForm() {
     fieldErrors: {},
     error: null,
   };
-  const [state, formAction, pending] = useFormState(logIn, initialState);
+  const [state, formAction, pending] = useActionState(logIn, initialState);
 
   const [logInFields, setLogInFields] = useState({
     tenant_name: '',
@@ -39,7 +43,13 @@ export default function LogInForm() {
   }, [state]);
 
   return (
-    <form className='w-1/2' action={formAction}>
+    <form
+      className='w-1/2'
+      onSubmit={(e) => {
+        e.preventDefault();
+        startTransition(() => formAction(new FormData(e.currentTarget)));
+      }}
+    >
       <div className='border-gray-60 rounded-md border-2 p-6'>
         {/* Tenant Name */}
         <div

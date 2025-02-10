@@ -1,7 +1,12 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
-import { useFormState } from 'react-dom';
+import React, {
+  startTransition,
+  useActionState,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import EmailEditor, { EditorRef } from 'react-email-editor';
 import { Button, Link, Divider, Input, Textarea } from '@nextui-org/react';
 import { Email } from '@/app/_lib/model/email';
@@ -46,7 +51,7 @@ export default function EmailForm({ email }: { email?: Email }) {
     return createEmail(s, formData);
   };
 
-  const [state, formAction, pending] = useFormState(
+  const [state, formAction, pending] = useActionState(
     handleCreateEmail,
     initialState
   );
@@ -112,7 +117,13 @@ export default function EmailForm({ email }: { email?: Email }) {
 
   return (
     <div className='flex w-full flex-col items-center'>
-      <form className='w-[90%] rounded-md' action={formAction}>
+      <form
+        className='w-[90%] rounded-md'
+        onSubmit={(e) => {
+          e.preventDefault();
+          startTransition(() => formAction(new FormData(e.currentTarget)));
+        }}
+      >
         <div className='flex w-full items-center justify-between'>
           <NumberCircles
             totalSteps={TOTAL_STEPS}

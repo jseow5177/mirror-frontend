@@ -1,6 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useActionState,
+  startTransition,
+} from 'react';
 import { Segment } from '@/app/_lib/model/segment';
 import { Tag } from '@/app/_lib/model/tag';
 import {
@@ -9,7 +14,6 @@ import {
   InformationCircleIcon,
 } from '@heroicons/react/24/outline';
 import { createSegment, SegmentState } from '@/app/_lib/action/segment';
-import { useFormState } from 'react-dom';
 import { redirect } from 'next/navigation';
 import toast from 'react-hot-toast';
 import {
@@ -64,7 +68,7 @@ export default function SegmentForm({
     return createSegment(s, formData);
   };
 
-  const [state, formAction, pending] = useFormState(
+  const [state, formAction, pending] = useActionState(
     handleCreateSegment,
     initialState
   );
@@ -139,7 +143,13 @@ export default function SegmentForm({
 
   return (
     <div className='flex w-full flex-col items-center'>
-      <form className='w-[90%] rounded-md' action={formAction}>
+      <form
+        className='w-[90%] rounded-md'
+        onSubmit={(e) => {
+          e.preventDefault();
+          startTransition(() => formAction(new FormData(e.currentTarget)));
+        }}
+      >
         <div className='flex w-full items-center justify-between'>
           <NumberCircles
             totalSteps={TOTAL_STEPS}

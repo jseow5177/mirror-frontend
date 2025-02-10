@@ -45,8 +45,9 @@ export async function logIn(_: LogInState, formData: FormData) {
 
   const { tenant_name, username, password } = fields.data;
 
-  const cookieStore = cookies();
   try {
+    const cookieStore = await cookies();
+
     const resp = await axiosInstance.post('/log_in', {
       tenant_name: tenant_name,
       username: username,
@@ -72,10 +73,10 @@ export async function logIn(_: LogInState, formData: FormData) {
 }
 
 export async function logOut() {
-  const cookieStore = cookies();
   try {
     await axiosInstance.post('/log_out', {});
 
+    const cookieStore = await cookies();
     cookieStore.delete(cookie.name);
 
     redirect('/');
