@@ -54,7 +54,7 @@ import {
   DateValue,
   getLocalTimeZone,
 } from '@internationalized/date';
-import EmailHtml from '../email_html';
+import EmailHtml from '../email-html';
 
 const TOTAL_STEPS = 3;
 

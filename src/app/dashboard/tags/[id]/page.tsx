@@ -2,8 +2,7 @@ import { notFound } from 'next/navigation';
 import { getTag } from '@/app/_lib/data/tag';
 import TagView from '@/app/_ui/tags/view';
 import BaseBreadcrumbs from '@/app/_ui/breadcrumbs';
-import { Button } from '@nextui-org/react';
-import Link from 'next/link';
+import { Button, Link } from '@nextui-org/react';
 import { ArrowUpTrayIcon } from '@heroicons/react/24/outline';
 import { getTagFileUploadTasks } from '@/app/_lib/data/task';
 
@@ -11,13 +10,16 @@ export default async function Page({
   params,
   searchParams,
 }: {
-  params: { id: string };
-  searchParams?: {
+  params: Promise<{ id: string }>;
+  searchParams?: Promise<{
     page?: string;
-  };
+  }>;
 }) {
-  const id = params.id;
-  const currentTaskPage = Number(searchParams?.page) || 1;
+  const p = await params;
+  const sp = await searchParams;
+
+  const currentTaskPage = Number(sp?.page) || 1;
+  const id = p.id;
 
   const fetchTagData = async () => {
     const tagID = Number(id) | 0;

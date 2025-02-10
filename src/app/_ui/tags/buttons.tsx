@@ -16,8 +16,9 @@ import {
   ModalFooter,
   useDisclosure,
   ButtonGroup,
+  Button,
+  Link,
 } from '@nextui-org/react';
-import { Button, Link } from '@nextui-org/react';
 import { Tag } from '@/app/_lib/model/tag';
 
 export function DeleteTag({ name }: { name: string }) {

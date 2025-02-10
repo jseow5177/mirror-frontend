@@ -3,8 +3,13 @@ import BaseBreadcrumbs from '@/app/_ui/breadcrumbs';
 import CampaignView from '@/app/_ui/campaigns/view';
 import { notFound } from 'next/navigation';
 
-export default async function Page({ params }: { params: { id: string } }) {
-  const id = params.id;
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const p = await params;
+  const id = p.id;
 
   const fetchData = async () => {
     const campaignID = Number(id) | 0;

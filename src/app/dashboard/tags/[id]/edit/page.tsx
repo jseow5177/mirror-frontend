@@ -4,8 +4,14 @@ import TagForm from '@/app/_ui/tags/form';
 import { notFound } from 'next/navigation';
 import { getTag } from '@/app/_lib/data/tag';
 
-export default async function Page({ params }: { params: { id: string } }) {
-  const id = params.id;
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const p = await params;
+  const id = p.id;
+
   const tag = await getTag(Number(id));
 
   if (!tag) {

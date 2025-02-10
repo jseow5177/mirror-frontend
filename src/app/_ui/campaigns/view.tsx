@@ -28,7 +28,7 @@ import { Progress } from '@nextui-org/react';
 import { campaignStatusColors } from '../utils';
 import { useState } from 'react';
 import { EyeIcon } from '@heroicons/react/24/outline';
-import EmailHtml from '../email_html';
+import EmailHtml from '../email-html';
 import { DetailGrid, DetailRow } from '../detail';
 import { Segment } from '@/app/_lib/model/segment';
 

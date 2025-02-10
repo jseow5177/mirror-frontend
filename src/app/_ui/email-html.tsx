@@ -73,6 +73,7 @@ export default function EmailHtml({
       dangerouslySetInnerHTML={{
         __html: renderToString(renderHtml()),
       }}
+      className='max-w-[600px]'
     />
   );
 }

@@ -181,6 +181,7 @@ export default function DragAndDrop({ tag }: { tag: Tag }) {
   };
 
   const initialState: TaskState = {
+    fieldErrors: {},
     message: null,
     error: null,
   };
@@ -199,6 +200,10 @@ export default function DragAndDrop({ tag }: { tag: Tag }) {
   );
 
   useEffect(() => {
+    if (state.fieldErrors) {
+      return;
+    }
+
     if (state.error) {
       toast.error(state.error ? state.error : 'Error encountered');
     } else {

@@ -2,7 +2,7 @@
 
 import { Email } from '@/app/_lib/model/email';
 import { convertUnixToLocalTime } from '@/app/_lib/utils';
-import EmailHtml from '../email_html';
+import EmailHtml from '../email-html';
 import { DetailGrid, DetailRow } from '../detail';
 
 export default function EmailView({ email }: { email: Email }) {
