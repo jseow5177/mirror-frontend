@@ -69,19 +69,6 @@ export function CreateTag() {
   );
 }
 
-export function UpdateTag({ id }: { id: number }) {
-  return (
-    <Button
-      isIconOnly
-      variant='bordered'
-      as={Link}
-      href={`/dashboard/tags/${id}/edit`}
-    >
-      <PencilIcon className='h-5' />
-    </Button>
-  );
-}
-
 export function ViewTag({ id }: { id: number }) {
   return (
     <Button
