@@ -94,15 +94,19 @@ export default function EmailForm({ email }: { email?: Email }) {
 
       unlayer.exportHtml((data) => {
         const { html } = data;
-        const encodedHtml = btoa(html);
+        try {
+          const encodedHtml = btoa(html);
+          setEmailFields((prevFields) => ({
+            ...prevFields,
+            json,
+            html: encodedHtml,
+          }));
 
-        setEmailFields((prevFields) => ({
-          ...prevFields,
-          json,
-          html: encodedHtml,
-        }));
-
-        nextStep();
+          nextStep();
+        } catch (error) {
+          console.log(`encode email err: ${error}`);
+          toast.error('Fail to encode email html');
+        }
       });
     });
   };

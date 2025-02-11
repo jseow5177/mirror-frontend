@@ -217,7 +217,7 @@ export default function SegmentForm({
               ) : (
                 <Button
                   type='button'
-                  isDisabled={pending}
+                  isDisabled={pending || isPreviewLoading}
                   color='primary'
                   variant='solid'
                   onClick={(e) => {
