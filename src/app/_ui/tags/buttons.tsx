@@ -2,7 +2,6 @@
 
 import React from 'react';
 import {
-  PencilIcon,
   TrashIcon,
   PlusIcon,
   EyeIcon,
