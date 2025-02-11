@@ -120,7 +120,7 @@ export const QueryBuilder = ({
 
   const handleCriteriaChange = (newCriteria: Criteria) => {
     setCriteria(newCriteria);
-    onChange(criteria);
+    onChange(newCriteria);
   };
 
   const changeQueryOp = (op: string) => {
