@@ -1,7 +1,13 @@
 'use client';
 
 import { logIn, LogInState } from '@/app/_lib/action/user';
-import { TagIcon } from '@heroicons/react/24/outline';
+import {
+  BuildingOfficeIcon,
+  EnvelopeIcon,
+  ShieldCheckIcon,
+  TagIcon,
+  UserIcon,
+} from '@heroicons/react/24/outline';
 import { Button, Input } from '@nextui-org/react';
 import clsx from 'clsx';
 import { redirect } from 'next/navigation';
@@ -52,19 +58,18 @@ export default function LogInForm() {
     >
       <div className='border-gray-60 rounded-md border-2 p-6'>
         {/* Tenant Name */}
-        <div
-          className={clsx('mb-2 flex gap-2', {
-            'text-danger': state.fieldErrors?.tenant_name,
-          })}
-        >
-          <TagIcon className='w-5' />
-          <p className='text-lg'>Tenant Name</p>
-        </div>
         <Input
           className='mb-6'
           id='tenant_name'
           name='tenant_name'
           variant='bordered'
+          label={
+            <div className='flex gap-2'>
+              <BuildingOfficeIcon className='w-5' />
+              <p className='text-lg'>Tenant Name</p>
+            </div>
+          }
+          labelPlacement='inside'
           fullWidth
           size='lg'
           value={logInFields.tenant_name}
@@ -81,19 +86,18 @@ export default function LogInForm() {
         />
 
         {/* User name */}
-        <div
-          className={clsx('mb-2 flex gap-2', {
-            'text-danger': state.fieldErrors?.username,
-          })}
-        >
-          <TagIcon className='w-5' />
-          <p className='text-lg'>Username</p>
-        </div>
         <Input
           className='mb-6'
           id='username'
           name='username'
           variant='bordered'
+          label={
+            <div className='flex gap-2'>
+              <UserIcon className='w-5' />
+              <p className='text-lg'>Username</p>
+            </div>
+          }
+          labelPlacement='inside'
           fullWidth
           size='lg'
           value={logInFields.username}
@@ -110,20 +114,19 @@ export default function LogInForm() {
         />
 
         {/* Password */}
-        <div
-          className={clsx('mb-2 flex gap-2', {
-            'text-danger': state.fieldErrors?.password,
-          })}
-        >
-          <TagIcon className='w-5' />
-          <p className='text-lg'>Password</p>
-        </div>
         <Input
           className='mb-6'
           id='password'
           name='password'
           variant='bordered'
           type='password'
+          label={
+            <div className='flex gap-2'>
+              <ShieldCheckIcon className='w-5' />
+              <p className='text-lg'>Password</p>
+            </div>
+          }
+          labelPlacement='inside'
           fullWidth
           size='lg'
           value={logInFields.password}

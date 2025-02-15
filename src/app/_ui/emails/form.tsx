@@ -210,19 +210,18 @@ export default function EmailForm({ email }: { email?: Email }) {
             )}
 
             {/* Email Name */}
-            <div
-              className={clsx('mb-2 flex gap-2', {
-                'text-danger': state.fieldErrors?.name,
-              })}
-            >
-              <TagIcon className='w-5' />
-              <p className='text-lg'>Name</p>
-            </div>
             <Input
               className='mb-6 w-1/2'
               id='name'
               name='name'
               variant='bordered'
+              label={
+                <div className='flex gap-2'>
+                  <TagIcon className='w-5' />
+                  <p className='text-lg'>Name</p>
+                </div>
+              }
+              labelPlacement='inside'
               fullWidth={false}
               size='lg'
               value={emailFields.name}
@@ -239,19 +238,18 @@ export default function EmailForm({ email }: { email?: Email }) {
             />
 
             {/* Email Description */}
-            <div
-              className={clsx('mb-2 flex gap-2', {
-                'text-danger': state.fieldErrors?.email_desc,
-              })}
-            >
-              <DocumentTextIcon className='w-5' />
-              <p className='text-lg'>Description</p>
-            </div>
             <Textarea
               className='w-1/2'
               id='email_desc'
               name='email_desc'
               variant='bordered'
+              label={
+                <div className='flex gap-2'>
+                  <DocumentTextIcon className='w-5' />
+                  <p className='text-lg'>Description</p>
+                </div>
+              }
+              labelPlacement='inside'
               fullWidth={false}
               size='lg'
               value={emailFields.email_desc}

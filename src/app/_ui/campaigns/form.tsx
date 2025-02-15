@@ -40,6 +40,7 @@ import {
   ClockIcon,
   DocumentDuplicateIcon,
   DocumentTextIcon,
+  PercentBadgeIcon,
   PlusIcon,
   TagIcon,
   TrashIcon,
@@ -390,15 +391,18 @@ export default function CampaignForm({
                   <Divider />
                   <CardBody>
                     {/* Email subject */}
-                    <div className='mb-2 flex gap-2'>
-                      <TagIcon className='w-5' />
-                      <p className='text-base'>Email Subject</p>
-                    </div>
                     <Input
                       className='mb-6 w-full'
                       id={`subject-${index}`}
                       name='subject'
                       variant='bordered'
+                      label={
+                        <div className='flex gap-2'>
+                          <TagIcon className='w-5' />
+                          <p className='text-lg'>Email Subject</p>
+                        </div>
+                      }
+                      labelPlacement='inside'
                       fullWidth={false}
                       size='lg'
                       value={email.subject}
@@ -406,15 +410,18 @@ export default function CampaignForm({
                     />
 
                     {/* Ratio */}
-                    <div className='mb-2 flex gap-2'>
-                      <TagIcon className='w-5' />
-                      <p className='text-base'>Ratio</p>
-                    </div>
                     <Input
                       className='mb-6 w-[30%]'
                       id={`ratio-${index}`}
                       name='ratio'
                       variant='bordered'
+                      label={
+                        <div className='flex gap-2'>
+                          <PercentBadgeIcon className='w-5' />
+                          <p className='text-lg'>Ratio</p>
+                        </div>
+                      }
+                      labelPlacement='inside'
                       fullWidth={false}
                       size='lg'
                       value={`${email.ratio}`}
@@ -540,20 +547,19 @@ export default function CampaignForm({
         )}
 
         {/* Campaign Name */}
-        <div
-          className={clsx('mb-2 flex gap-2', {
-            'text-danger': state.fieldErrors?.name,
-          })}
-        >
-          <TagIcon className='w-5' />
-          <p className='text-lg'>Name</p>
-        </div>
         <Input
           className='mb-6 w-1/2'
           id='name'
           aria-label='name'
           name='name'
           variant='bordered'
+          label={
+            <div className='flex gap-2'>
+              <TagIcon className='w-5' />
+              <p className='text-lg'>Name</p>
+            </div>
+          }
+          labelPlacement='inside'
           fullWidth={false}
           size='lg'
           value={campaignFields.name}
@@ -568,20 +574,19 @@ export default function CampaignForm({
         />
 
         {/* Campaign Description */}
-        <div
-          className={clsx('mb-2 flex gap-2', {
-            'text-danger': state.fieldErrors?.campaign_desc,
-          })}
-        >
-          <DocumentTextIcon className='w-5' />
-          <p className='text-lg'>Description</p>
-        </div>
         <Textarea
           className='mb-6 w-1/2'
           id='campaign_desc'
           aria-label='campaign_desc'
           name='campaign_desc'
           variant='bordered'
+          label={
+            <div className='flex gap-2'>
+              <DocumentTextIcon className='w-5' />
+              <p className='text-lg'>Description</p>
+            </div>
+          }
+          labelPlacement='inside'
           fullWidth={false}
           size='lg'
           value={campaignFields.campaign_desc}
@@ -599,15 +604,17 @@ export default function CampaignForm({
         />
 
         {/* Campaign Start Option */}
-        <div className='mb-2 flex gap-2'>
-          <CalendarIcon className='w-5' />
-          <p className='text-lg'>Start Option</p>
-        </div>
         <RadioGroup
           orientation='horizontal'
           className='mb-6'
           value={campaignStartOption}
           onValueChange={onCampaignStartOptionChange}
+          label={
+            <div className='flex gap-2'>
+              <CalendarIcon className='w-5' />
+              <p className='text-lg'>Start Option</p>
+            </div>
+          }
         >
           <Radio value={CAMPAIGN_START_NOW}>Now</Radio>
           <Radio value={CAMPAIGN_START_SCHEDULE}>Schedule</Radio>
@@ -616,10 +623,6 @@ export default function CampaignForm({
         {/* Date Picker */}
         {campaignStartOption !== CAMPAIGN_START_NOW && (
           <>
-            <div className='mb-2 flex gap-2'>
-              <ClockIcon className='w-5' />
-              <p className='text-lg'>Datetime</p>
-            </div>
             <DatePicker
               aria-label='datetime'
               variant='bordered'
@@ -634,6 +637,12 @@ export default function CampaignForm({
                   schedule: `${toUnix(v)}`,
                 });
               }}
+              label={
+                <div className='flex gap-2'>
+                  <ClockIcon className='w-5' />
+                  <p className='text-lg'>Datetime</p>
+                </div>
+              }
             />
           </>
         )}

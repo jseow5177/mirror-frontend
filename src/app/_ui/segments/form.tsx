@@ -263,19 +263,18 @@ export default function SegmentForm({
             )}
 
             {/* Segment Name */}
-            <div
-              className={clsx('mb-2 flex gap-2', {
-                'text-danger': state.fieldErrors?.name,
-              })}
-            >
-              <TagIcon className='w-5' />
-              <p className='text-lg'>Name</p>
-            </div>
             <Input
               className='mb-6 w-1/2'
               id='name'
               name='name'
               variant='bordered'
+              label={
+                <div className='flex gap-2'>
+                  <TagIcon className='w-5' />
+                  <p className='text-lg'>Name</p>
+                </div>
+              }
+              labelPlacement='inside'
               fullWidth={false}
               size='lg'
               value={segmentFields.name}
@@ -292,19 +291,18 @@ export default function SegmentForm({
             />
 
             {/* Segment Description */}
-            <div
-              className={clsx('mb-2 flex gap-2', {
-                'text-danger': state.fieldErrors?.segment_desc,
-              })}
-            >
-              <DocumentTextIcon className='w-5' />
-              <p className='text-lg'>Description</p>
-            </div>
             <Textarea
               className='w-1/2'
               id='segment_desc'
               name='segment_desc'
               variant='bordered'
+              label={
+                <div className='flex gap-2'>
+                  <DocumentTextIcon className='w-5' />
+                  <p className='text-lg'>Description</p>
+                </div>
+              }
+              labelPlacement='inside'
               fullWidth={false}
               size='lg'
               value={segmentFields.segment_desc}

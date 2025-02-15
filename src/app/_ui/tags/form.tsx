@@ -72,13 +72,16 @@ export default function TagForm({ tag }: { tag?: Tag }) {
           id='name'
           name='name'
           variant='bordered'
-          label={<p className='text-base'>Tag name</p>}
+          label={
+            <div className='flex gap-2'>
+              <TagIcon className='w-5' />
+              <p className='text-lg'>Name</p>
+            </div>
+          }
+          labelPlacement='inside'
           fullWidth
           size='lg'
           value={tagFields.name}
-          startContent={<TagIcon className='w-5' />}
-          labelPlacement='outside'
-          placeholder='Enter tag name'
           isInvalid={state.fieldErrors?.name && true}
           errorMessage={state.fieldErrors?.name && state.fieldErrors?.name[0]}
           onValueChange={(v) =>
@@ -95,13 +98,16 @@ export default function TagForm({ tag }: { tag?: Tag }) {
           id='tag_desc'
           name='tag_desc'
           variant='bordered'
-          label={<p className='text-base'>Tag Description</p>}
+          label={
+            <div className='flex gap-2'>
+              <DocumentTextIcon className='w-5' />
+              <p className='text-lg'>Description</p>
+            </div>
+          }
+          labelPlacement='inside'
           fullWidth
           size='lg'
           value={tagFields.tag_desc}
-          startContent={<DocumentTextIcon className='w-5' />}
-          labelPlacement='outside'
-          placeholder='Enter tag description'
           isInvalid={state.fieldErrors?.tag_desc && true}
           errorMessage={
             state.fieldErrors?.tag_desc && state.fieldErrors?.tag_desc[0]
