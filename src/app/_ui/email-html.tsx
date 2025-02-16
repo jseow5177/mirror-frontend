@@ -5,6 +5,14 @@ import { Email } from '../_lib/model/email';
 
 const defaultHtml = 'PGRpdj48L2Rpdj4='; // <div></div>
 
+// prevent attributes of <a> tag from being removed
+DOMPurify.addHook('afterSanitizeAttributes', function (node) {
+  if ('target' in node) {
+    node.setAttribute('target', '_blank');
+    node.setAttribute('rel', 'noopener');
+  }
+});
+
 export default function EmailHtml({
   email,
   opts = {

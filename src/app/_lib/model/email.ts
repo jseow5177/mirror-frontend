@@ -16,7 +16,6 @@ export type Email = {
   email_desc: string;
   json: string;
   html: string;
-  //img?: string;
   status: EmailStatus;
   create_time: number;
   update_time: number;
