@@ -23,8 +23,8 @@ import {
   ModalBody,
   ModalFooter,
   useDisclosure,
-} from '@nextui-org/react';
-import { Progress } from '@nextui-org/react';
+} from '@heroui/react';
+import { Progress } from '@heroui/react';
 import { campaignStatusColors } from '../utils';
 import { useState } from 'react';
 import { EyeIcon } from '@heroicons/react/24/outline';

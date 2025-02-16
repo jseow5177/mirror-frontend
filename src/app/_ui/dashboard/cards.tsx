@@ -2,13 +2,7 @@ import React from 'react';
 import { UserGroupIcon, TagIcon } from '@heroicons/react/24/outline';
 import { countTotalTags } from '@/app/_lib/data/tag';
 import { countTotalSegments } from '@/app/_lib/data/segment';
-import {
-  Card,
-  CardHeader,
-  CardBody,
-  Divider,
-  Skeleton,
-} from '@nextui-org/react';
+import { Card, CardHeader, CardBody, Divider, Skeleton } from '@heroui/react';
 
 export async function NumberOfTagsCard() {
   const numberOfTags = await countTotalTags();

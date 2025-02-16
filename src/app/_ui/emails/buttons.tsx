@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Link } from '@nextui-org/react';
+import { Button, ButtonGroup, Link } from '@heroui/react';
 import { EyeIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { Email } from '@/app/_lib/model/email';
 

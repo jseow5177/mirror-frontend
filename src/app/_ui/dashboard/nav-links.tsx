@@ -8,11 +8,12 @@ import {
   InboxIcon,
   SpeakerWaveIcon,
   ArrowLeftStartOnRectangleIcon,
+  Cog6ToothIcon,
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
-import { Button } from '@nextui-org/react';
+import { Button } from '@heroui/react';
 import { logOut } from '@/app/_lib/action/user';
 
 const links = [
@@ -36,6 +37,11 @@ const links = [
     name: 'Campaigns',
     href: '/dashboard/campaigns',
     icon: SpeakerWaveIcon,
+  },
+  {
+    name: 'Settings',
+    href: '/dashboard/settings',
+    icon: Cog6ToothIcon,
   },
 ];
 

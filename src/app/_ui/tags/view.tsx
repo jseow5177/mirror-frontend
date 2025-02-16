@@ -5,7 +5,7 @@ import { Task } from '@/app/_lib/model/task';
 import { convertUnixToLocalTime } from '@/app/_lib/utils';
 import TaskTable from './task-table';
 import BasePagination from '../pagination';
-import { Divider, Tab, Tabs } from '@nextui-org/react';
+import { Divider, Tab, Tabs } from '@heroui/react';
 import { DetailGrid, DetailRow } from '../detail';
 
 export default function TagView({

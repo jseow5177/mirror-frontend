@@ -3,13 +3,10 @@
 import { logIn, LogInState } from '@/app/_lib/action/user';
 import {
   BuildingOfficeIcon,
-  EnvelopeIcon,
   ShieldCheckIcon,
-  TagIcon,
   UserIcon,
 } from '@heroicons/react/24/outline';
-import { Button, Input } from '@nextui-org/react';
-import clsx from 'clsx';
+import { Button, Input } from '@heroui/react';
 import { redirect } from 'next/navigation';
 import React, {
   startTransition,

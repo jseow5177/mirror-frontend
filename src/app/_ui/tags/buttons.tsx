@@ -17,7 +17,7 @@ import {
   ButtonGroup,
   Button,
   Link,
-} from '@nextui-org/react';
+} from '@heroui/react';
 import { Tag } from '@/app/_lib/model/tag';
 
 export function DeleteTag({ name }: { name: string }) {

@@ -14,7 +14,7 @@ import {
   Textarea,
   RadioGroup,
   Radio,
-} from '@nextui-org/react';
+} from '@heroui/react';
 
 export default function TagForm({ tag }: { tag?: Tag }) {
   let isUpdate = false;

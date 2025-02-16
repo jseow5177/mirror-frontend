@@ -10,7 +10,7 @@ import {
   SwitchProps,
   Tooltip,
   Link,
-} from '@nextui-org/react';
+} from '@heroui/react';
 import clsx from 'clsx';
 
 const LOOKUP_LIMIT = 10;

@@ -1,5 +1,5 @@
 import { FaceFrownIcon } from '@heroicons/react/24/outline';
-import { Button, Link } from '@nextui-org/react';
+import { Button, Link } from '@heroui/react';
 
 export default function BaseNotFound({
   title,

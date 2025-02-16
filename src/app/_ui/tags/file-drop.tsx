@@ -19,7 +19,7 @@ import {
   TableRow,
   Tooltip,
   Image,
-} from '@nextui-org/react';
+} from '@heroui/react';
 import { toast } from 'react-hot-toast';
 import { InformationCircleIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Tag, TagValueType } from '../../_lib/model/tag';

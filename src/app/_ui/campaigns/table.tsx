@@ -10,7 +10,7 @@ import {
   TableColumn,
   TableHeader,
   TableRow,
-} from '@nextui-org/react';
+} from '@heroui/react';
 import { convertUnixToLocalTime } from '@/app/_lib/utils';
 import { CampaignActions } from './buttons';
 

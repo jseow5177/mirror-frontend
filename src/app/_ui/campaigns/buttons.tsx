@@ -1,6 +1,6 @@
 import { Campaign } from '@/app/_lib/model/campaign';
 import { EyeIcon, PlusIcon } from '@heroicons/react/24/outline';
-import { Button, ButtonGroup } from '@nextui-org/react';
+import { Button, ButtonGroup } from '@heroui/react';
 import Link from 'next/link';
 
 export function CreateCampaign() {

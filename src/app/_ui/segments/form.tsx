@@ -24,9 +24,8 @@ import {
   Divider,
   Skeleton,
   Tooltip,
-} from '@nextui-org/react';
+} from '@heroui/react';
 import { emptyCriteria, QueryBuilder } from './query-builder';
-import clsx from 'clsx';
 import { previewUd } from '@/app/_lib/data/segment';
 import { validateCriteria } from '@/app/_lib/utils';
 import { Criteria } from '@/app/_lib/model/segment';

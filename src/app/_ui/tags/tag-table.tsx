@@ -12,7 +12,7 @@ import {
   TableRow,
   TableCell,
   Chip,
-} from '@nextui-org/react';
+} from '@heroui/react';
 import { Tag, TagStatus, TagStatuses } from '@/app/_lib/model/tag';
 import { ChipColors } from '../utils';
 

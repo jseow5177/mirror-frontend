@@ -8,12 +8,11 @@ import React, {
   useState,
 } from 'react';
 import EmailEditor, { EditorRef } from 'react-email-editor';
-import { Button, Link, Divider, Input, Textarea } from '@nextui-org/react';
+import { Button, Link, Divider, Input, Textarea } from '@heroui/react';
 import { Email } from '@/app/_lib/model/email';
 import { createEmail, EmailState } from '@/app/_lib/action/email';
 import toast from 'react-hot-toast';
 import { redirect } from 'next/navigation';
-import clsx from 'clsx';
 import { TagIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
 import NumberCircles from '../number-circle';
 import Title from '../title';

@@ -10,7 +10,7 @@ import {
   TableCell,
   Chip,
   CircularProgress,
-} from '@nextui-org/react';
+} from '@heroui/react';
 import { Task, TaskStatus, TaskStatuses } from '@/app/_lib/model/task';
 import { ChipColors } from '../utils';
 import { convertUnixToLocalTime } from '@/app/_lib/utils';

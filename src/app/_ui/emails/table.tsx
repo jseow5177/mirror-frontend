@@ -8,7 +8,7 @@ import {
   TableRow,
   TableCell,
   Chip,
-} from '@nextui-org/react';
+} from '@heroui/react';
 import { convertUnixToLocalTime } from '@/app/_lib/utils';
 import { Email, EmailStatus, EmailStatuses } from '@/app/_lib/model/email';
 import { ChipColors } from '../utils';

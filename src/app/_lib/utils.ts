@@ -2,6 +2,15 @@ import { Criteria } from './model/segment';
 import axios from 'axios';
 import { notFound, redirect } from 'next/navigation';
 
+export const cookieSetting = {
+  name: 'session',
+  options: {
+    httpOnly: true,
+    secure: false,
+    path: '/',
+  },
+};
+
 export const baseUrl =
   process.env.BACKEND_URL || 'http://localhost:8080/api/v1';
 
@@ -79,4 +88,8 @@ export const handleAxiosError = (
       error: err.message === '' ? 'Something bad has happened!' : err.message,
     };
   }
+};
+
+export const sleep = (ms: number) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 };

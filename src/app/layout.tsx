@@ -1,7 +1,7 @@
 import '@/app/_ui/globals.css';
 import { roboto } from '@/app/_ui/fonts';
 import { Toaster } from 'react-hot-toast';
-import { NextUIProvider } from '@nextui-org/react';
+import { HeroUIProvider } from '@heroui/react';
 
 export default async function RootLayout({
   children,
@@ -14,7 +14,7 @@ export default async function RootLayout({
         className={`${roboto.className} antialiased`}
         suppressHydrationWarning={true}
       >
-        <NextUIProvider>{children}</NextUIProvider>
+        <HeroUIProvider>{children}</HeroUIProvider>
         <Toaster
           position='top-center'
           toastOptions={{

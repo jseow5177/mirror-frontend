@@ -3,7 +3,7 @@
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { useDebouncedCallback } from 'use-debounce';
-import { Input } from '@nextui-org/react';
+import { Input } from '@heroui/react';
 
 export default function SearchBar({ placeholder }: { placeholder: string }) {
   const pathname = usePathname();

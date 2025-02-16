@@ -3,17 +3,8 @@
 import { cookies } from 'next/headers';
 import axiosInstance from '../axios';
 import { LogInSchema, Session } from '../model/user';
-import { handleAxiosError } from '../utils';
+import { cookieSetting, handleAxiosError } from '../utils';
 import { redirect } from 'next/navigation';
-
-const cookie = {
-  name: 'session',
-  options: {
-    httpOnly: true,
-    secure: false,
-    path: '/',
-  },
-};
 
 export type LogInState = {
   fieldErrors?: {
@@ -56,8 +47,8 @@ export async function logIn(_: LogInState, formData: FormData) {
 
     const body: LogInResponse = resp.data.body;
 
-    cookieStore.set(cookie.name, body.session.token, {
-      ...cookie.options,
+    cookieStore.set(cookieSetting.name, body.session.token, {
+      ...cookieSetting.options,
       expires: new Date(body.session.expire_time * 1000),
     });
 
@@ -77,7 +68,7 @@ export async function logOut() {
     await axiosInstance.post('/log_out', {});
 
     const cookieStore = await cookies();
-    cookieStore.delete(cookie.name);
+    cookieStore.delete(cookieSetting.name);
 
     redirect('/');
   } catch (error) {

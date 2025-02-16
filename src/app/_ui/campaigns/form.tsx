@@ -33,7 +33,7 @@ import {
   DatePicker,
   Radio,
   RadioGroup,
-} from '@nextui-org/react';
+} from '@heroui/react';
 import Title from '../title';
 import {
   CalendarIcon,
@@ -48,12 +48,13 @@ import {
 import { Segment } from '@/app/_lib/model/segment';
 import { countUd } from '@/app/_lib/data/segment';
 import toast from 'react-hot-toast';
-import clsx from 'clsx';
 import { redirect } from 'next/navigation';
 import {
+  CalendarDate,
   CalendarDateTime,
-  DateValue,
   getLocalTimeZone,
+  parseDateTime,
+  ZonedDateTime,
 } from '@internationalized/date';
 import EmailHtml from '../email-html';
 
@@ -83,21 +84,18 @@ export default function CampaignForm({
     campaignID: null,
   };
 
-  const toDateValue = (unix: number): DateValue => {
+  const isoDateTime = (unix: number): string => {
     const dt = new Date(unix);
-    return new CalendarDateTime(
-      dt.getFullYear(),
-      dt.getMonth() + 1,
-      dt.getDate(),
-      dt.getHours(),
-      dt.getMinutes(),
-      dt.getSeconds(),
-      dt.getMilliseconds()
-    );
+    return `${dt.getFullYear()}-${dt.getMonth() + 1}-${dt.getDate()}T${dt.getHours()}:${dt.getMinutes()}:${dt.getSeconds()}`;
   };
 
-  const toUnix = (dateValue: DateValue): number => {
-    const unix = dateValue.toDate(getLocalTimeZone());
+  const toUnix = (
+    calendarDate: CalendarDate | CalendarDateTime | ZonedDateTime | null
+  ): number => {
+    if (!calendarDate) {
+      return 0;
+    }
+    const unix = calendarDate.toDate(getLocalTimeZone());
     return unix.getTime();
   };
 
@@ -630,7 +628,9 @@ export default function CampaignForm({
               size='lg'
               hideTimeZone
               showMonthAndYearPickers
-              value={toDateValue(Number(campaignFields.schedule))}
+              value={parseDateTime(
+                isoDateTime(Number(campaignFields.schedule))
+              )}
               onChange={(v) => {
                 setCampaignFields({
                   ...campaignFields,

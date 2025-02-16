@@ -1,7 +1,7 @@
 'use client';
 
 import clsx from 'clsx';
-import { Button } from '@nextui-org/react';
+import { Button } from '@heroui/react';
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import { Fragment } from 'react';
 

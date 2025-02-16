@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import { getTag } from '@/app/_lib/data/tag';
 import TagView from '@/app/_ui/tags/view';
 import BaseBreadcrumbs from '@/app/_ui/breadcrumbs';
-import { Button, Link } from '@nextui-org/react';
+import { Button, Link } from '@heroui/react';
 import { ArrowUpTrayIcon } from '@heroicons/react/24/outline';
 import { getTagFileUploadTasks } from '@/app/_lib/data/task';
 

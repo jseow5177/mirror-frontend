@@ -10,7 +10,7 @@ import {
   TableRow,
   TableCell,
   Chip,
-} from '@nextui-org/react';
+} from '@heroui/react';
 import {
   Segment,
   SegmentStatus,

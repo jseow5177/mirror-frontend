@@ -14,7 +14,7 @@ export async function middleware(req: NextRequest) {
     if (!isLoggedIn && method === 'GET') {
       return NextResponse.redirect(new URL('/', req.url));
     }
-  } else if (currentPath === '/') {
+  } else if (['/', '/trial'].includes(currentPath)) {
     if (isLoggedIn && method === 'GET') {
       return NextResponse.redirect(new URL('/dashboard', req.url));
     }

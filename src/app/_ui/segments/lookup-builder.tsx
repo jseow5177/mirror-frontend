@@ -9,7 +9,7 @@ import {
   SharedSelection,
   Button,
   ButtonGroup,
-} from '@nextui-org/react';
+} from '@heroui/react';
 import { TrashIcon, DocumentDuplicateIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
 import MultiSelectTextInput from '../multi-select-text';
