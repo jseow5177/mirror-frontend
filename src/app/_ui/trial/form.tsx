@@ -30,7 +30,7 @@ export default function TrialAccountForm({ token }: { token: string }) {
   useEffect(() => {
     const interval = setInterval(() => {
       setProgress((v) => (v + 10 > 90 ? 99 : v + 10));
-    }, 800);
+    }, 2000);
 
     return () => clearInterval(interval);
   }, [retryCount, token]);
