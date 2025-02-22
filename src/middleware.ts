@@ -5,6 +5,8 @@ import type { NextRequest } from 'next/server';
 import { cookies } from 'next/headers';
 import { baseUrl } from './app/_lib/utils';
 
+const pathWithoutAuth = ['/', '/trial', '/user/init'];
+
 export async function middleware(req: NextRequest) {
   const currentPath = req.nextUrl.pathname;
   const method = req.method;
@@ -14,7 +16,7 @@ export async function middleware(req: NextRequest) {
     if (!isLoggedIn && method === 'GET') {
       return NextResponse.redirect(new URL('/', req.url));
     }
-  } else if (['/', '/trial'].includes(currentPath)) {
+  } else if (pathWithoutAuth.includes(currentPath)) {
     if (isLoggedIn && method === 'GET') {
       return NextResponse.redirect(new URL('/dashboard', req.url));
     }

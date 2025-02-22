@@ -31,3 +31,18 @@ export const LogInSchema = z.object({
     })
     .min(1, { message: 'Password is required.' }),
 });
+
+export const InitUserSchema = z.object({
+  token: z
+    .string({
+      required_error: 'Token is required.',
+      invalid_type_error: 'Token must be a string.',
+    })
+    .min(1, { message: 'Token is required.' }),
+  password: z
+    .string({
+      required_error: 'Password is required.',
+      invalid_type_error: 'Password must be a string.',
+    })
+    .min(1, { message: 'Password is required.' }),
+});

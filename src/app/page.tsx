@@ -1,5 +1,5 @@
 import Title from './_ui/title';
-import LogInForm from './_ui/user/form';
+import LogInForm from './_ui/user/login-form';
 
 export default async function Home() {
   return (

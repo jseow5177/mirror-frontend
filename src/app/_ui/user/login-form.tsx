@@ -148,7 +148,7 @@ export default function LogInForm() {
             color='primary'
             variant='solid'
             size='lg'
-            className='w-[20%]'
+            className='min-w-[20%]'
           >
             Log In
           </Button>

@@ -2,9 +2,59 @@
 
 import { cookies } from 'next/headers';
 import axiosInstance from '../axios';
-import { LogInSchema, Session } from '../model/user';
+import { InitUserSchema, LogInSchema, Session } from '../model/user';
 import { cookieSetting, handleAxiosError } from '../utils';
 import { redirect } from 'next/navigation';
+
+export type InitUserState = {
+  fieldErrors?: {
+    token?: string[];
+    password?: string[];
+  };
+  error?: string | null;
+  message?: string | null;
+};
+
+export async function initUser(_: InitUserState, formData: FormData) {
+  const fields = InitUserSchema.safeParse({
+    token: formData.get('token'),
+    password: formData.get('password'),
+  });
+
+  if (!fields.success) {
+    return {
+      fieldErrors: fields.error.flatten().fieldErrors,
+      message: 'Fields validation error. Failed to init user.',
+    };
+  }
+
+  const { token, password } = fields.data;
+
+  try {
+    const cookieStore = await cookies();
+
+    const resp = await axiosInstance.post('/init_user', {
+      token: token,
+      password: password,
+    });
+
+    const body: LogInResponse = resp.data.body;
+
+    cookieStore.set(cookieSetting.name, body.session.token, {
+      ...cookieSetting.options,
+      expires: new Date(body.session.expire_time * 1000),
+    });
+
+    return {
+      message: 'Init user successful',
+    };
+  } catch (error) {
+    const err = handleAxiosError(error, 'Failed to init user.');
+    return {
+      error: err.error,
+    };
+  }
+}
 
 export type LogInState = {
   fieldErrors?: {

@@ -11,7 +11,7 @@ export default async function Page({
   const token = sp?.token || '';
 
   return (
-    <main className='flex h-[100vh] w-full items-center justify-center'>
+    <main className='flex min-h-screen w-full items-center justify-center'>
       <TrialAccountForm token={token} />
     </main>
   );
