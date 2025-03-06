@@ -20,7 +20,8 @@ import Title from '../title';
 const TOTAL_STEPS = 2;
 
 export default function EmailForm({ email }: { email?: Email }) {
-  const ref = useRef<EditorRef>(null);
+  const editorRef = useRef<EditorRef>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const [currentStep, setCurrentStep] = useState(1);
 
@@ -84,7 +85,7 @@ export default function EmailForm({ email }: { email?: Email }) {
   };
 
   const extractEmailJson = () => {
-    const unlayer = ref.current?.editor;
+    const unlayer = editorRef.current?.editor;
 
     if (!unlayer) return;
 
@@ -111,7 +112,7 @@ export default function EmailForm({ email }: { email?: Email }) {
   };
 
   const loadEmailJson = () => {
-    const unlayer = ref.current?.editor;
+    const unlayer = editorRef.current?.editor;
 
     if (emailFields.json !== '{}') {
       unlayer?.loadDesign(JSON.parse(emailFields.json));
@@ -120,13 +121,7 @@ export default function EmailForm({ email }: { email?: Email }) {
 
   return (
     <div className='flex w-full flex-col items-center'>
-      <form
-        className='w-[90%] rounded-md'
-        onSubmit={(e) => {
-          e.preventDefault();
-          startTransition(() => formAction(new FormData(e.currentTarget)));
-        }}
-      >
+      <form ref={formRef} className='w-[90%] rounded-md'>
         <div className='flex w-full items-center justify-between'>
           <NumberCircles
             totalSteps={TOTAL_STEPS}
@@ -144,7 +139,6 @@ export default function EmailForm({ email }: { email?: Email }) {
               Cancel
             </Button>
             <Button
-              type='submit'
               isDisabled={pending || currentStep == 1}
               color='default'
               variant='solid'
@@ -156,7 +150,13 @@ export default function EmailForm({ email }: { email?: Email }) {
             </Button>
             {atLastStep ? (
               <Button
-                type='submit'
+                onPress={() => {
+                  startTransition(() => {
+                    if (formRef.current) {
+                      formAction(new FormData(formRef.current));
+                    }
+                  });
+                }}
                 isDisabled={pending}
                 isLoading={pending}
                 color='success'
@@ -188,7 +188,7 @@ export default function EmailForm({ email }: { email?: Email }) {
             <Title title='Email Template' />
 
             <EmailEditor
-              ref={ref}
+              ref={editorRef}
               onReady={() => {
                 loadEmailJson();
               }}
@@ -217,12 +217,11 @@ export default function EmailForm({ email }: { email?: Email }) {
               label={
                 <div className='flex gap-2'>
                   <TagIcon className='w-5' />
-                  <p className='text-lg'>Name</p>
+                  <p>Name</p>
                 </div>
               }
               labelPlacement='inside'
               fullWidth={false}
-              size='lg'
               value={emailFields.name}
               isInvalid={state.fieldErrors?.name && true}
               errorMessage={
@@ -245,12 +244,11 @@ export default function EmailForm({ email }: { email?: Email }) {
               label={
                 <div className='flex gap-2'>
                   <DocumentTextIcon className='w-5' />
-                  <p className='text-lg'>Description</p>
+                  <p>Description</p>
                 </div>
               }
               labelPlacement='inside'
               fullWidth={false}
-              size='lg'
               value={emailFields.email_desc}
               isInvalid={state.fieldErrors?.email_desc && true}
               errorMessage={

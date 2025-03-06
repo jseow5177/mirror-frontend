@@ -12,6 +12,7 @@ import React, {
   startTransition,
   useActionState,
   useEffect,
+  useRef,
   useState,
 } from 'react';
 import toast from 'react-hot-toast';
@@ -23,6 +24,7 @@ export default function LogInForm() {
     error: null,
   };
   const [state, formAction, pending] = useActionState(logIn, initialState);
+  const ref = useRef<HTMLFormElement>(null);
 
   const [logInFields, setLogInFields] = useState({
     tenant_name: '',
@@ -46,13 +48,7 @@ export default function LogInForm() {
   }, [state]);
 
   return (
-    <form
-      className='w-1/2'
-      onSubmit={(e) => {
-        e.preventDefault();
-        startTransition(() => formAction(new FormData(e.currentTarget)));
-      }}
-    >
+    <form className='w-1/2' ref={ref}>
       <div className='border-gray-60 rounded-md border-2 p-6'>
         {/* Tenant Name */}
         <Input
@@ -63,12 +59,11 @@ export default function LogInForm() {
           label={
             <div className='flex gap-2'>
               <BuildingOfficeIcon className='w-5' />
-              <p className='text-lg'>Tenant Name</p>
+              <p>Tenant Name</p>
             </div>
           }
           labelPlacement='inside'
           fullWidth
-          size='lg'
           value={logInFields.tenant_name}
           isInvalid={state.fieldErrors?.tenant_name && true}
           errorMessage={
@@ -91,12 +86,11 @@ export default function LogInForm() {
           label={
             <div className='flex gap-2'>
               <UserIcon className='w-5' />
-              <p className='text-lg'>Username</p>
+              <p>Username</p>
             </div>
           }
           labelPlacement='inside'
           fullWidth
-          size='lg'
           value={logInFields.username}
           isInvalid={state.fieldErrors?.username && true}
           errorMessage={
@@ -120,12 +114,11 @@ export default function LogInForm() {
           label={
             <div className='flex gap-2'>
               <ShieldCheckIcon className='w-5' />
-              <p className='text-lg'>Password</p>
+              <p>Password</p>
             </div>
           }
           labelPlacement='inside'
           fullWidth
-          size='lg'
           value={logInFields.password}
           isInvalid={state.fieldErrors?.password && true}
           errorMessage={
@@ -142,7 +135,13 @@ export default function LogInForm() {
 
         <div className='flex justify-end'>
           <Button
-            type='submit'
+            onPress={() => {
+              startTransition(() => {
+                if (ref.current) {
+                  formAction(new FormData(ref.current));
+                }
+              });
+            }}
             isDisabled={pending}
             isLoading={pending}
             color='primary'

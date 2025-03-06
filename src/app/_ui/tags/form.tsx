@@ -1,6 +1,11 @@
 'use client';
 
-import React, { startTransition, useActionState, useState } from 'react';
+import React, {
+  startTransition,
+  useActionState,
+  useRef,
+  useState,
+} from 'react';
 import { createTag, TagState } from '@/app/_lib/action/tag';
 import { Tag, TagValueType, TagValueTypes } from '@/app/_lib/model/tag';
 import { DocumentTextIcon, TagIcon } from '@heroicons/react/24/outline';
@@ -21,6 +26,8 @@ export default function TagForm({ tag }: { tag?: Tag }) {
   if (tag) {
     isUpdate = true;
   }
+
+  const ref = useRef<HTMLFormElement>(null);
 
   const initialState: TagState = {
     message: null,
@@ -53,13 +60,7 @@ export default function TagForm({ tag }: { tag?: Tag }) {
   }, [state]);
 
   return (
-    <form
-      className='w-1/2'
-      onSubmit={(e) => {
-        e.preventDefault();
-        startTransition(() => formAction(new FormData(e.currentTarget)));
-      }}
-    >
+    <form ref={ref} className='w-1/2'>
       <div className='border-gray-60 rounded-md border-2 p-6'>
         {/* Tag ID */}
         {isUpdate && (
@@ -75,12 +76,11 @@ export default function TagForm({ tag }: { tag?: Tag }) {
           label={
             <div className='flex gap-2'>
               <TagIcon className='w-5' />
-              <p className='text-lg'>Name</p>
+              <p>Name</p>
             </div>
           }
           labelPlacement='inside'
           fullWidth
-          size='lg'
           value={tagFields.name}
           isInvalid={state.fieldErrors?.name && true}
           errorMessage={state.fieldErrors?.name && state.fieldErrors?.name[0]}
@@ -106,7 +106,6 @@ export default function TagForm({ tag }: { tag?: Tag }) {
           }
           labelPlacement='inside'
           fullWidth
-          size='lg'
           value={tagFields.tag_desc}
           isInvalid={state.fieldErrors?.tag_desc && true}
           errorMessage={
@@ -156,7 +155,11 @@ export default function TagForm({ tag }: { tag?: Tag }) {
           Cancel
         </Button>
         <Button
-          type='submit'
+          onPress={() => {
+            if (ref.current) {
+              startTransition(() => formAction(new FormData(ref.current!)));
+            }
+          }}
           isDisabled={pending}
           isLoading={pending}
           color='primary'

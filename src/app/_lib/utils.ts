@@ -34,7 +34,6 @@ export const convertUnixToLocalTime = (unixMilliseconds: number) => {
 
 export function validateCriteria(criteria: Criteria): boolean {
   if (!Array.isArray(criteria.queries) || criteria.queries.length === 0) {
-    console.log('criteria has empty queries');
     return false;
   }
 

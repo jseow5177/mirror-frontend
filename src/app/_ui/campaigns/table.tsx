@@ -50,11 +50,11 @@ export default function CampaignTable({
               </TableCell>
               <TableCell className='w-[15%]'>
                 <p>{createDate}</p>
-                <p className='mt-1 text-xs'>{createTime}</p>
+                <p className='mt-2 text-xs'>{createTime}</p>
               </TableCell>
               <TableCell className='w-[15%]'>
                 <p>{updateDate}</p>
-                <p className='mt-1 text-xs'>{updateTime}</p>
+                <p className='mt-2 text-xs'>{updateTime}</p>
               </TableCell>
               <TableCell className='w-[10%]'>
                 <CampaignActions campaign={campaign} />

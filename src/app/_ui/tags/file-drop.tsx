@@ -36,6 +36,7 @@ const MAX_PREVIEW_ROWS = 100;
 
 export default function DragAndDrop({ tag }: { tag: Tag }) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const [file, setFile] = useState<File | null>(null);
   const [dragActive, setDragActive] = useState(false);
@@ -216,12 +217,7 @@ export default function DragAndDrop({ tag }: { tag: Tag }) {
 
   return (
     <div className='w-[35rem]'>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          startTransition(() => formAction(new FormData(e.currentTarget)));
-        }}
-      >
+      <form ref={formRef}>
         {file ? (
           <div>
             <div
@@ -295,7 +291,13 @@ export default function DragAndDrop({ tag }: { tag: Tag }) {
             </Table>
 
             <Button
-              type='submit'
+              onPress={() => {
+                startTransition(() => {
+                  if (formRef.current) {
+                    formAction(new FormData(formRef.current));
+                  }
+                });
+              }}
               color='primary'
               className='mt-3'
               disabled={file === null}

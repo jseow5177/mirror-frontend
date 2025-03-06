@@ -8,24 +8,22 @@ import { Input } from '@heroui/react';
 export default function SearchBar({ placeholder }: { placeholder: string }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const { replace } = useRouter();
+  const router = useRouter();
 
   const handleSearch = useDebouncedCallback((term: string) => {
     const params = new URLSearchParams(searchParams);
-    params.set('page', '1');
     if (term) {
       params.set('query', term);
     } else {
       params.delete('query');
     }
-    replace(`${pathname}?${params.toString()}`);
+    router.push(`${pathname}?${params.toString()}`);
   }, 300);
 
   return (
     <Input
       variant='bordered'
       fullWidth
-      size='lg'
       defaultValue={searchParams.get('query')?.toString()}
       startContent={<MagnifyingGlassIcon className='w-5' />}
       labelPlacement='outside'

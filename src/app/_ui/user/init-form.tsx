@@ -4,7 +4,13 @@ import { initUser, InitUserState } from '@/app/_lib/action/user';
 import { ShieldCheckIcon } from '@heroicons/react/24/outline';
 import { Button, Input } from '@heroui/react';
 import { redirect } from 'next/navigation';
-import { startTransition, useActionState, useEffect, useState } from 'react';
+import {
+  startTransition,
+  useActionState,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import toast from 'react-hot-toast';
 
 export default function InitUserForm({ token }: { token: string }) {
@@ -13,6 +19,8 @@ export default function InitUserForm({ token }: { token: string }) {
     fieldErrors: {},
     error: null,
   };
+
+  const ref = useRef<HTMLFormElement>(null);
   const [state, formAction, pending] = useActionState(initUser, initialState);
 
   const [initUserFields, setInitUserFields] = useState({
@@ -39,13 +47,7 @@ export default function InitUserForm({ token }: { token: string }) {
   }, [state]);
 
   return (
-    <form
-      className='w-1/2'
-      onSubmit={(e) => {
-        e.preventDefault();
-        startTransition(() => formAction(new FormData(e.currentTarget)));
-      }}
-    >
+    <form className='w-1/2' ref={ref}>
       {/* Token */}
       <Input
         className='hidden'
@@ -64,12 +66,11 @@ export default function InitUserForm({ token }: { token: string }) {
         label={
           <div className='flex gap-2'>
             <ShieldCheckIcon className='w-5' />
-            <p className='text-lg'>Password</p>
+            <p>Password</p>
           </div>
         }
         labelPlacement='inside'
         fullWidth
-        size='lg'
         value={initUserFields.password}
         isInvalid={state.fieldErrors?.password && true}
         errorMessage={
@@ -86,7 +87,13 @@ export default function InitUserForm({ token }: { token: string }) {
 
       <div className='flex justify-end'>
         <Button
-          type='submit'
+          onPress={() => {
+            startTransition(() => {
+              if (ref.current) {
+                formAction(new FormData(ref.current));
+              }
+            });
+          }}
           isDisabled={pending}
           isLoading={pending}
           color='primary'

@@ -254,7 +254,7 @@ export default function CampaignView({
                   <Button
                     isIconOnly
                     variant='bordered'
-                    onClick={() => {
+                    onPress={() => {
                       setSelectedCampaignEmail(campaignEmail);
                       onClickMapOpen();
                     }}
@@ -271,7 +271,6 @@ export default function CampaignView({
         isOpen={isLinkClickCountOpen}
         onOpenChange={onLinkClickCountOpenChange}
         size='2xl'
-        backdrop='blur'
       >
         <ModalContent>
           {(onClose) => (
@@ -324,7 +323,6 @@ export default function CampaignView({
         isOpen={isClickMapOpen}
         onOpenChange={onClickMapOpenChange}
         size='2xl'
-        backdrop='blur'
       >
         <ModalContent>
           {(onClose) => (

@@ -2,9 +2,75 @@
 
 import { cookies } from 'next/headers';
 import axiosInstance from '../axios';
-import { InitUserSchema, LogInSchema, Session } from '../model/user';
+import {
+  InitUserSchema,
+  InviteUser,
+  InviteUserSchema,
+  LogInSchema,
+  Session,
+} from '../model/user';
 import { cookieSetting, handleAxiosError } from '../utils';
 import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
+
+export type InviteUsersState = {
+  fieldErrors?: {
+    users?: {
+      email?: string[];
+      role_id?: string[];
+    }[];
+  };
+  error?: string | null;
+  message?: string | null;
+};
+
+export async function inviteUsers(_: InviteUsersState, formData: FormData) {
+  const inviteUsers = JSON.parse(
+    formData.get('users')?.toString() || '[]'
+  ) as InviteUser[];
+
+  const fields = InviteUserSchema.safeParse({
+    users: inviteUsers,
+  });
+
+  if (!fields.success) {
+    const errors = fields.error.format();
+
+    const fieldErrors = Array.from({ length: inviteUsers.length }, (_, i) => {
+      const error = errors.users?.[`${i}`];
+
+      if (!error || Array.isArray(error)) return {};
+
+      return {
+        email: error.email?._errors,
+        role_id: error.role_id?._errors,
+      };
+    });
+
+    return {
+      fieldErrors: { users: fieldErrors },
+      error: 'Fields validation error. Failed to invite users.',
+    };
+  }
+
+  const { users } = fields.data;
+
+  try {
+    await axiosInstance.post('/create_users', {
+      users,
+    });
+    revalidatePath('/settings/users');
+
+    return {
+      message: 'Users created',
+    };
+  } catch (error) {
+    const err = handleAxiosError(error, 'Failed to create users.');
+    return {
+      error: err.error,
+    };
+  }
+}
 
 export type InitUserState = {
   fieldErrors?: {

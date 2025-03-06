@@ -9,6 +9,8 @@ import {
   SharedSelection,
   Button,
   ButtonGroup,
+  Autocomplete,
+  AutocompleteItem,
 } from '@heroui/react';
 import { TrashIcon, DocumentDuplicateIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
@@ -67,13 +69,13 @@ export const LookupBuilder = ({
     return op || '';
   };
 
-  const onTagChange = (e: SharedSelection) => {
-    if (!e.currentKey) {
+  const onTagChange = (e: string | number | null) => {
+    if (!e) {
       return;
     }
     toggleShowActionButtons(false);
 
-    const tagID = Number(e.currentKey);
+    const tagID = Number(e);
     setTag(findTag(tagID)!);
     onChange({ tag_id: tagID });
   };
@@ -114,7 +116,6 @@ export const LookupBuilder = ({
         <Input
           aria-label='Value'
           placeholder='Value'
-          size='lg'
           variant='bordered'
           type={isTagNumeric(tag) ? 'number' : 'text'}
           isDisabled={op === '' || readonly}
@@ -143,26 +144,24 @@ export const LookupBuilder = ({
       onMouseLeave={() => toggleShowActionButtons(false)}
     >
       <div className='flex w-[80%] items-start gap-4'>
-        <Select
+        <Autocomplete
           className='w-[40%]'
           aria-label='Tag'
           placeholder='Tag'
-          size='lg'
           variant='bordered'
-          selectedKeys={[`${lookup.tag_id ? lookup.tag_id : ''}`]}
-          onSelectionChange={onTagChange}
           isDisabled={readonly}
+          selectedKey={`${lookup.tag_id ? lookup.tag_id : ''}`}
+          onSelectionChange={onTagChange}
         >
           {tags.map((tag) => (
-            <SelectItem key={tag.id!}>{tag.name}</SelectItem>
+            <AutocompleteItem key={tag.id!}>{tag.name}</AutocompleteItem>
           ))}
-        </Select>
+        </Autocomplete>
 
         <Select
           className='w-[20%]'
           aria-label='Operator'
           placeholder='Operator'
-          size='lg'
           variant='bordered'
           selectedKeys={[getLookupOp() ? `${getLookupOp()}` : '']}
           onSelectionChange={onOpChange}

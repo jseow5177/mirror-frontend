@@ -8,7 +8,13 @@ import {
   sumRatioEquals100,
 } from '@/app/_lib/model/campaign';
 import { Email } from '@/app/_lib/model/email';
-import { useEffect, useState, useActionState, startTransition } from 'react';
+import {
+  useEffect,
+  useState,
+  useActionState,
+  startTransition,
+  useRef,
+} from 'react';
 import NumberCircles from '../number-circle';
 import {
   Button,
@@ -22,9 +28,6 @@ import {
   Input,
   ModalFooter,
   Card,
-  Select,
-  SelectItem,
-  SharedSelection,
   Skeleton,
   Textarea,
   CardHeader,
@@ -33,6 +36,8 @@ import {
   DatePicker,
   Radio,
   RadioGroup,
+  Autocomplete,
+  AutocompleteItem,
 } from '@heroui/react';
 import Title from '../title';
 import {
@@ -77,6 +82,8 @@ export default function CampaignForm({
     isUpdate = true;
   }
 
+  const ref = useRef<HTMLFormElement>(null);
+
   const initialState: CampaignState = {
     message: null,
     fieldErrors: {},
@@ -86,7 +93,8 @@ export default function CampaignForm({
 
   const isoDateTime = (unix: number): string => {
     const dt = new Date(unix);
-    return `${dt.getFullYear()}-${dt.getMonth() + 1}-${dt.getDate()}T${dt.getHours()}:${dt.getMinutes()}:${dt.getSeconds()}`;
+    const pad = (num: number) => String(num).padStart(2, '0');
+    return `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}T${pad(dt.getHours())}:${pad(dt.getMinutes())}:${pad(dt.getSeconds())}`;
   };
 
   const toUnix = (
@@ -100,25 +108,23 @@ export default function CampaignForm({
   };
 
   const [campaignFields, setCampaignFields] = useState({
-    id: campaign?.id ? `${campaign?.id}` : '0',
+    id: campaign?.id ? campaign?.id : 0,
     name: campaign?.name || '',
     campaign_desc: campaign?.campaign_desc || '',
     emails: campaign?.campaign_emails || [],
-    segment_id: campaign?.segment_id ? `${campaign?.segment_id}` : '',
-    schedule: campaign?.schedule ? `${campaign?.schedule}` : '0',
+    segment_id: campaign?.segment_id ? campaign?.segment_id : 0,
+    schedule: campaign?.schedule ? campaign?.schedule : 0,
   });
 
   const [campaignStartOption, setCampaignStartOption] = useState(
-    campaignFields.schedule === '0'
-      ? CAMPAIGN_START_NOW
-      : CAMPAIGN_START_SCHEDULE
+    campaignFields.schedule === 0 ? CAMPAIGN_START_NOW : CAMPAIGN_START_SCHEDULE
   );
 
   const onCampaignStartOptionChange = (opt: string) => {
     if (opt === CAMPAIGN_START_NOW) {
-      setCampaignFields({ ...campaignFields, schedule: '0' });
+      setCampaignFields({ ...campaignFields, schedule: 0 });
     } else {
-      setCampaignFields({ ...campaignFields, schedule: `${Date.now()}` });
+      setCampaignFields({ ...campaignFields, schedule: Date.now() });
     }
     setCampaignStartOption(opt);
   };
@@ -162,8 +168,8 @@ export default function CampaignForm({
 
   const handleCreateCampaign = (s: CampaignState, formData: FormData) => {
     formData.append('emails', JSON.stringify(campaignFields.emails));
-    formData.append('segment_id', campaignFields.segment_id);
-    formData.append('schedule', campaignFields.schedule);
+    formData.append('segment_id', `${campaignFields.segment_id}`);
+    formData.append('schedule', `${campaignFields.schedule}`);
     return createCampaign(s, formData);
   };
 
@@ -245,32 +251,32 @@ export default function CampaignForm({
     }
   };
 
-  const onSegmentChange = (e: SharedSelection) => {
-    if (!e.currentKey) {
+  const onSegmentChange = (e: string | number | null) => {
+    if (!e) {
       return;
     }
 
-    setCampaignFields({ ...campaignFields, segment_id: e.currentKey });
+    setCampaignFields({ ...campaignFields, segment_id: Number(e) });
   };
 
   const renderFirstFormPage = () => {
     return (
       <>
         <Title title='Select a Segment' />
-
-        <Select
+        <Autocomplete
           className='mb-4 w-[40%]'
           aria-label='Segment'
           placeholder='Segment'
-          size='lg'
           variant='bordered'
-          selectedKeys={[campaignFields.segment_id]}
+          selectedKey={`${campaignFields.segment_id}`}
           onSelectionChange={onSegmentChange}
         >
           {segments.map((segment) => (
-            <SelectItem key={segment.id!}>{segment.name}</SelectItem>
+            <AutocompleteItem key={segment.id!}>
+              {segment.name}
+            </AutocompleteItem>
           ))}
-        </Select>
+        </Autocomplete>
         <Skeleton
           isLoaded={!isCountLoading}
           className='w-[10%] rounded-lg text-lg'
@@ -397,12 +403,11 @@ export default function CampaignForm({
                       label={
                         <div className='flex gap-2'>
                           <TagIcon className='w-5' />
-                          <p className='text-lg'>Email Subject</p>
+                          <p>Email Subject</p>
                         </div>
                       }
                       labelPlacement='inside'
                       fullWidth={false}
-                      size='lg'
                       value={email.subject}
                       onValueChange={(v) => onEmailChange(index, 'subject', v)}
                     />
@@ -416,12 +421,11 @@ export default function CampaignForm({
                       label={
                         <div className='flex gap-2'>
                           <PercentBadgeIcon className='w-5' />
-                          <p className='text-lg'>Ratio</p>
+                          <p>Ratio</p>
                         </div>
                       }
                       labelPlacement='inside'
                       fullWidth={false}
-                      size='lg'
                       value={`${email.ratio}`}
                       onValueChange={(v) => onEmailChange(index, 'ratio', v)}
                       type='number'
@@ -435,7 +439,6 @@ export default function CampaignForm({
         )}
 
         <Modal
-          backdrop='blur'
           size='5xl'
           className='h-[90%]'
           isOpen={isOpen}
@@ -540,7 +543,7 @@ export default function CampaignForm({
             className='hidden'
             id='id'
             name='id'
-            value={campaignFields.id}
+            value={`${campaignFields.id}`}
           />
         )}
 
@@ -554,12 +557,11 @@ export default function CampaignForm({
           label={
             <div className='flex gap-2'>
               <TagIcon className='w-5' />
-              <p className='text-lg'>Name</p>
+              <p>Name</p>
             </div>
           }
           labelPlacement='inside'
           fullWidth={false}
-          size='lg'
           value={campaignFields.name}
           isInvalid={state.fieldErrors?.name && true}
           errorMessage={state.fieldErrors?.name && state.fieldErrors?.name[0]}
@@ -586,7 +588,6 @@ export default function CampaignForm({
           }
           labelPlacement='inside'
           fullWidth={false}
-          size='lg'
           value={campaignFields.campaign_desc}
           isInvalid={state.fieldErrors?.campaign_desc && true}
           errorMessage={
@@ -625,7 +626,6 @@ export default function CampaignForm({
               aria-label='datetime'
               variant='bordered'
               className='w-1/2'
-              size='lg'
               hideTimeZone
               showMonthAndYearPickers
               value={parseDateTime(
@@ -634,7 +634,7 @@ export default function CampaignForm({
               onChange={(v) => {
                 setCampaignFields({
                   ...campaignFields,
-                  schedule: `${toUnix(v)}`,
+                  schedule: toUnix(v),
                 });
               }}
               label={
@@ -665,13 +665,7 @@ export default function CampaignForm({
 
   return (
     <div className='flex w-full flex-col items-center'>
-      <form
-        className='w-[90%] rounded-md'
-        onSubmit={(e) => {
-          e.preventDefault();
-          startTransition(() => formAction(new FormData(e.currentTarget)));
-        }}
-      >
+      <form ref={ref} className='w-[90%] rounded-md'>
         <div className='flex w-full items-center justify-between'>
           <NumberCircles
             totalSteps={TOTAL_STEPS}
@@ -689,7 +683,6 @@ export default function CampaignForm({
               Cancel
             </Button>
             <Button
-              type='submit'
               isDisabled={pending || currentStep == 1}
               color='default'
               variant='solid'
@@ -701,7 +694,13 @@ export default function CampaignForm({
             </Button>
             {atLastStep ? (
               <Button
-                type='submit'
+                onPress={() => {
+                  if (ref.current) {
+                    startTransition(() =>
+                      formAction(new FormData(ref.current!))
+                    );
+                  }
+                }}
                 isDisabled={pending}
                 isLoading={pending}
                 color='success'
@@ -716,6 +715,8 @@ export default function CampaignForm({
                 color='primary'
                 variant='solid'
                 onClick={(e) => {
+                  // TODO: This button click triggers submit at last step
+                  // Could be due to event propagate during render
                   e.preventDefault();
                   nextStep();
                 }}

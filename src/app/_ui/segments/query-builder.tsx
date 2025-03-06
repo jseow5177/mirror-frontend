@@ -61,7 +61,7 @@ const OperatorToggle = ({
             }
           ),
         }}
-        onClick={handleClick}
+        onPress={handleClick}
       >
         <VisuallyHidden>
           <input {...getInputProps()} />

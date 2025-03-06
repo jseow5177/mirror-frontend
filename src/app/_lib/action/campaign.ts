@@ -30,7 +30,7 @@ export async function createCampaign(_: CampaignState, formData: FormData) {
   const fields = CreateCampaign.safeParse({
     name: formData.get('name'),
     campaign_desc: formData.get('campaign_desc'),
-    emails: JSON.parse(formData.get('emails')?.toString() || ''),
+    emails: JSON.parse(formData.get('emails')?.toString() || '[]'),
     segment_id: formData.get('segment_id'),
     schedule: formData.get('schedule'),
   });

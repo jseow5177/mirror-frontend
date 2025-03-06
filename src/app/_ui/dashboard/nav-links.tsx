@@ -9,6 +9,7 @@ import {
   SpeakerWaveIcon,
   ArrowLeftStartOnRectangleIcon,
   ChatBubbleLeftIcon,
+  Cog6ToothIcon,
 } from '@heroicons/react/24/outline';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
@@ -37,11 +38,12 @@ const links = [
     href: '/dashboard/campaigns',
     icon: SpeakerWaveIcon,
   },
-  // {
-  //   name: 'Settings',
-  //   href: '/dashboard/settings',
-  //   icon: Cog6ToothIcon,
-  // },
+  {
+    name: 'Settings',
+    href: '/dashboard/settings/users',
+    icon: Cog6ToothIcon,
+    highlightOnPrefix: '/dashboard/settings',
+  },
   {
     name: 'Feedback',
     href: 'https://forms.gle/VmejJj29a3RHbaTo9',
@@ -50,8 +52,8 @@ const links = [
   },
 ];
 
-const navStyle = `flex h-[52px] flex-none items-center justify-start gap-2 
-rounded-md bg-gray-50 p-3 px-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 text-inherit`;
+const navStyle = `flex h-[58px] items-center justify-start gap-2 
+rounded-md bg-gray-50 p-4 font-medium hover:bg-sky-100 hover:text-blue-600 text-inherit`;
 
 export default function NavLinks() {
   const pathname = usePathname();
@@ -66,7 +68,10 @@ export default function NavLinks() {
             key={link.name}
             href={link.href}
             className={clsx(navStyle, {
-              'bg-sky-100 text-blue-600': pathname === link.href,
+              'bg-sky-100 text-blue-600':
+                pathname === link.href ||
+                (link.highlightOnPrefix &&
+                  pathname.startsWith(link.highlightOnPrefix)),
             })}
           >
             <LinkIcon className='w-6' />
@@ -88,7 +93,7 @@ export function LogOutButton() {
       className={navStyle}
       onPress={logOutUser}
     >
-      LogOut
+      Log Out
     </Button>
   );
 }

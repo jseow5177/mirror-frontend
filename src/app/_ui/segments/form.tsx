@@ -5,6 +5,7 @@ import React, {
   useEffect,
   useActionState,
   startTransition,
+  useRef,
 } from 'react';
 import { Segment } from '@/app/_lib/model/segment';
 import { Tag } from '@/app/_lib/model/tag';
@@ -46,6 +47,7 @@ export default function SegmentForm({
     isUpdate = true;
   }
 
+  const ref = useRef<HTMLFormElement>(null);
   const [currentStep, setCurrentStep] = useState(1);
 
   const initialState: SegmentState = {
@@ -142,13 +144,7 @@ export default function SegmentForm({
 
   return (
     <div className='flex w-full flex-col items-center'>
-      <form
-        className='w-[90%] rounded-md'
-        onSubmit={(e) => {
-          e.preventDefault();
-          startTransition(() => formAction(new FormData(e.currentTarget)));
-        }}
-      >
+      <form ref={ref} className='w-[90%] rounded-md'>
         <div className='flex w-full items-center justify-between'>
           <NumberCircles
             totalSteps={TOTAL_STEPS}
@@ -193,7 +189,6 @@ export default function SegmentForm({
                 Cancel
               </Button>
               <Button
-                type='submit'
                 isDisabled={pending || currentStep == 1}
                 color='default'
                 variant='solid'
@@ -205,7 +200,13 @@ export default function SegmentForm({
               </Button>
               {atLastStep ? (
                 <Button
-                  type='submit'
+                  onPress={() => {
+                    startTransition(() => {
+                      if (ref.current) {
+                        formAction(new FormData(ref.current));
+                      }
+                    });
+                  }}
                   isDisabled={pending}
                   isLoading={pending}
                   color='success'
@@ -270,12 +271,11 @@ export default function SegmentForm({
               label={
                 <div className='flex gap-2'>
                   <TagIcon className='w-5' />
-                  <p className='text-lg'>Name</p>
+                  <p>Name</p>
                 </div>
               }
               labelPlacement='inside'
               fullWidth={false}
-              size='lg'
               value={segmentFields.name}
               isInvalid={state.fieldErrors?.name && true}
               errorMessage={
@@ -303,7 +303,6 @@ export default function SegmentForm({
               }
               labelPlacement='inside'
               fullWidth={false}
-              size='lg'
               value={segmentFields.segment_desc}
               isInvalid={state.fieldErrors?.segment_desc && true}
               errorMessage={

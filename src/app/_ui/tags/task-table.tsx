@@ -61,11 +61,11 @@ export default function TaskTable({ tasks }: { tasks: Task[] }) {
               </TableCell>
               <TableCell>
                 <p>{createDate}</p>
-                <p className='mt-1 text-xs'>{createTime}</p>
+                <p className='mt-2 text-xs'>{createTime}</p>
               </TableCell>
               <TableCell>
                 <p>{updateDate}</p>
-                <p className='mt-1 text-xs'>{updateTime}</p>
+                <p className='mt-2 text-xs'>{updateTime}</p>
               </TableCell>
             </TableRow>
           );
