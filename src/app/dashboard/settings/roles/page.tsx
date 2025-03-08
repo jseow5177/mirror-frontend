@@ -1,22 +1,28 @@
 import { getActions, getRoles } from '@/app/_lib/data/role';
+import { getMe } from '@/app/_lib/data/users';
 import Roles from '@/app/_ui/settings/roles';
 
 export default async function Page() {
   const fetchRolesData = async () => {
-    const [actions, roles] = await Promise.all([getActions(), getRoles()]);
+    const [actions, roles, me] = await Promise.all([
+      getActions(),
+      getRoles(),
+      getMe(),
+    ]);
 
     return {
       actions,
       roles,
+      me,
     };
   };
 
-  const { actions, roles } = await fetchRolesData();
+  const { actions, roles, me } = await fetchRolesData();
 
   return (
     <main className='w-full'>
       <h1 className='mb-8 text-2xl'>Your Roles</h1>
-      <Roles actions={actions} roles={roles} />
+      <Roles actions={actions} roles={roles} me={me} />
     </main>
   );
 }

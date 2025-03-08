@@ -37,3 +37,20 @@ export async function getUsers(
     throw new Error(err.error);
   }
 }
+
+type GetMeResponse = {
+  user: User;
+};
+
+export async function getMe(): Promise<User> {
+  try {
+    const resp = await axiosInstance.post('/me', {});
+
+    const body: GetMeResponse = resp.data.body;
+
+    return body.user;
+  } catch (error) {
+    const err = handleAxiosError(error, 'Failed to get me.');
+    throw new Error(err.error);
+  }
+}

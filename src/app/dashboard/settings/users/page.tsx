@@ -1,5 +1,6 @@
 import { getRoles } from '@/app/_lib/data/role';
-import { getUsers } from '@/app/_lib/data/users';
+import { getMe, getUsers } from '@/app/_lib/data/users';
+import { ActionCode } from '@/app/_lib/model/role';
 import BasePagination from '@/app/_ui/pagination';
 import SearchBar from '@/app/_ui/search-bar';
 import { CreateUsers } from '@/app/_ui/settings/buttons';
@@ -20,25 +21,29 @@ export default async function Page({
   const status = sp?.status || '';
 
   const fetchUsersData = async () => {
-    const [resp, roles] = await Promise.all([
+    const [resp, roles, me] = await Promise.all([
       getUsers(currentPage, query, status.split(',')),
       getRoles(),
+      getMe(),
     ]);
 
     return {
       resp,
       roles,
+      me,
     };
   };
 
-  const { resp, roles } = await fetchUsersData();
+  const { resp, roles, me } = await fetchUsersData();
 
   return (
     <main className='w-full'>
       <h1 className='mb-8 text-2xl'>Your Users</h1>
       <div className='mb-5 flex items-center justify-between gap-2'>
         <SearchBar placeholder='Search users...' />
-        <CreateUsers roles={roles} />
+        {me.role.actions.includes(ActionCode.EditUser) && (
+          <CreateUsers roles={roles} />
+        )}
       </div>
       <UserTable users={resp[0].users || []} />
       <div className='mt-5 flex w-full justify-end'>

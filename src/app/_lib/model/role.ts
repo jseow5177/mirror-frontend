@@ -5,6 +5,11 @@ export enum RoleStatus {
   Deleted = 2,
 }
 
+export enum ActionCode {
+  EditUser = 'edit_user',
+  EditRole = 'edit_role',
+}
+
 export type Role = {
   id?: number;
   name: string;

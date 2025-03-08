@@ -1,7 +1,8 @@
 'use client';
 
 import { updateRoles, UpdateRolesState } from '@/app/_lib/action/role';
-import { Action, Role } from '@/app/_lib/model/role';
+import { Action, ActionCode, Role } from '@/app/_lib/model/role';
+import { User } from '@/app/_lib/model/user';
 import {
   Accordion,
   AccordionItem,
@@ -22,9 +23,11 @@ import toast from 'react-hot-toast';
 export default function Roles({
   roles,
   actions,
+  me,
 }: {
   roles: Role[];
   actions: Record<string, Action[]>;
+  me: User;
 }) {
   const initialState: UpdateRolesState = {
     message: null,
@@ -88,6 +91,7 @@ export default function Roles({
           >
             {Object.keys(actions).map((actionGroupName, j) => (
               <CheckboxGroup
+                isReadOnly={!me.role.actions.includes(ActionCode.EditRole)}
                 key={j}
                 label={actionGroupName}
                 orientation='horizontal'
