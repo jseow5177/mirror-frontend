@@ -16,22 +16,10 @@ export default async function RootLayout({
       >
         <HeroUIProvider>{children}</HeroUIProvider>
         <Toaster
-          position='top-center'
+          position='top-right'
           toastOptions={{
-            success: {
-              style: {
-                backgroundColor: '#16a34a',
-                color: 'white',
-              },
-              icon: '👍',
-            },
-            error: {
-              style: {
-                backgroundColor: '#dc2626',
-                color: 'white',
-              },
-              icon: '👎',
-            },
+            duration: 5000,
+            removeDelay: 1000,
           }}
         />
       </body>

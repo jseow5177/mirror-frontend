@@ -5,7 +5,7 @@ import axiosInstance from '../axios';
 import {
   InitUserSchema,
   InviteUser,
-  InviteUserSchema,
+  InviteUsersSchema,
   LogInSchema,
   Session,
 } from '../model/user';
@@ -29,7 +29,7 @@ export async function inviteUsers(_: InviteUsersState, formData: FormData) {
     formData.get('users')?.toString() || '[]'
   ) as InviteUser[];
 
-  const fields = InviteUserSchema.safeParse({
+  const fields = InviteUsersSchema.safeParse({
     users: inviteUsers,
   });
 

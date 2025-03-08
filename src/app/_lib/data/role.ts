@@ -3,7 +3,7 @@ import { Action, Role } from '../model/role';
 import { handleAxiosError } from '../utils';
 
 type GetActionsResponse = {
-  actions: Action[];
+  actions: Record<string, Action[]>;
 };
 
 export async function getActions() {

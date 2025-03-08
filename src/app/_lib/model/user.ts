@@ -76,7 +76,7 @@ export const InitUserSchema = z.object({
     .min(1, { message: 'Password is required.' }),
 });
 
-export const InviteUserSchema = z.object({
+export const InviteUsersSchema = z.object({
   users: z
     .array(
       z.object({
