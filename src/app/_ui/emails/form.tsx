@@ -194,17 +194,8 @@ export default function EmailForm({ email }: { email?: Email }) {
               ref={editorRef}
               options={{
                 displayMode: 'web',
-                tabs: {
-                  body: {
-                    enabled: false,
-                  },
-                },
               }}
-              onReady={(unlayer) => {
-                unlayer.setBodyValues({
-                  contentWidth: 'inherit',
-                  backgroundColor: 'transparent',
-                });
+              onReady={() => {
                 loadEmailJson();
               }}
             />
