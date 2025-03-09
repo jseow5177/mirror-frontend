@@ -1,7 +1,7 @@
+import { useState, useEffect } from 'react';
 import parse, { DOMNode, Element, domToReact } from 'html-react-parser';
 import { renderToString } from 'react-dom/server';
 import { Email } from '../_lib/model/email';
-import { useRef } from 'react';
 
 const defaultHtml = 'PGRpdj48L2Rpdj4='; // <div></div>
 
@@ -16,10 +16,15 @@ export default function EmailHtml({
     clickCounts?: Record<string, number>;
   };
 }) {
-  const iframeRef = useRef(null);
+  const [html, setHtml] = useState('');
+
+  // prevent ssr mismatch
+  useEffect(() => {
+    setHtml(email.html);
+  }, [email.html]);
 
   const renderHtml = () => {
-    return parse(atob(email.html || defaultHtml), {
+    return parse(atob(html || defaultHtml), {
       replace: (domNode: DOMNode) => {
         if (opts.clickCounts) {
           if (
@@ -73,7 +78,6 @@ export default function EmailHtml({
   return (
     <iframe
       srcDoc={renderToString(renderHtml())}
-      ref={iframeRef}
       className='w-[50%] rounded-md border-1 p-2'
     />
   );
