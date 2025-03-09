@@ -189,6 +189,9 @@ export default function EmailForm({ email }: { email?: Email }) {
 
             <EmailEditor
               ref={editorRef}
+              options={{
+                displayMode: 'web',
+              }}
               onReady={() => {
                 loadEmailJson();
               }}
