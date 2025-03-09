@@ -76,9 +76,8 @@ export default function EmailHtml({
   };
 
   return (
-    <iframe
-      srcDoc={renderToString(renderHtml())}
-      className='w-[50%] rounded-md border-1 p-2'
-    />
+    <div className='flex w-[50%] items-center justify-center rounded-md border-1 p-2'>
+      <iframe srcDoc={renderToString(renderHtml())} className='w-full' />
+    </div>
   );
 }
