@@ -1,17 +1,9 @@
 import parse, { DOMNode, Element, domToReact } from 'html-react-parser';
 import { renderToString } from 'react-dom/server';
-import DOMPurify from 'isomorphic-dompurify';
 import { Email } from '../_lib/model/email';
+import { useRef } from 'react';
 
 const defaultHtml = 'PGRpdj48L2Rpdj4='; // <div></div>
-
-// prevent attributes of <a> tag from being removed
-DOMPurify.addHook('afterSanitizeAttributes', function (node) {
-  if ('target' in node) {
-    node.setAttribute('target', '_blank');
-    node.setAttribute('rel', 'noopener');
-  }
-});
 
 export default function EmailHtml({
   email,
@@ -24,8 +16,10 @@ export default function EmailHtml({
     clickCounts?: Record<string, number>;
   };
 }) {
+  const iframeRef = useRef(null);
+
   const renderHtml = () => {
-    return parse(DOMPurify.sanitize(atob(email.html || defaultHtml)), {
+    return parse(atob(email.html || defaultHtml), {
       replace: (domNode: DOMNode) => {
         if (opts.clickCounts) {
           if (
@@ -77,11 +71,10 @@ export default function EmailHtml({
   };
 
   return (
-    <div
-      dangerouslySetInnerHTML={{
-        __html: renderToString(renderHtml()),
-      }}
-      className='max-w-[600px] rounded-sm border-1 p-2'
+    <iframe
+      srcDoc={renderToString(renderHtml())}
+      ref={iframeRef}
+      className='w-[50%] rounded-md border-1 p-2'
     />
   );
 }
