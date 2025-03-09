@@ -91,7 +91,7 @@ export default function EmailHtml({
     <iframe
       ref={iframeRef}
       srcDoc={renderToString(renderHtml())}
-      className={`flex h-[${iFrameHeight}] w-[50%] items-center justify-center rounded-md border-1 p-2`}
+      className={`flex h-[${iFrameHeight}] w-[100%] items-center justify-center rounded-md border-1 p-2`}
       onLoad={adjustHeight}
     />
   );
