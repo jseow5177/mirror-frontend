@@ -323,6 +323,7 @@ export default function CampaignView({
         isOpen={isClickMapOpen}
         onOpenChange={onClickMapOpenChange}
         size='2xl'
+        scrollBehavior='outside'
       >
         <ModalContent>
           {(onClose) => (

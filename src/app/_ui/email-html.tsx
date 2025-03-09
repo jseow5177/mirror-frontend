@@ -81,7 +81,7 @@ export default function EmailHtml({
       dangerouslySetInnerHTML={{
         __html: renderToString(renderHtml()),
       }}
-      className='max-w-[600px]'
+      className='max-w-[600px] rounded-sm border-1 p-2'
     />
   );
 }

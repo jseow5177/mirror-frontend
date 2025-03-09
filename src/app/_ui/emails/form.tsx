@@ -95,7 +95,9 @@ export default function EmailForm({ email }: { email?: Email }) {
       unlayer.exportHtml((data) => {
         const { html } = data;
         try {
-          const encodedHtml = btoa(html);
+          const encodedHtml = btoa(
+            html.replace('style="min-height: 100vh;"', '') // remove vh style due to display mode web
+          );
           setEmailFields((prevFields) => ({
             ...prevFields,
             json,
@@ -188,11 +190,21 @@ export default function EmailForm({ email }: { email?: Email }) {
             <Title title='Email Template' />
 
             <EmailEditor
+              editorId='editor'
               ref={editorRef}
               options={{
                 displayMode: 'web',
+                tabs: {
+                  body: {
+                    enabled: false,
+                  },
+                },
               }}
-              onReady={() => {
+              onReady={(unlayer) => {
+                unlayer.setBodyValues({
+                  contentWidth: 'inherit',
+                  backgroundColor: 'transparent',
+                });
                 loadEmailJson();
               }}
             />
