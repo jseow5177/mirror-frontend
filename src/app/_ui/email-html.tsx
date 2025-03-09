@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import parse, { DOMNode, Element, domToReact } from 'html-react-parser';
 import { renderToString } from 'react-dom/server';
 import { Email } from '../_lib/model/email';
@@ -17,6 +17,8 @@ export default function EmailHtml({
   };
 }) {
   const [html, setHtml] = useState('');
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [iFrameHeight, setIFrameHeight] = useState('100px');
 
   // prevent ssr mismatch
   useEffect(() => {
@@ -75,9 +77,22 @@ export default function EmailHtml({
     });
   };
 
+  const adjustHeight = () => {
+    if (iframeRef.current) {
+      const iframe = iframeRef.current;
+      const newHeight = iframe.contentWindow?.document.body.scrollHeight || 0;
+      if (newHeight > 0) {
+        setIFrameHeight(`${newHeight * 2}px`);
+      }
+    }
+  };
+
   return (
-    <div className='flex w-[50%] items-center justify-center rounded-md border-1 p-2'>
-      <iframe srcDoc={renderToString(renderHtml())} className='w-full' />
-    </div>
+    <iframe
+      ref={iframeRef}
+      srcDoc={renderToString(renderHtml())}
+      className={`flex h-[${iFrameHeight}] w-[50%] items-center justify-center rounded-md border-1 p-2`}
+      onLoad={adjustHeight}
+    />
   );
 }
