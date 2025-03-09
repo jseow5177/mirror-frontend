@@ -91,8 +91,6 @@ export default function MultiSelectTextInput({
               ...baseStyles,
               borderColor: state.isFocused ? 'black' : '#E4E7EB',
               borderWidth: state.isFocused ? '1.5px' : '2px',
-              outlineColor: 'red',
-              padding: '4px',
               borderRadius: '12px',
               backgroundColor: 'white',
             };
