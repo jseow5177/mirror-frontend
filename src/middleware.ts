@@ -1,6 +1,6 @@
 export const runtime = 'nodejs';
 
-import { NextResponse } from 'next/server';
+import { NextResponse, userAgent } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { cookies } from 'next/headers';
 import { baseUrl } from './app/_lib/utils';
@@ -10,6 +10,16 @@ const pathWithoutAuth = ['/', '/trial', '/user/init'];
 export async function middleware(req: NextRequest) {
   const currentPath = req.nextUrl.pathname;
   const method = req.method;
+
+  const {device} = userAgent(req)
+
+  if (device.type ==='mobile') {
+    const mobileRedirectUrl = new URL('/no-mobile', req.url);
+    return NextResponse.rewrite(mobileRedirectUrl);
+  } else if (req.nextUrl.pathname === '/no-mobile') {
+    const desktopRedirectUrl = new URL('/', req.url);
+    return NextResponse.redirect(desktopRedirectUrl);
+  }
 
   const isLoggedIn = await isUserLoggedIn();
   if (currentPath.startsWith('/dashboard')) {
