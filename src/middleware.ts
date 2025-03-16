@@ -11,9 +11,9 @@ export async function middleware(req: NextRequest) {
   const currentPath = req.nextUrl.pathname;
   const method = req.method;
 
-  const {device} = userAgent(req)
+  const { device } = userAgent(req);
 
-  if (device.type ==='mobile') {
+  if (device.type === 'mobile') {
     const mobileRedirectUrl = new URL('/no-mobile', req.url);
     return NextResponse.rewrite(mobileRedirectUrl);
   } else if (req.nextUrl.pathname === '/no-mobile') {

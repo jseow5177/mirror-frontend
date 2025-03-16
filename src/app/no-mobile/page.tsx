@@ -6,7 +6,7 @@ export default async function Page() {
           Oops... This App is for Desktop Only 🤔
         </h1>
         <p className='mt-2 text-gray-600'>
-          It looks like you're on a mobile device.
+          It looks like you are on a mobile device.
         </p>
         <p className='text-gray-600'>
           For the best experience, please switch to a desktop or laptop.
