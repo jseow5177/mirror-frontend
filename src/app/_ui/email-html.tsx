@@ -26,7 +26,7 @@ export default function EmailHtml({
   }, [email.html]);
 
   const renderHtml = () => {
-    return parse(atob(html || defaultHtml), {
+    return parse(decodeURIComponent(atob(html || defaultHtml)), {
       replace: (domNode: DOMNode) => {
         if (opts.clickCounts) {
           if (
@@ -80,9 +80,31 @@ export default function EmailHtml({
   const adjustHeight = () => {
     if (iframeRef.current) {
       const iframe = iframeRef.current;
-      const newHeight = iframe.contentWindow?.document.body.scrollHeight || 0;
-      if (newHeight > 0) {
-        setIFrameHeight(`${newHeight * 2}px`);
+
+      const updateHeight = () => {
+        const newHeight = iframe.contentWindow?.document.body.scrollHeight || 0;
+        if (newHeight > 0) {
+          setIFrameHeight(`${newHeight}px`);
+        }
+      };
+
+      // Initial height adjustment
+      updateHeight();
+
+      // Observe DOM changes inside the iframe
+      if (iframe.contentWindow) {
+        const observer = new MutationObserver(() => {
+          updateHeight();
+        });
+        observer.observe(iframe.contentWindow.document.body, {
+          childList: true,
+          subtree: true,
+        });
+
+        // Clean up the observer when iframe unloads
+        iframe.contentWindow?.addEventListener('unload', () =>
+          observer.disconnect()
+        );
       }
     }
   };
@@ -91,9 +113,9 @@ export default function EmailHtml({
     <iframe
       ref={iframeRef}
       srcDoc={renderToString(renderHtml())}
-      className={`flex w-[100%] items-center justify-center rounded-md border-1 p-2`}
+      className={`rounded-md border-1 p-3`}
       onLoad={adjustHeight}
-      height={`${iFrameHeight}`}
+      height={iFrameHeight}
     />
   );
 }

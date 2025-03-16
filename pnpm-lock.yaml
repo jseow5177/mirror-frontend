@@ -5916,10 +5916,10 @@ packages:
       }
     engines: { node: '>=14.0' }
 
-  unlayer-types@1.225.0:
+  unlayer-types@1.235.0:
     resolution:
       {
-        integrity: sha512-lWwAoP6nqRaxae25KYUgY3dSCKQMzh2KPxNth/+qJp2CQcqePyC41IeJiimCzC8y9etIqUYlJiM2CnahwBR1eQ==,
+        integrity: sha512-62WqMxI3EvIquwstMZVDW2UTGT67AgqOyEbFpYiViXGzDtzha2pArQITYsOXaJBDcR5DwgKOnLwTzOwWQ/fXkg==,
       }
 
   update-browserslist-db@1.1.2:
@@ -10375,7 +10375,7 @@ snapshots:
   react-email-editor@1.7.11(react@19.0.0-rc-f38c22b244-20240704):
     dependencies:
       react: 19.0.0-rc-f38c22b244-20240704
-      unlayer-types: 1.225.0
+      unlayer-types: 1.235.0
 
   react-hot-toast@2.5.2(react-dom@19.0.0-rc-f38c22b244-20240704(react@19.0.0-rc-f38c22b244-20240704))(react@19.0.0-rc-f38c22b244-20240704):
     dependencies:
@@ -10873,7 +10873,7 @@ snapshots:
     dependencies:
       '@fastify/busboy': 2.1.1
 
-  unlayer-types@1.225.0: {}
+  unlayer-types@1.235.0: {}
 
   update-browserslist-db@1.1.2(browserslist@4.24.4):
     dependencies:

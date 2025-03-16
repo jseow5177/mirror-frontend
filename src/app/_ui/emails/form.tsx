@@ -10,7 +10,7 @@ import React, {
 import EmailEditor, { EditorRef } from 'react-email-editor';
 import { Button, Link, Divider, Input, Textarea } from '@heroui/react';
 import { Email } from '@/app/_lib/model/email';
-import { createEmail, EmailState } from '@/app/_lib/action/email';
+import { createEmail, EmailState, updateEmail } from '@/app/_lib/action/email';
 import toast from 'react-hot-toast';
 import { redirect } from 'next/navigation';
 import { TagIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
@@ -38,7 +38,7 @@ export default function EmailForm({ email }: { email?: Email }) {
   };
 
   const [emailFields, setEmailFields] = useState({
-    id: email?.id ? `${email?.id}` : '0',
+    id: email?.id ? email?.id : 0,
     name: email?.name || '',
     email_desc: email?.email_desc || '',
     json: email?.json || '{}',
@@ -48,7 +48,12 @@ export default function EmailForm({ email }: { email?: Email }) {
   const handleCreateEmail = (s: EmailState, formData: FormData) => {
     formData.append('json', emailFields.json);
     formData.append('html', emailFields.html);
-    return createEmail(s, formData);
+
+    if (emailFields.id > 0) {
+      return updateEmail(s, formData);
+    } else {
+      return createEmail(s, formData);
+    }
   };
 
   const [state, formAction, pending] = useActionState(
@@ -96,7 +101,9 @@ export default function EmailForm({ email }: { email?: Email }) {
         const { html } = data;
         try {
           const encodedHtml = btoa(
-            html.replace('style="min-height: 100vh;"', '') // remove vh style due to display mode web
+            encodeURIComponent(
+              html.replace('style="min-height: 100vh;"', '') // remove vh style due to display mode web
+            )
           );
           setEmailFields((prevFields) => ({
             ...prevFields,
@@ -169,13 +176,9 @@ export default function EmailForm({ email }: { email?: Email }) {
             ) : (
               <Button
                 type='button'
-                isDisabled={pending}
                 color='primary'
                 variant='solid'
-                onClick={(e) => {
-                  e.preventDefault();
-                  extractEmailJson();
-                }}
+                onPress={extractEmailJson}
               >
                 Next
               </Button>
@@ -195,9 +198,7 @@ export default function EmailForm({ email }: { email?: Email }) {
               options={{
                 displayMode: 'web',
               }}
-              onReady={() => {
-                loadEmailJson();
-              }}
+              onReady={loadEmailJson}
             />
           </>
         ) : (
@@ -210,7 +211,7 @@ export default function EmailForm({ email }: { email?: Email }) {
                 className='hidden'
                 id='id'
                 name='id'
-                value={emailFields.id}
+                value={`${emailFields.id}`}
               />
             )}
 

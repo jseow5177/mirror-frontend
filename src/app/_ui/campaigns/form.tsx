@@ -243,14 +243,6 @@ export default function CampaignForm({
     setCurrentStep(currentStep - 1);
   };
 
-  const openNewTabWithHtml = (email: Email) => {
-    const newWindow = window.open();
-    if (newWindow) {
-      newWindow.document.write(atob(email.html));
-      newWindow.document.close();
-    }
-  };
-
   const onSegmentChange = (e: string | number | null) => {
     if (!e) {
       return;
@@ -503,7 +495,9 @@ export default function CampaignForm({
                             <Button
                               color='secondary'
                               size='md'
-                              onPress={() => openNewTabWithHtml(email)}
+                              as={Link}
+                              target='_blank'
+                              href={`/dashboard/emails/${email.id}`}
                             >
                               View
                             </Button>

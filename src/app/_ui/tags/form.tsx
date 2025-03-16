@@ -165,7 +165,7 @@ export default function TagForm({ tag }: { tag?: Tag }) {
           color='primary'
           variant='solid'
         >
-          {`${isUpdate ? 'Update' : 'Create'}`} Tag
+          Save
         </Button>
       </div>
     </form>
