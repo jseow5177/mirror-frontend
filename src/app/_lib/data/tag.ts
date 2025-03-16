@@ -24,7 +24,26 @@ type CountTagsResponse = {
   count: number;
 };
 
+type GetDistinctTagValuesResponse = {
+  tag_values: string[];
+};
+
 const TAGS_PER_PAGE = 10;
+
+export async function getDistinctTagValues(id: number) {
+  try {
+    const resp = await axiosInstance.post('/get_distinct_tag_values', {
+      tag_id: id,
+    });
+
+    const body: GetDistinctTagValuesResponse = resp.data.body;
+
+    return body.tag_values;
+  } catch (error) {
+    const err = handleAxiosError(error, 'Failed to get distinct tag values.');
+    throw new Error(err.error);
+  }
+}
 
 export async function getTag(id: number) {
   try {

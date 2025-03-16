@@ -3,7 +3,6 @@
 import { Lookup } from '@/app/_lib/model/segment';
 import { isTagNumeric, Tag } from '@/app/_lib/model/tag';
 import {
-  Input,
   Select,
   SelectItem,
   SharedSelection,
@@ -13,9 +12,17 @@ import {
   AutocompleteItem,
 } from '@heroui/react';
 import { TrashIcon, DocumentDuplicateIcon } from '@heroicons/react/24/outline';
-import { useState } from 'react';
-import MultiSelectTextInput from '../multi-select-text';
+import { useEffect, useState } from 'react';
 import clsx from 'clsx';
+import { getDistinctTagValues } from '@/app/_lib/data/tag';
+import {
+  ControlProps,
+  CSSObjectWithLabel,
+  GroupBase,
+  default as ReactSelect,
+  Theme,
+} from 'react-select';
+import Creatable from 'react-select/creatable';
 
 const OP_EQ = '=';
 const OP_IN = 'in';
@@ -50,11 +57,38 @@ export const LookupBuilder = ({
 }: LookupProps) => {
   const [showActionButtons, setShowActionButtons] = useState(false);
 
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const findTag = (tagID: number) => {
     return tags.find((tag) => tag.id === tagID);
   };
 
   const [tag, setTag] = useState<Tag>(findTag(lookup.tag_id || 0) || Object);
+
+  const [distinctTagValues, setDistinctTagValues] = useState<string[]>([]);
+  const [isLoadingTagValues, setIsLoadingTagValues] = useState(false);
+
+  useEffect(() => {
+    if (tag.id && tag.id > 0) {
+      (async () => {
+        try {
+          setIsLoadingTagValues(true);
+          const values = await getDistinctTagValues(tag.id || 0);
+          setDistinctTagValues(values);
+        } catch {
+          setDistinctTagValues([]);
+        } finally {
+          setIsLoadingTagValues(false);
+        }
+      })();
+    } else {
+      setDistinctTagValues([]);
+    }
+  }, [tag]);
 
   const getLookupSupportedOps = () => {
     if (isTagNumeric(tag)) {
@@ -89,11 +123,11 @@ export const LookupBuilder = ({
     if (e.currentKey === OP_IN) {
       setLookupValue(e.currentKey, []);
     } else {
-      setLookupValue(e.currentKey, lookup.val); // retain old value
+      setLookupValue(e.currentKey, '');
     }
   };
 
-  const setLookupValue = (op: string, v: string | string[]) => {
+  const setLookupValue = (op: string, v: string | string[] | null) => {
     if (op === undefined) {
       return;
     }
@@ -101,28 +135,163 @@ export const LookupBuilder = ({
     onChange({ tag_id: lookup.tag_id, op: op, val: v });
   };
 
-  const getValueInput = (op: string) => {
-    if (op === OP_IN) {
-      return (
-        <MultiSelectTextInput
-          initialValues={lookup.val || []}
-          onChange={(v) => setLookupValue(op, v)}
-          isNumeric={isTagNumeric(tag)}
-          isDisabled={readonly}
-        />
-      );
+  const toSelectOptions = (arr: string[]) =>
+    arr.map((v) => ({
+      label: v,
+      value: v,
+    }));
+
+  const getInputTheme = (theme: Theme) => ({
+    ...theme,
+    colors: {
+      ...theme.colors,
+      primary: 'black',
+    },
+  });
+
+  const getInputControlStyles = (
+    baseStyles: CSSObjectWithLabel,
+    state: ControlProps<
+      {
+        label: any;
+        value: any;
+      },
+      boolean,
+      GroupBase<{
+        label: any;
+        value: any;
+      }>
+    >
+  ) => ({
+    ...baseStyles,
+    borderColor: state.isFocused ? 'black' : '#E4E7EB',
+    borderWidth: state.isFocused ? '1.5px' : '2px',
+    borderRadius: '12px',
+    backgroundColor: 'white',
+  });
+
+  const getInputMultiValueStyles = (baseStyles: CSSObjectWithLabel) => ({
+    ...baseStyles,
+    backgroundColor: 'white',
+    borderColor: '#E4E7EB',
+    borderWidth: '1px',
+    borderRadius: '8px',
+  });
+
+  const getValueInputV2 = (op: string) => {
+    // solve next hydration error
+    if (isMounted) {
+      if (op === OP_IN) {
+        if (distinctTagValues.length > 0) {
+          return (
+            <ReactSelect
+              isMulti
+              options={toSelectOptions(distinctTagValues)}
+              value={toSelectOptions(lookup.val as string[])}
+              onChange={(newValue) => {
+                setLookupValue(
+                  op,
+                  newValue.length > 0 ? newValue.map((v) => v.value) : null
+                );
+              }}
+              isSearchable
+              isClearable
+              isLoading={isLoadingTagValues}
+              isDisabled={readonly}
+              theme={(theme) => getInputTheme(theme)}
+              styles={{
+                control: (baseStyles, state) =>
+                  getInputControlStyles(baseStyles, state),
+                multiValue: (baseStyles) =>
+                  getInputMultiValueStyles(baseStyles),
+              }}
+            />
+          );
+        } else {
+          return (
+            <Creatable
+              isClearable
+              isMulti
+              value={toSelectOptions(lookup.val as string[])}
+              onChange={(newValue) =>
+                setLookupValue(
+                  op,
+                  newValue.length > 0 ? newValue.map((v) => v.value) : null
+                )
+              }
+              isValidNewOption={(v) => {
+                if (isTagNumeric(tag)) {
+                  return v !== '' && !Number.isNaN(Number(v));
+                }
+                return true;
+              }}
+              isDisabled={readonly}
+              theme={(theme) => getInputTheme(theme)}
+              styles={{
+                control: (baseStyles, state) =>
+                  getInputControlStyles(baseStyles, state),
+                multiValue: (baseStyles) =>
+                  getInputMultiValueStyles(baseStyles),
+              }}
+            />
+          );
+        }
+      } else {
+        if (distinctTagValues.length > 0) {
+          return (
+            <ReactSelect
+              options={toSelectOptions(distinctTagValues)}
+              value={{
+                label: lookup.val,
+                value: lookup.val,
+              }}
+              onChange={(newValue) => {
+                setLookupValue(op, newValue ? newValue.value : '');
+              }}
+              isSearchable
+              isClearable
+              isLoading={isLoadingTagValues}
+              isDisabled={op === '' || readonly}
+              theme={(theme) => getInputTheme(theme)}
+              styles={{
+                control: (baseStyles, state) =>
+                  getInputControlStyles(baseStyles, state),
+                multiValue: (baseStyles) =>
+                  getInputMultiValueStyles(baseStyles),
+              }}
+            />
+          );
+        } else {
+          return (
+            <Creatable
+              isClearable
+              value={{
+                label: lookup.val,
+                value: lookup.val,
+              }}
+              onChange={(newValue) =>
+                setLookupValue(op, newValue ? newValue.value : '')
+              }
+              isValidNewOption={(v) => {
+                if (isTagNumeric(tag)) {
+                  return v !== '' && !Number.isNaN(Number(v));
+                }
+                return true;
+              }}
+              isDisabled={op === '' || readonly}
+              theme={(theme) => getInputTheme(theme)}
+              styles={{
+                control: (baseStyles, state) =>
+                  getInputControlStyles(baseStyles, state),
+                multiValue: (baseStyles) =>
+                  getInputMultiValueStyles(baseStyles),
+              }}
+            />
+          );
+        }
+      }
     } else {
-      return (
-        <Input
-          aria-label='Value'
-          placeholder='Value'
-          variant='bordered'
-          type={isTagNumeric(tag) ? 'number' : 'text'}
-          isDisabled={op === '' || readonly}
-          value={lookup.val || ''}
-          onChange={(e) => setLookupValue(op, e.target.value)}
-        />
-      );
+      return <></>;
     }
   };
 
@@ -134,14 +303,12 @@ export const LookupBuilder = ({
 
   return (
     <div
-      className={clsx(
-        'flex justify-between rounded-md py-2 pl-1 pr-3 transition-all duration-300 ease-in-out',
-        {
-          'bg-gray-100': showActionButtons,
-        }
-      )}
+      className={clsx('flex justify-between rounded-md px-3 py-3', {
+        'outline-dashed outline-2 outline-blue-500': showActionButtons,
+      })}
       onMouseEnter={() => toggleShowActionButtons(true)}
       onMouseLeave={() => toggleShowActionButtons(false)}
+      onBlur={() => toggleShowActionButtons(false)}
     >
       <div className='flex w-[80%] items-start gap-4'>
         <Autocomplete
@@ -172,7 +339,7 @@ export const LookupBuilder = ({
           ))}
         </Select>
 
-        <div className='w-[40%]'>{getValueInput(getLookupOp())}</div>
+        <div className='w-[40%]'>{getValueInputV2(getLookupOp())}</div>
       </div>
 
       {showActionButtons && (

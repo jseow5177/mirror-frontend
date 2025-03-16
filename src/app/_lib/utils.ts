@@ -39,7 +39,12 @@ export function validateCriteria(criteria: Criteria): boolean {
 
   for (const query of criteria.queries) {
     for (const lookup of query.lookups) {
-      if (!lookup.tag_id || !lookup.op || !lookup.val) {
+      if (
+        !lookup.tag_id ||
+        !lookup.op ||
+        !lookup.val ||
+        lookup.val.length === 0
+      ) {
         return false;
       }
     }

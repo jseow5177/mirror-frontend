@@ -48,7 +48,7 @@ const OperatorToggle = ({
   });
 
   return (
-    <div className='flex flex-col items-center'>
+    <div className='mr-2 flex flex-col items-center'>
       <div className={lineStyle} />
       <Component
         {...{
@@ -323,7 +323,7 @@ export const QueryBuilder = ({
                         <span>
                           <Link
                             href='#'
-                            className='mt-4'
+                            className='mt-2'
                             isDisabled={isMaxLookup()}
                             size='sm'
                             onPress={() => addLookup(queryIdx)}
