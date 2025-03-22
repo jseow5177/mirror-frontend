@@ -1,7 +1,6 @@
 'use server';
 
 import axiosInstance from '../axios';
-import axios from 'axios';
 import { Segment } from '../model/segment';
 import { Criteria } from '../model/segment';
 import { handleAxiosError } from '../utils';
@@ -13,39 +12,33 @@ type PreviewUdResponse = {
   count: number;
 };
 
-export async function countUd(segmentID: number) {
+export async function countUd(
+  segmentID: number
+): Promise<{ count: number; error?: string }> {
   try {
     const resp = await axiosInstance.post('/count_ud', {
       segment_id: segmentID,
     });
 
     const body: PreviewUdResponse = resp.data.body;
-
-    return body.count;
+    return { count: body.count };
   } catch (error) {
-    if (!axios.isCancel(error)) {
-      const err = handleAxiosError(error, 'Failed to count segment size.');
-      throw new Error(err.error);
-    }
-    return -1;
+    const err = handleAxiosError(error, 'Failed to count segment size.');
+    return { count: -1, error: err.error };
   }
 }
 
-export async function previewUd(criteria: Criteria) {
+export async function previewUd(
+  criteria: Criteria
+): Promise<{ count: number; error?: string }> {
   try {
-    const resp = await axiosInstance.post('/preview_ud', {
-      criteria: criteria,
-    });
+    const resp = await axiosInstance.post('/preview_ud', { criteria });
 
     const body: PreviewUdResponse = resp.data.body;
-
-    return body.count;
+    return { count: body.count };
   } catch (error) {
-    if (!axios.isCancel(error)) {
-      const err = handleAxiosError(error, 'Failed to preview segment count.');
-      throw new Error(err.error);
-    }
-    return -1;
+    const err = handleAxiosError(error, 'Failed to preview segment count.');
+    return { count: -1, error: err.error };
   }
 }
 

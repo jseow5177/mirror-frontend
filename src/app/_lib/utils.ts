@@ -82,7 +82,7 @@ export const handleAxiosError = (
         notFound();
     }
 
-    console.log(`code: ${status}, err: ${err.response.data.error}`);
+    console.log(`code: ${status}, err: ${data.error}`);
 
     return {
       error: errMsg,

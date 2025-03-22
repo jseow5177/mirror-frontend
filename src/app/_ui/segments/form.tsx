@@ -87,18 +87,21 @@ export default function SegmentForm({
           return;
         }
 
-        try {
-          setPreviewLoading(true);
-          const [count] = await Promise.all([
-            previewUd(criteria),
-            new Promise((r) => setTimeout(r, 300)),
-          ]);
+        setPreviewLoading(true);
+
+        const [{ count, error }] = await Promise.all([
+          previewUd(criteria),
+          new Promise((r) => setTimeout(r, 300)),
+        ]);
+
+        if (error) {
+          toast.error(error);
+          setSegmentSize(-1);
+        } else {
           setSegmentSize(count);
-        } catch (error) {
-          toast.error(error instanceof Error ? error.message : String(error));
-        } finally {
-          setPreviewLoading(false);
         }
+
+        setPreviewLoading(false);
       }, delay);
 
       return () => {

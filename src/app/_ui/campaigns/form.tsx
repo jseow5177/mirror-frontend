@@ -170,18 +170,21 @@ export default function CampaignForm({
       if (isNaN(segmentID) || segmentID === 0) return;
 
       const debounce = setTimeout(async () => {
-        try {
-          setIsCountLoading(true);
-          const [count] = await Promise.all([
-            countUd(segmentID),
-            new Promise((r) => setTimeout(r, 300)),
-          ]);
+        setIsCountLoading(true);
+
+        const [{ count, error }] = await Promise.all([
+          countUd(segmentID),
+          new Promise((r) => setTimeout(r, 300)),
+        ]);
+
+        if (error) {
+          toast.error(error);
+          setSegmentSize(-1);
+        } else {
           setSegmentSize(count);
-        } catch (error) {
-          toast.error(error instanceof Error ? error.message : String(error));
-        } finally {
-          setIsCountLoading(false);
         }
+
+        setIsCountLoading(false);
       }, delay);
 
       return () => {
