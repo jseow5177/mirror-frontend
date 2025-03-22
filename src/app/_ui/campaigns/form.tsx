@@ -221,7 +221,7 @@ export default function CampaignForm({
       if (state.message) {
         toast.success(state.message);
       }
-      redirect('/dashboard/campaigns');
+      redirect(`/dashboard/campaigns/${state.campaignID}`);
     }
   }, [state]);
 
