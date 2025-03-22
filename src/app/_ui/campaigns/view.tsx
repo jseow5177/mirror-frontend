@@ -192,7 +192,7 @@ export default function CampaignView({
           <TableColumn>Email</TableColumn>
           <TableColumn>Subject</TableColumn>
           <TableColumn key={keyRatio} allowsSorting>
-            Ratio (%)
+            Traffic Split (%)
           </TableColumn>
           <TableColumn key={keyUniqueOpenCount} allowsSorting>
             Unique Open Count

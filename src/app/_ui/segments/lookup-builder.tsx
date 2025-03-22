@@ -13,7 +13,6 @@ import {
 } from '@heroui/react';
 import { TrashIcon, DocumentDuplicateIcon } from '@heroicons/react/24/outline';
 import { useEffect, useState } from 'react';
-import clsx from 'clsx';
 import { getDistinctTagValues } from '@/app/_lib/data/tag';
 import {
   ControlProps,
@@ -303,9 +302,7 @@ export const LookupBuilder = ({
 
   return (
     <div
-      className={clsx('flex justify-between rounded-md px-3 py-3', {
-        'outline-dashed outline-2 outline-blue-500': showActionButtons,
-      })}
+      className='flex justify-start gap-2 rounded-md py-3'
       onMouseEnter={() => toggleShowActionButtons(true)}
       onMouseLeave={() => toggleShowActionButtons(false)}
       onBlur={() => toggleShowActionButtons(false)}
@@ -343,32 +340,30 @@ export const LookupBuilder = ({
       </div>
 
       {showActionButtons && (
-        <div className='flex w-[20%] justify-end'>
-          <ButtonGroup variant='light' size='md' className='gap-2'>
-            {!disableCopy && (
-              <Button
-                isIconOnly
-                color='default'
-                aria-label='copy'
-                size='sm'
-                onPress={onCopy}
-              >
-                <DocumentDuplicateIcon />
-              </Button>
-            )}
-            {!hideDelete && (
-              <Button
-                isIconOnly
-                color='danger'
-                aria-label='delete'
-                size='sm'
-                onPress={onDelete}
-              >
-                <TrashIcon />
-              </Button>
-            )}
-          </ButtonGroup>
-        </div>
+        <ButtonGroup variant='light' size='md' className='gap-1'>
+          {!disableCopy && (
+            <Button
+              isIconOnly
+              color='default'
+              aria-label='copy'
+              size='sm'
+              onPress={onCopy}
+            >
+              <DocumentDuplicateIcon />
+            </Button>
+          )}
+          {!hideDelete && (
+            <Button
+              isIconOnly
+              color='danger'
+              aria-label='delete'
+              size='sm'
+              onPress={onDelete}
+            >
+              <TrashIcon />
+            </Button>
+          )}
+        </ButtonGroup>
       )}
     </div>
   );

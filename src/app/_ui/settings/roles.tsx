@@ -31,9 +31,7 @@ export default function Roles({
 }) {
   const initialState: UpdateRolesState = {
     message: null,
-    fieldErrors: {
-      roles: [],
-    },
+    fieldErrors: {},
     error: null,
   };
 

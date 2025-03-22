@@ -20,35 +20,40 @@ import {
   Button,
   Divider,
   Link,
-  Modal,
-  ModalContent,
-  ModalBody,
-  ModalHeader,
   useDisclosure,
   Input,
-  ModalFooter,
   Card,
   Skeleton,
   Textarea,
   CardHeader,
   CardBody,
-  ButtonGroup,
   DatePicker,
   Radio,
   RadioGroup,
   Autocomplete,
   AutocompleteItem,
+  Tooltip,
+  RadioProps,
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerBody,
+  DrawerFooter,
+  CardFooter,
+  Chip,
+  Slider,
 } from '@heroui/react';
 import Title from '../title';
 import {
+  Bars3Icon,
   CalendarIcon,
   ClockIcon,
-  DocumentDuplicateIcon,
   DocumentTextIcon,
-  PercentBadgeIcon,
-  PlusIcon,
+  EnvelopeIcon,
+  InformationCircleIcon,
+  PuzzlePieceIcon,
   TagIcon,
-  TrashIcon,
+  UserGroupIcon,
 } from '@heroicons/react/24/outline';
 import { Segment } from '@/app/_lib/model/segment';
 import { countUd } from '@/app/_lib/data/segment';
@@ -62,11 +67,26 @@ import {
   ZonedDateTime,
 } from '@internationalized/date';
 import EmailHtml from '../email-html';
+import clsx from 'clsx';
 
-const TOTAL_STEPS = 3;
+const TOTAL_STEPS = 2;
 
 const CAMPAIGN_START_NOW = 'now';
 const CAMPAIGN_START_SCHEDULE = 'schedule';
+
+const CAMPAIGN_TYPE_REGULAR = 'regular';
+const CAMPAIGN_TYPE_AB = 'ab';
+
+const STARTING_REGULAR_EMAIL = {
+  email_id: 0,
+  subject: '',
+  ratio: 100,
+};
+
+const STARTING_AB_EMAIL = {
+  ...STARTING_REGULAR_EMAIL,
+  ratio: 50,
+};
 
 export default function CampaignForm({
   campaign,
@@ -107,11 +127,22 @@ export default function CampaignForm({
     return unix.getTime();
   };
 
+  const [campaignType, setCampaignType] = useState(CAMPAIGN_TYPE_REGULAR);
+
+  const getStartingEmails = (campaignType: string) => {
+    if (campaignType === CAMPAIGN_TYPE_AB) {
+      return [STARTING_AB_EMAIL, STARTING_AB_EMAIL];
+    } else if (campaignType === CAMPAIGN_TYPE_REGULAR) {
+      return [STARTING_REGULAR_EMAIL];
+    }
+    return [];
+  };
+
   const [campaignFields, setCampaignFields] = useState({
     id: campaign?.id ? campaign?.id : 0,
     name: campaign?.name || '',
     campaign_desc: campaign?.campaign_desc || '',
-    emails: campaign?.campaign_emails || [],
+    emails: campaign?.campaign_emails || getStartingEmails(campaignType),
     segment_id: campaign?.segment_id ? campaign?.segment_id : 0,
     schedule: campaign?.schedule ? campaign?.schedule : 0,
   });
@@ -162,14 +193,12 @@ export default function CampaignForm({
 
   useDebouncedCount(Number(campaignFields.segment_id));
 
-  const [searchTerm, setSearchTerm] = useState('');
-
-  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-
   const handleCreateCampaign = (s: CampaignState, formData: FormData) => {
     formData.append('emails', JSON.stringify(campaignFields.emails));
     formData.append('segment_id', `${campaignFields.segment_id}`);
     formData.append('schedule', `${campaignFields.schedule}`);
+    formData.append('name', campaignFields.name);
+    formData.append('campaign_desc', campaignFields.campaign_desc);
     return createCampaign(s, formData);
   };
 
@@ -195,17 +224,27 @@ export default function CampaignForm({
 
   const atLastStep = currentStep === TOTAL_STEPS;
 
+  const [basicInfoErrors, setBasicInfoErrors] = useState<{
+    name?: string[] | undefined;
+    campaign_desc?: string[] | undefined;
+    segment_id?: string[] | undefined;
+  }>();
+
   const nextStep = (newStep?: number) => {
     let hasError = false;
 
     switch (currentStep) {
       case 1:
-        const segmentField = CampaignSchema.pick({
+        setBasicInfoErrors({});
+
+        const basicInfoFields = CampaignSchema.pick({
+          name: true,
+          campaign_desc: true,
           segment_id: true,
         }).safeParse(campaignFields);
 
-        if (!segmentField.success) {
-          toast.error(segmentField.error.flatten().fieldErrors.segment_id![0]);
+        if (!basicInfoFields.success) {
+          setBasicInfoErrors(basicInfoFields.error.flatten().fieldErrors);
           hasError = true;
         }
 
@@ -251,83 +290,13 @@ export default function CampaignForm({
     setCampaignFields({ ...campaignFields, segment_id: Number(e) });
   };
 
-  const renderFirstFormPage = () => {
-    return (
-      <>
-        <Title title='Select a Segment' />
-        <Autocomplete
-          className='mb-4 w-[40%]'
-          aria-label='Segment'
-          placeholder='Segment'
-          variant='bordered'
-          selectedKey={`${campaignFields.segment_id}`}
-          onSelectionChange={onSegmentChange}
-        >
-          {segments.map((segment) => (
-            <AutocompleteItem key={segment.id!}>
-              {segment.name}
-            </AutocompleteItem>
-          ))}
-        </Autocomplete>
-        <Skeleton
-          isLoaded={!isCountLoading}
-          className='w-[10%] rounded-lg text-lg'
-        >
-          <p>Size: {segmentSize === -1 ? '-' : segmentSize}</p>
-        </Skeleton>
-      </>
-    );
-  };
-
   const findEmail = (emailID: number) =>
     emails.find((email) => email.id === emailID);
-
-  const onSelectEmail = (emailID: number) => {
-    setCampaignFields({
-      ...campaignFields,
-      emails: [
-        ...campaignFields.emails,
-        {
-          email_id: emailID,
-          subject: '',
-          ratio: 0,
-        },
-      ],
-    });
-    onClose();
-  };
-
-  const atEmailLimit = () => {
-    return campaignFields.emails.length === 4;
-  };
-
-  const deleteEmail = (index: number) => {
-    setCampaignFields({
-      ...campaignFields,
-      emails: [
-        ...campaignFields.emails.slice(0, index),
-        ...campaignFields.emails.slice(index + 1),
-      ],
-    });
-  };
-
-  const copyEmail = (index: number) => {
-    setCampaignFields({
-      ...campaignFields,
-      emails: [
-        ...campaignFields.emails.slice(0, index + 1),
-        {
-          ...campaignFields.emails[index],
-        },
-        ...campaignFields.emails.slice(index + 1),
-      ],
-    });
-  };
 
   const onEmailChange = (
     index: number,
     key: keyof CampaignEmail,
-    value: string
+    value: string | number
   ) => {
     const updatedCampaignEmails = campaignFields.emails.map((email, i) => {
       if (i === index) {
@@ -342,284 +311,384 @@ export default function CampaignForm({
     });
   };
 
-  const renderSecondFormPage = () => {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const [activeEmailSelection, setActiveEmailSelection] = useState(0);
+
+  const openEmailDrawer = (i: number) => {
+    setActiveEmailSelection(i);
+    onOpen();
+  };
+
+  const handleRatioChange = (i: number, v: number) => {
+    const newRatio = v * 100;
+    const remainEmailCount = campaignFields.emails.length - 1;
+
+    if (remainEmailCount === 0) {
+      onEmailChange(i, 'ratio', newRatio);
+      return;
+    }
+
+    const newEmails = [];
+    const ratioChange = newRatio - campaignFields.emails[i].ratio;
+    const ratioChangePerRemainEmail = ratioChange / remainEmailCount;
+
+    for (let j = 0; j < campaignFields.emails.length; j++) {
+      if (j === i) {
+        newEmails.push({
+          ...campaignFields.emails[j],
+          ratio: newRatio,
+        });
+      } else {
+        const adjustedRatio =
+          campaignFields.emails[j].ratio - ratioChangePerRemainEmail;
+        newEmails.push({
+          ...campaignFields.emails[j],
+          ratio: adjustedRatio,
+        });
+      }
+    }
+
+    setCampaignFields({
+      ...campaignFields,
+      emails: newEmails,
+    });
+  };
+
+  const renderRegularCampaignForm = () => {
+    const emailErrors = state?.fieldErrors?.emails || [];
     return (
-      <>
-        <Button
-          type='button'
-          color='primary'
-          variant='bordered'
-          onPress={onOpen}
-          startContent={<PlusIcon color='#006FEE' className='w-4' />}
-          isDisabled={atEmailLimit()}
+      <div className='w-[50%]'>
+        <Title title='Email Info' />
+
+        {/* Email Subject */}
+        <Input
           className='mb-6'
-        >
-          Add Email
-        </Button>
+          id='subject'
+          name='subject'
+          variant='bordered'
+          label={
+            <div className='flex gap-2'>
+              <Bars3Icon className='w-5' />
+              <p>Subject</p>
+            </div>
+          }
+          labelPlacement='inside'
+          value={campaignFields.emails[0].subject}
+          onValueChange={(v) => onEmailChange(0, 'subject', v)}
+          isInvalid={emailErrors.length > 0 && emailErrors[0].subject && true}
+          errorMessage={emailErrors.length > 0 && emailErrors[0].subject}
+        />
 
-        {campaignFields.emails.length > 0 && (
-          <div className='mb-6 grid grid-cols-2 gap-4'>
-            {campaignFields.emails.map((email, index) => {
-              return (
-                <Card className='w-full' key={index}>
-                  <CardHeader className='flex justify-between'>
-                    <p className='text-lg'>{findEmail(email.email_id)?.name}</p>
-                    <ButtonGroup variant='light' size='sm' className='gap-2'>
-                      <Button
-                        isIconOnly
-                        color='default'
-                        aria-label='copy'
-                        isDisabled={atEmailLimit()}
-                        onPress={() => copyEmail(index)}
-                      >
-                        <DocumentDuplicateIcon />
-                      </Button>
-                      <Button
-                        isIconOnly
-                        aria-label='delete'
-                        color='danger'
-                        onPress={() => deleteEmail(index)}
-                      >
-                        <TrashIcon />
-                      </Button>
-                    </ButtonGroup>
-                  </CardHeader>
-                  <Divider />
-                  <CardBody>
-                    {/* Email subject */}
-                    <Input
-                      className='mb-6 w-full'
-                      id={`subject-${index}`}
-                      name='subject'
-                      variant='bordered'
-                      label={
-                        <div className='flex gap-2'>
-                          <TagIcon className='w-5' />
-                          <p>Email Subject</p>
-                        </div>
-                      }
-                      labelPlacement='inside'
-                      fullWidth={false}
-                      value={email.subject}
-                      onValueChange={(v) => onEmailChange(index, 'subject', v)}
-                    />
-
-                    {/* Ratio */}
-                    <Input
-                      className='mb-6 w-[30%]'
-                      id={`ratio-${index}`}
-                      name='ratio'
-                      variant='bordered'
-                      label={
-                        <div className='flex gap-2'>
-                          <PercentBadgeIcon className='w-5' />
-                          <p>Ratio</p>
-                        </div>
-                      }
-                      labelPlacement='inside'
-                      fullWidth={false}
-                      value={`${email.ratio}`}
-                      onValueChange={(v) => onEmailChange(index, 'ratio', v)}
-                      type='number'
-                      endContent='%'
-                    />
-                  </CardBody>
-                </Card>
-              );
-            })}
-          </div>
-        )}
-
-        <Modal
-          size='5xl'
-          className='h-[90%]'
-          isOpen={isOpen}
-          onOpenChange={onOpenChange}
-          scrollBehavior='inside'
-        >
-          <ModalContent>
-            <ModalHeader className='flex-col gap-2'>
-              <h1 className='text-xl'>Select an Email</h1>
-              <Input
-                id='keyword'
-                name='keyword'
-                variant='bordered'
-                className='w-[80%]'
-                size='md'
-                placeholder='Search by name or description...'
-                value={searchTerm}
-                onValueChange={(v) => setSearchTerm(v.toLowerCase())}
-                onClear={() => setSearchTerm('')}
-                isClearable
-              />
-            </ModalHeader>
-            <ModalBody>
-              <div className='grid grid-cols-2 gap-4'>
-                {emails
-                  .filter(
-                    (email) =>
-                      email.name.toLowerCase().indexOf(searchTerm) > -1 ||
-                      email.email_desc.toLowerCase().indexOf(searchTerm) > -1
-                  )
-                  .map((email, index) => {
-                    return (
-                      <Card
-                        key={index}
-                        radius='lg'
-                        shadow='none'
-                        className='group relative flex flex-col border p-2'
-                        style={{ height: '300px' }} // Fixed height for each card
-                      >
-                        <div className='relative flex-1 overflow-hidden'>
-                          <div
-                            className='h-full transition-all group-hover:blur-sm'
-                            style={{
-                              display: 'flex',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                            }}
-                          >
-                            <div
-                              style={{
-                                transform: 'scale(0.95)', // Scales down HTML content
-                                transformOrigin: 'top center',
-                                maxHeight: '100%',
-                                maxWidth: '100%',
-                                overflow: 'hidden',
-                              }}
-                            >
-                              <EmailHtml email={email} />
-                            </div>
-                          </div>
-                          <div className='pointer-events-none absolute inset-0 z-10 flex items-center justify-center gap-4 bg-opacity-50 opacity-0 transition-all group-hover:pointer-events-auto group-hover:opacity-100'>
-                            <Button
-                              color='secondary'
-                              size='md'
-                              as={Link}
-                              target='_blank'
-                              href={`/dashboard/emails/${email.id}`}
-                            >
-                              View
-                            </Button>
-                            <Button
-                              color='primary'
-                              size='md'
-                              onPress={() => onSelectEmail(email.id!)}
-                            >
-                              Select
-                            </Button>
-                          </div>
-                        </div>
-                      </Card>
-                    );
-                  })}
+        {/* Email */}
+        <div className='mb-6 flex items-start gap-2'>
+          <Input
+            id='email'
+            name='email'
+            variant='bordered'
+            label={
+              <div className='flex gap-2'>
+                <EnvelopeIcon className='w-5' />
+                <p>Email</p>
               </div>
-            </ModalBody>
-            <ModalFooter>
-              <Button color='danger' onPress={onClose}>
-                Close
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
-      </>
+            }
+            labelPlacement='inside'
+            value={findEmail(campaignFields.emails[0].email_id)?.name || ''}
+            isReadOnly
+            isInvalid={
+              emailErrors.length > 0 && emailErrors[0].email_id && true
+            }
+            errorMessage={emailErrors.length > 0 && emailErrors[0].email_id}
+          />
+          <Button
+            size='md'
+            color='primary'
+            variant='ghost'
+            onPress={() => openEmailDrawer(0)}
+          >
+            Select Email
+          </Button>
+        </div>
+      </div>
     );
   };
 
-  const renderThirdFormPage = () => {
+  const renderABChip = (i: number) => {
+    if (i === 0) {
+      return <Chip color='primary'>Control Group</Chip>;
+    } else {
+      return <Chip color='default'>Test Group</Chip>;
+    }
+  };
+
+  const renderABCampaignForm = () => {
+    const emailErrors = state?.fieldErrors?.emails || [];
     return (
-      <>
+      <div className='flex w-[100%] gap-8'>
+        {campaignFields.emails.map((email, i) => {
+          return (
+            <Card key={i} shadow='sm' fullWidth>
+              <CardHeader>{renderABChip(i)}</CardHeader>
+
+              <CardBody>
+                <Input
+                  className='mb-6'
+                  id={`subject-${i}`}
+                  name='subject'
+                  variant='bordered'
+                  label={
+                    <div className='flex gap-2'>
+                      <Bars3Icon className='w-5' />
+                      <p>Subject</p>
+                    </div>
+                  }
+                  labelPlacement='inside'
+                  value={email.subject}
+                  onValueChange={(v) => onEmailChange(i, 'subject', v)}
+                  isInvalid={emailErrors[i] && emailErrors[i].subject && true}
+                  errorMessage={emailErrors[i] && emailErrors[i].subject}
+                />
+
+                <div className='mb-6 flex items-start gap-2'>
+                  <Input
+                    id={`email-${i}`}
+                    name='email'
+                    variant='bordered'
+                    label={
+                      <div className='flex gap-2'>
+                        <EnvelopeIcon className='w-5' />
+                        <p>Email</p>
+                      </div>
+                    }
+                    labelPlacement='inside'
+                    value={
+                      findEmail(campaignFields.emails[i].email_id)?.name || ''
+                    }
+                    isReadOnly
+                    isInvalid={
+                      emailErrors[i] && emailErrors[i].email_id && true
+                    }
+                    errorMessage={emailErrors[i] && emailErrors[i].email_id}
+                  />
+                  <Button
+                    size='md'
+                    color='primary'
+                    variant='ghost'
+                    onPress={() => openEmailDrawer(i)}
+                    className='w-fit'
+                  >
+                    Select Email
+                  </Button>
+                </div>
+
+                <Slider
+                  label={
+                    <div className='flex gap-2'>
+                      <p>Traffic Split</p>
+                      <Tooltip
+                        showArrow
+                        color='foreground'
+                        content='Divides users between test variations.'
+                        placement='right'
+                      >
+                        <InformationCircleIcon className='w-4' />
+                      </Tooltip>
+                    </div>
+                  }
+                  size='sm'
+                  step={0.05}
+                  showSteps
+                  formatOptions={{ style: 'percent' }}
+                  value={campaignFields.emails[i].ratio / 100}
+                  minValue={0.05}
+                  maxValue={0.95}
+                  marks={[
+                    {
+                      value: 0.2,
+                      label: '20%',
+                    },
+                    {
+                      value: 0.5,
+                      label: '50%',
+                    },
+                    {
+                      value: 0.8,
+                      label: '80%',
+                    },
+                  ]}
+                  onChange={(v) => handleRatioChange(i, v as number)}
+                />
+              </CardBody>
+            </Card>
+          );
+        })}
+      </div>
+    );
+  };
+
+  const renderSecondFormPage = () => {
+    switch (campaignType) {
+      case CAMPAIGN_TYPE_REGULAR:
+        return renderRegularCampaignForm();
+      case CAMPAIGN_TYPE_AB:
+        return renderABCampaignForm();
+      default:
+        return <></>;
+    }
+  };
+
+  const handleCampaignTypeChange = (v: string) => {
+    setCampaignFields({
+      ...campaignFields,
+      emails: getStartingEmails(v),
+    });
+    setCampaignType(v);
+  };
+
+  const renderFirstFormPage = () => {
+    return (
+      <div className='w-[50%]'>
         <Title title='Basic Info' />
 
-        {/* Campaign ID */}
-        {isUpdate && (
+        <div className='flex flex-col gap-6'>
+          {/* Campaign ID */}
+          {isUpdate && (
+            <Input
+              className='hidden'
+              id='id'
+              name='id'
+              value={`${campaignFields.id}`}
+            />
+          )}
+
+          {/* Campaign Name */}
           <Input
-            className='hidden'
-            id='id'
-            name='id'
-            value={`${campaignFields.id}`}
+            id='name'
+            aria-label='name'
+            name='name'
+            variant='bordered'
+            label={
+              <div className='flex gap-2'>
+                <TagIcon className='w-5' />
+                <p>Name</p>
+              </div>
+            }
+            labelPlacement='inside'
+            fullWidth={false}
+            value={campaignFields.name}
+            isInvalid={basicInfoErrors?.name && true}
+            errorMessage={basicInfoErrors?.name && basicInfoErrors?.name[0]}
+            onValueChange={(v) =>
+              setCampaignFields({
+                ...campaignFields,
+                name: v,
+              })
+            }
           />
-        )}
 
-        {/* Campaign Name */}
-        <Input
-          className='mb-6 w-1/2'
-          id='name'
-          aria-label='name'
-          name='name'
-          variant='bordered'
-          label={
-            <div className='flex gap-2'>
-              <TagIcon className='w-5' />
-              <p>Name</p>
-            </div>
-          }
-          labelPlacement='inside'
-          fullWidth={false}
-          value={campaignFields.name}
-          isInvalid={state.fieldErrors?.name && true}
-          errorMessage={state.fieldErrors?.name && state.fieldErrors?.name[0]}
-          onValueChange={(v) =>
-            setCampaignFields({
-              ...campaignFields,
-              name: v,
-            })
-          }
-        />
+          {/* Campaign Description */}
+          <Textarea
+            id='campaign_desc'
+            aria-label='campaign_desc'
+            name='campaign_desc'
+            variant='bordered'
+            label={
+              <div className='flex gap-2'>
+                <DocumentTextIcon className='w-5' />
+                <p>Description</p>
+              </div>
+            }
+            labelPlacement='inside'
+            fullWidth={false}
+            value={campaignFields.campaign_desc}
+            isInvalid={basicInfoErrors?.campaign_desc && true}
+            errorMessage={
+              basicInfoErrors?.campaign_desc &&
+              basicInfoErrors?.campaign_desc[0]
+            }
+            onValueChange={(v) =>
+              setCampaignFields({
+                ...campaignFields,
+                campaign_desc: v,
+              })
+            }
+          />
 
-        {/* Campaign Description */}
-        <Textarea
-          className='mb-6 w-1/2'
-          id='campaign_desc'
-          aria-label='campaign_desc'
-          name='campaign_desc'
-          variant='bordered'
-          label={
-            <div className='flex gap-2'>
-              <DocumentTextIcon className='w-5' />
-              <p className='text-lg'>Description</p>
-            </div>
-          }
-          labelPlacement='inside'
-          fullWidth={false}
-          value={campaignFields.campaign_desc}
-          isInvalid={state.fieldErrors?.campaign_desc && true}
-          errorMessage={
-            state.fieldErrors?.campaign_desc &&
-            state.fieldErrors?.campaign_desc[0]
-          }
-          onValueChange={(v) =>
-            setCampaignFields({
-              ...campaignFields,
-              campaign_desc: v,
-            })
-          }
-        />
+          {/* Segment */}
+          <Autocomplete
+            aria-label='Segment'
+            variant='bordered'
+            selectedKey={`${campaignFields.segment_id}`}
+            onSelectionChange={onSegmentChange}
+            label={
+              <div className='flex gap-2'>
+                <UserGroupIcon className='w-5' />
+                <p>Segment</p>
+              </div>
+            }
+            isInvalid={basicInfoErrors?.segment_id && true}
+            errorMessage={
+              basicInfoErrors?.segment_id && basicInfoErrors?.segment_id[0]
+            }
+          >
+            {segments.map((segment) => (
+              <AutocompleteItem key={segment.id!}>
+                {segment.name}
+              </AutocompleteItem>
+            ))}
+          </Autocomplete>
 
-        {/* Campaign Start Option */}
-        <RadioGroup
-          orientation='horizontal'
-          className='mb-6'
-          value={campaignStartOption}
-          onValueChange={onCampaignStartOptionChange}
-          label={
-            <div className='flex gap-2'>
-              <CalendarIcon className='w-5' />
-              <p className='text-lg'>Start Option</p>
-            </div>
-          }
-        >
-          <Radio value={CAMPAIGN_START_NOW}>Now</Radio>
-          <Radio value={CAMPAIGN_START_SCHEDULE}>Schedule</Radio>
-        </RadioGroup>
+          {/* Campaign Type */}
+          <RadioGroup
+            orientation='horizontal'
+            value={campaignType}
+            onValueChange={(v) => {
+              handleCampaignTypeChange(v);
+            }}
+            label={
+              <div className='flex gap-2'>
+                <PuzzlePieceIcon className='w-5' />
+                <p>Campaign Type</p>
+              </div>
+            }
+          >
+            <CardRadio
+              description='Send an email to a segment'
+              value={CAMPAIGN_TYPE_REGULAR}
+            >
+              Regular
+            </CardRadio>
+            <CardRadio
+              description='Send two or more versions of an email to a segment'
+              value={CAMPAIGN_TYPE_AB}
+            >
+              A/B Split
+            </CardRadio>
+          </RadioGroup>
 
-        {/* Date Picker */}
-        {campaignStartOption !== CAMPAIGN_START_NOW && (
-          <>
+          {/* Campaign Start Option */}
+          <RadioGroup
+            orientation='horizontal'
+            value={campaignStartOption}
+            onValueChange={onCampaignStartOptionChange}
+            label={
+              <div className='flex gap-2'>
+                <CalendarIcon className='w-5' />
+                <p>Start Option</p>
+              </div>
+            }
+          >
+            <Radio value={CAMPAIGN_START_NOW}>Now</Radio>
+            <Radio value={CAMPAIGN_START_SCHEDULE}>Schedule</Radio>
+          </RadioGroup>
+
+          {/* Date Picker */}
+          {campaignStartOption !== CAMPAIGN_START_NOW && (
             <DatePicker
               aria-label='datetime'
               variant='bordered'
-              className='w-1/2'
               hideTimeZone
               showMonthAndYearPickers
               value={parseDateTime(
@@ -634,13 +703,13 @@ export default function CampaignForm({
               label={
                 <div className='flex gap-2'>
                   <ClockIcon className='w-5' />
-                  <p className='text-lg'>Datetime</p>
+                  <p>Datetime</p>
                 </div>
               }
             />
-          </>
-        )}
-      </>
+          )}
+        </div>
+      </div>
     );
   };
 
@@ -650,8 +719,6 @@ export default function CampaignForm({
         return renderFirstFormPage();
       case 2:
         return renderSecondFormPage();
-      case 3:
-        return renderThirdFormPage();
       default:
         return <div></div>;
     }
@@ -659,7 +726,7 @@ export default function CampaignForm({
 
   return (
     <div className='flex w-full flex-col items-center'>
-      <form ref={ref} className='w-[90%] rounded-md'>
+      <form ref={ref} className='w-full'>
         <div className='flex w-full items-center justify-between'>
           <NumberCircles
             totalSteps={TOTAL_STEPS}
@@ -667,6 +734,23 @@ export default function CampaignForm({
             onPress={(s) => nextStep(s)}
           />
           <div className='flex items-center gap-4'>
+            <div className='flex gap-2'>
+              <Skeleton isLoaded={!isCountLoading} className='rounded-lg'>
+                <h2 className='text-right text-3xl text-slate-700'>
+                  {segmentSize === -1 ? 'No Data' : segmentSize}
+                </h2>
+              </Skeleton>
+              <Tooltip
+                showArrow
+                color='foreground'
+                content='Total number of users'
+              >
+                <InformationCircleIcon className='w-4' />
+              </Tooltip>
+            </div>
+
+            <Divider orientation='vertical' className='mx-2 h-10' />
+
             <Button
               href='/dashboard/campaigns'
               as={Link}
@@ -680,9 +764,7 @@ export default function CampaignForm({
               isDisabled={pending || currentStep == 1}
               color='default'
               variant='solid'
-              onPress={() => {
-                previousStep();
-              }}
+              onPress={previousStep}
             >
               Previous
             </Button>
@@ -708,10 +790,7 @@ export default function CampaignForm({
                 isDisabled={pending || isCountLoading}
                 color='primary'
                 variant='solid'
-                onClick={(e) => {
-                  // TODO: This button click triggers submit at last step
-                  // Could be due to event propagate during render
-                  e.preventDefault();
+                onPress={() => {
                   nextStep();
                 }}
               >
@@ -724,7 +803,104 @@ export default function CampaignForm({
         <Divider className='my-10' />
 
         {renderForm()}
+
+        <Drawer
+          isOpen={isOpen}
+          placement='right'
+          onOpenChange={onOpenChange}
+          size='5xl'
+        >
+          <DrawerContent>
+            {(onClose) => (
+              <>
+                <DrawerHeader className='flex flex-col gap-2'>
+                  Email Template
+                  <Input
+                    id='keyword'
+                    name='keyword'
+                    variant='bordered'
+                    placeholder='Search by name or description...'
+                    value={searchTerm}
+                    className='w-[500px]'
+                    onValueChange={(v) => setSearchTerm(v.toLowerCase())}
+                    onClear={() => setSearchTerm('')}
+                    isClearable
+                  />
+                </DrawerHeader>
+                <DrawerBody>
+                  <div className='grid grid-cols-3 gap-4'>
+                    {emails
+                      .filter(
+                        (email) =>
+                          email.name.toLowerCase().indexOf(searchTerm) > -1 ||
+                          email.email_desc.toLowerCase().indexOf(searchTerm) >
+                            -1
+                      )
+                      .map((email, i) => (
+                        <Card
+                          isPressable={true}
+                          key={i}
+                          shadow='sm'
+                          onPress={() => {
+                            onEmailChange(
+                              activeEmailSelection,
+                              'email_id',
+                              email.id!
+                            );
+                            onClose();
+                          }}
+                          className='h-[400px]'
+                        >
+                          <CardBody className='h-[400px]'>
+                            <div className='overflow-scroll'>
+                              <EmailHtml email={email} blockPointerEvents />
+                            </div>
+                          </CardBody>
+
+                          <Divider />
+
+                          <CardFooter className='flex justify-center'>
+                            <Link
+                              showAnchorIcon
+                              href={`/dashboard/emails/${email.id}`}
+                              target='blank'
+                            >
+                              <p>{email.name}</p>
+                            </Link>
+                          </CardFooter>
+                        </Card>
+                      ))}
+                  </div>
+                </DrawerBody>
+                <DrawerFooter>
+                  <Button color='danger' variant='light' onPress={onClose}>
+                    Close
+                  </Button>
+                </DrawerFooter>
+              </>
+            )}
+          </DrawerContent>
+        </Drawer>
       </form>
     </div>
   );
 }
+
+const CardRadio = (props: RadioProps) => {
+  const { children, ...otherProps } = props;
+
+  return (
+    <Radio
+      classNames={{
+        base: clsx(
+          'inline-flex m-0 bg-content1 hover:bg-content2 items-center justify-between',
+          'max-w-[300px] cursor-pointer rounded-lg gap-4 p-4 border-2',
+          'data-[selected=true]:border-primary'
+        ),
+      }}
+      {...otherProps}
+    >
+      {children}
+    </Radio>
+  );
+};

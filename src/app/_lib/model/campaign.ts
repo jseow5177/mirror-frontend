@@ -48,10 +48,12 @@ export type Campaign = {
 };
 
 export const CampaignEmailSchema = z.object({
-  email_id: z.coerce.number({
-    required_error: 'Email ID is required.',
-    invalid_type_error: 'Email ID must be a number.',
-  }),
+  email_id: z.coerce
+    .number({
+      required_error: 'Email is required.',
+      invalid_type_error: 'Email must be a number.',
+    })
+    .min(1, { message: 'Email is required.' }),
   subject: z
     .string({
       required_error: 'Email subject is required.',

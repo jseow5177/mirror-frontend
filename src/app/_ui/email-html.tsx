@@ -7,11 +7,14 @@ const defaultHtml = 'PGRpdj48L2Rpdj4='; // <div></div>
 
 export default function EmailHtml({
   email,
+  blockPointerEvents = false,
   opts = {
     clickCounts: {},
   },
 }: {
   email: Email;
+  blockPointerEvents?: boolean;
+  showNameAtFooter?: boolean;
   opts?: {
     clickCounts?: Record<string, number>;
   };
@@ -113,9 +116,11 @@ export default function EmailHtml({
     <iframe
       ref={iframeRef}
       srcDoc={renderToString(renderHtml())}
-      className={`rounded-md border-1 p-3`}
       onLoad={adjustHeight}
       height={iFrameHeight}
+      className={
+        blockPointerEvents ? 'pointer-events-none' : 'pointer-events-auto'
+      }
     />
   );
 }

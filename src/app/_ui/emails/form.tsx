@@ -25,6 +25,8 @@ export default function EmailForm({ email }: { email?: Email }) {
 
   const [currentStep, setCurrentStep] = useState(1);
 
+  const [isJsonLoaded, setIsJsonLoaded] = useState(false);
+
   let isUpdate = false;
   if (email) {
     isUpdate = true;
@@ -89,6 +91,12 @@ export default function EmailForm({ email }: { email?: Email }) {
     setCurrentStep(currentStep - 1);
   };
 
+  useEffect(() => {
+    if (currentStep === 1) {
+      setIsJsonLoaded(false);
+    }
+  }, [currentStep]);
+
   const extractEmailJson = () => {
     const unlayer = editorRef.current?.editor;
 
@@ -126,11 +134,13 @@ export default function EmailForm({ email }: { email?: Email }) {
     if (emailFields.json !== '{}') {
       unlayer?.loadDesign(JSON.parse(emailFields.json));
     }
+
+    setIsJsonLoaded(true);
   };
 
   return (
     <div className='flex w-full flex-col items-center'>
-      <form ref={formRef} className='w-[90%] rounded-md'>
+      <form ref={formRef} className='w-full'>
         <div className='flex w-full items-center justify-between'>
           <NumberCircles
             totalSteps={TOTAL_STEPS}
@@ -179,6 +189,7 @@ export default function EmailForm({ email }: { email?: Email }) {
                 color='primary'
                 variant='solid'
                 onPress={extractEmailJson}
+                isDisabled={!isJsonLoaded}
               >
                 Next
               </Button>

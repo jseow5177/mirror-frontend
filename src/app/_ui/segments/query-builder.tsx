@@ -271,7 +271,7 @@ export const QueryBuilder = ({
   };
 
   return (
-    <div>
+    <>
       <div className='flex'>
         {criteria?.queries && criteria.queries.length > 1 && (
           <OperatorToggle
@@ -323,7 +323,6 @@ export const QueryBuilder = ({
                         <span>
                           <Link
                             href='#'
-                            className='mt-2'
                             isDisabled={isMaxLookup()}
                             size='sm'
                             onPress={() => addLookup(queryIdx)}
@@ -351,7 +350,6 @@ export const QueryBuilder = ({
           <span>
             <Link
               href='#'
-              className='mt-4'
               isDisabled={isMaxLookup()}
               onPress={addQuery}
               size='sm'
@@ -361,6 +359,6 @@ export const QueryBuilder = ({
           </span>
         </Tooltip>
       )}
-    </div>
+    </>
   );
 };

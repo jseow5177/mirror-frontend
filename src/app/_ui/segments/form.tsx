@@ -144,7 +144,7 @@ export default function SegmentForm({
 
   return (
     <div className='flex w-full flex-col items-center'>
-      <form ref={ref} className='w-[90%] rounded-md'>
+      <form ref={ref} className='w-full'>
         <div className='flex w-full items-center justify-between'>
           <NumberCircles
             totalSteps={TOTAL_STEPS}
@@ -160,12 +160,12 @@ export default function SegmentForm({
               }
             }}
           />
-          <div className='flex items-center justify-end'>
-            <div className='flex gap-4'>
+          <div className='flex items-center gap-4'>
+            <div className='flex gap-2'>
               <Skeleton isLoaded={!isPreviewLoading} className='rounded-lg'>
-                <h1 className='text-right text-3xl text-slate-700'>
+                <h2 className='text-right text-3xl text-slate-700'>
                   {segmentSize === -1 ? 'No Data' : segmentSize}
-                </h1>
+                </h2>
               </Skeleton>
               <Tooltip
                 showArrow
@@ -176,59 +176,52 @@ export default function SegmentForm({
               </Tooltip>
             </div>
 
-            <Divider orientation='vertical' className='ml-10 mr-5 h-10' />
+            <Divider orientation='vertical' className='mx-2 h-10' />
 
-            <div className='flex items-center gap-4'>
+            <Button
+              href='/dashboard/segments'
+              as={Link}
+              isDisabled={pending}
+              color='danger'
+              variant='light'
+            >
+              Cancel
+            </Button>
+            <Button
+              isDisabled={pending || currentStep == 1}
+              color='default'
+              variant='solid'
+              onPress={previousStep}
+            >
+              Previous
+            </Button>
+            {atLastStep ? (
               <Button
-                href='/dashboard/segments'
-                as={Link}
-                isDisabled={pending}
-                color='danger'
-                variant='light'
-              >
-                Cancel
-              </Button>
-              <Button
-                isDisabled={pending || currentStep == 1}
-                color='default'
-                variant='solid'
                 onPress={() => {
-                  previousStep();
+                  startTransition(() => {
+                    if (ref.current) {
+                      formAction(new FormData(ref.current));
+                    }
+                  });
                 }}
+                isDisabled={pending}
+                isLoading={pending}
+                color='success'
+                variant='solid'
               >
-                Previous
+                Save
               </Button>
-              {atLastStep ? (
-                <Button
-                  onPress={() => {
-                    startTransition(() => {
-                      if (ref.current) {
-                        formAction(new FormData(ref.current));
-                      }
-                    });
-                  }}
-                  isDisabled={pending}
-                  isLoading={pending}
-                  color='success'
-                  variant='solid'
-                >
-                  Save
-                </Button>
-              ) : (
-                <Button
-                  type='button'
-                  isDisabled={pending || isPreviewLoading}
-                  color='primary'
-                  variant='solid'
-                  onClick={(e) => {
-                    e.preventDefault();
-                    nextStep();
-                  }}
-                >
-                  Next
-                </Button>
-              )}
-            </div>
+            ) : (
+              <Button
+                type='button'
+                isDisabled={pending || isPreviewLoading}
+                color='primary'
+                variant='solid'
+                onPress={nextStep}
+              >
+                Next
+              </Button>
+            )}
           </div>
         </div>
 
@@ -249,7 +242,7 @@ export default function SegmentForm({
             />
           </>
         ) : (
-          <>
+          <div className='w-[50%]'>
             <Title title='Basic Info' />
 
             {/* Segment ID */}
@@ -264,7 +257,7 @@ export default function SegmentForm({
 
             {/* Segment Name */}
             <Input
-              className='mb-6 w-1/2'
+              className='mb-6'
               id='name'
               name='name'
               variant='bordered'
@@ -291,14 +284,13 @@ export default function SegmentForm({
 
             {/* Segment Description */}
             <Textarea
-              className='w-1/2'
               id='segment_desc'
               name='segment_desc'
               variant='bordered'
               label={
                 <div className='flex gap-2'>
                   <DocumentTextIcon className='w-5' />
-                  <p className='text-lg'>Description</p>
+                  <p>Description</p>
                 </div>
               }
               labelPlacement='inside'
@@ -316,7 +308,7 @@ export default function SegmentForm({
                 })
               }
             />
-          </>
+          </div>
         )}
       </form>
     </div>

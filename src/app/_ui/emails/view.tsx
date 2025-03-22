@@ -4,7 +4,7 @@ import { Email } from '@/app/_lib/model/email';
 import { convertUnixToLocalTime } from '@/app/_lib/utils';
 import EmailHtml from '../email-html';
 import { DetailGrid, DetailRow } from '../detail';
-import { Button, Link } from '@heroui/react';
+import { Button, Card, CardBody, Link } from '@heroui/react';
 
 export default function EmailView({ email }: { email: Email }) {
   const emailCreateTime = convertUnixToLocalTime(email.create_time);
@@ -26,7 +26,11 @@ export default function EmailView({ email }: { email: Email }) {
           />
           <DetailRow label='Email' value={''} />
         </DetailGrid>
-        <EmailHtml email={email} />
+        <Card shadow='sm'>
+          <CardBody>
+            <EmailHtml email={email} />
+          </CardBody>
+        </Card>
       </div>
       <Button
         color='primary'
