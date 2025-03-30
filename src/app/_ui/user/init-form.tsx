@@ -106,7 +106,7 @@ export default function InitUserForm({ token }: { token: string }) {
           isLoading={pending}
           color='primary'
           variant='solid'
-          size='lg'
+          size='md'
           className='min-w-[20%]'
         >
           Submit
