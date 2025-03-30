@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { getTenant } from '@/app/_lib/data/tenant';
 import { getMe } from '@/app/_lib/data/users';
 import General from '@/app/_ui/settings/general';

@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { getSenders, getTenant } from '@/app/_lib/data/tenant';
 import EmailSetting from '@/app/_ui/settings/email';
 
