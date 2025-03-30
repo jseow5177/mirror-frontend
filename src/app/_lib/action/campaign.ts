@@ -15,6 +15,8 @@ export type CampaignState = {
       email_id?: string[];
       subject?: string[];
     }[];
+    segment_id?: string[];
+    sender_id?: string[];
   };
   error?: string | null;
   message?: string | null;
@@ -43,6 +45,7 @@ export async function createCampaign(_: CampaignState, formData: FormData) {
     emails: formEmails,
     segment_id: formData.get('segment_id'),
     schedule: formData.get('schedule'),
+    sender_id: formData.get('sender_id'),
   });
 
   if (!fields.success) {
@@ -69,7 +72,8 @@ export async function createCampaign(_: CampaignState, formData: FormData) {
     };
   }
 
-  const { name, campaign_desc, emails, segment_id, schedule } = fields.data;
+  const { name, campaign_desc, emails, segment_id, schedule, sender_id } =
+    fields.data;
 
   try {
     const resp = await axiosInstance.post('/create_campaign', {
@@ -77,6 +81,7 @@ export async function createCampaign(_: CampaignState, formData: FormData) {
       campaign_desc,
       emails,
       segment_id,
+      sender_id,
       schedule: Math.ceil(schedule / 1000),
     });
     revalidatePath('/dashboard');

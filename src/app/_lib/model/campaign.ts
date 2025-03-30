@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import { Email } from './email';
-import { Segment } from './segment';
 
 export enum CampaignStatus {
   Pending = 1,
@@ -39,12 +38,11 @@ export type Campaign = {
   campaign_emails: CampaignEmail[];
   segment_size: number;
   progress: number;
+  sender_id: number;
   segment_id: number;
   schedule: number;
   create_time: number;
   update_time: number;
-
-  segment?: Segment;
 };
 
 export const CampaignEmailSchema = z.object({
@@ -102,6 +100,14 @@ export const CampaignSchema = z.object({
     })
     .min(1, {
       message: 'Segment is required',
+    }),
+  sender_id: z.coerce
+    .number({
+      required_error: 'Sender is required.',
+      invalid_type_error: 'Sender ID must be a number.',
+    })
+    .min(1, {
+      message: 'Sender is required',
     }),
   schedule: z.coerce.number({
     required_error: 'Schedule is required.',

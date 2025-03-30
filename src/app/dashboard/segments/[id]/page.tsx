@@ -3,7 +3,7 @@ import { countUd, getSegment } from '@/app/_lib/data/segment';
 import { getTags } from '@/app/_lib/data/tag';
 import { notFound } from 'next/navigation';
 import SegmentView from '@/app/_ui/segments/view';
-import toast from 'react-hot-toast';
+import { addToast } from '@heroui/react';
 
 export default async function Page({
   params,
@@ -34,7 +34,10 @@ export default async function Page({
   }
 
   if (countUdError) {
-    toast.error(countUdError);
+    addToast({
+      title: countUdError,
+      color: 'danger',
+    });
   }
 
   return (

@@ -29,7 +29,7 @@ export default function CampaignTable({
         <TableColumn>Update Time</TableColumn>
         <TableColumn> </TableColumn>
       </TableHeader>
-      <TableBody emptyContent={'No campaigns to display.'}>
+      <TableBody emptyContent='You have no campaigns.'>
         {campaigns.map((campaign, i) => {
           const { date: updateDate, time: updateTime } = convertUnixToLocalTime(
             campaign.update_time

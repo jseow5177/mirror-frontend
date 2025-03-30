@@ -38,7 +38,6 @@ export default async function Page({
 
   return (
     <main className='w-full'>
-      <h1 className='mb-8 text-2xl'>Your Users</h1>
       <div className='mb-5 flex items-center justify-between gap-2'>
         <SearchBar placeholder='Search users...' />
         {me.role.actions.includes(ActionCode.EditUser) && (

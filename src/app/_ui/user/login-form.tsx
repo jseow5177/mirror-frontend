@@ -6,7 +6,7 @@ import {
   ShieldCheckIcon,
   UserIcon,
 } from '@heroicons/react/24/outline';
-import { Button, Input } from '@heroui/react';
+import { addToast, Button, Input } from '@heroui/react';
 import { redirect } from 'next/navigation';
 import React, {
   startTransition,
@@ -15,7 +15,6 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import toast from 'react-hot-toast';
 
 export default function LogInForm() {
   const initialState: LogInState = {
@@ -38,10 +37,16 @@ export default function LogInForm() {
     }
 
     if (state.error) {
-      toast.error(state.error ? state.error : 'Error encountered');
+      addToast({
+        title: state.error,
+        color: 'danger',
+      });
     } else {
       if (state.message) {
-        toast.success(state.message);
+        addToast({
+          title: state.message,
+          color: 'success',
+        });
       }
       redirect('/dashboard');
     }

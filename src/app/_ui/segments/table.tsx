@@ -35,7 +35,7 @@ export default function SegmentTable({ segments }: { segments: Segment[] }) {
         <TableColumn>Update Time</TableColumn>
         <TableColumn> </TableColumn>
       </TableHeader>
-      <TableBody emptyContent={'No segments to display.'}>
+      <TableBody emptyContent='You have no segments.'>
         {segments.map((segment, i) => {
           const { date: updateDate, time: updateTime } = convertUnixToLocalTime(
             segment.update_time

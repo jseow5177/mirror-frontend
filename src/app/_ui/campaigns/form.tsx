@@ -5,7 +5,6 @@ import {
   Campaign,
   CampaignEmail,
   CampaignSchema,
-  sumRatioEquals100,
 } from '@/app/_lib/model/campaign';
 import { Email } from '@/app/_lib/model/email';
 import {
@@ -42,6 +41,8 @@ import {
   CardFooter,
   Chip,
   Slider,
+  addToast,
+  DateValue,
 } from '@heroui/react';
 import Title from '../title';
 import {
@@ -51,23 +52,18 @@ import {
   DocumentTextIcon,
   EnvelopeIcon,
   InformationCircleIcon,
+  PaperAirplaneIcon,
   PuzzlePieceIcon,
   TagIcon,
   UserGroupIcon,
 } from '@heroicons/react/24/outline';
 import { Segment } from '@/app/_lib/model/segment';
 import { countUd } from '@/app/_lib/data/segment';
-import toast from 'react-hot-toast';
 import { redirect } from 'next/navigation';
-import {
-  CalendarDate,
-  CalendarDateTime,
-  getLocalTimeZone,
-  parseDateTime,
-  ZonedDateTime,
-} from '@internationalized/date';
+import { getLocalTimeZone, parseDateTime } from '@internationalized/date';
 import EmailHtml from '../email-html';
 import clsx from 'clsx';
+import { Sender } from '@/app/_lib/model/tenant';
 
 const TOTAL_STEPS = 2;
 
@@ -92,10 +88,12 @@ export default function CampaignForm({
   campaign,
   emails,
   segments,
+  senders,
 }: {
   campaign?: Campaign;
   emails: Email[];
   segments: Segment[];
+  senders: Sender[];
 }) {
   let isUpdate = false;
   if (campaign) {
@@ -117,9 +115,7 @@ export default function CampaignForm({
     return `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}T${pad(dt.getHours())}:${pad(dt.getMinutes())}:${pad(dt.getSeconds())}`;
   };
 
-  const toUnix = (
-    calendarDate: CalendarDate | CalendarDateTime | ZonedDateTime | null
-  ): number => {
+  const toUnix = (calendarDate: DateValue | null): number => {
     if (!calendarDate) {
       return 0;
     }
@@ -143,6 +139,7 @@ export default function CampaignForm({
     name: campaign?.name || '',
     campaign_desc: campaign?.campaign_desc || '',
     emails: campaign?.campaign_emails || getStartingEmails(campaignType),
+    sender_id: campaign?.sender_id ? campaign?.sender_id : 0,
     segment_id: campaign?.segment_id ? campaign?.segment_id : 0,
     schedule: campaign?.schedule ? campaign?.schedule : 0,
   });
@@ -178,7 +175,10 @@ export default function CampaignForm({
         ]);
 
         if (error) {
-          toast.error(error);
+          addToast({
+            title: error,
+            color: 'danger',
+          });
           setSegmentSize(-1);
         } else {
           setSegmentSize(count);
@@ -197,11 +197,12 @@ export default function CampaignForm({
   useDebouncedCount(Number(campaignFields.segment_id));
 
   const handleCreateCampaign = (s: CampaignState, formData: FormData) => {
-    formData.append('emails', JSON.stringify(campaignFields.emails));
-    formData.append('segment_id', `${campaignFields.segment_id}`);
-    formData.append('schedule', `${campaignFields.schedule}`);
     formData.append('name', campaignFields.name);
     formData.append('campaign_desc', campaignFields.campaign_desc);
+    formData.append('emails', JSON.stringify(campaignFields.emails));
+    formData.append('segment_id', `${campaignFields.segment_id}`);
+    formData.append('sender_id', `${campaignFields.sender_id}`);
+    formData.append('schedule', `${campaignFields.schedule}`);
     return createCampaign(s, formData);
   };
 
@@ -216,10 +217,16 @@ export default function CampaignForm({
     }
 
     if (state.error) {
-      toast.error(state.error ? state.error : 'Error encountered');
+      addToast({
+        title: state.error,
+        color: 'danger',
+      });
     } else {
       if (state.message) {
-        toast.success(state.message);
+        addToast({
+          title: state.message,
+          color: 'success',
+        });
       }
       redirect(`/dashboard/campaigns/${state.campaignID}`);
     }
@@ -231,7 +238,8 @@ export default function CampaignForm({
     name?: string[] | undefined;
     campaign_desc?: string[] | undefined;
     segment_id?: string[] | undefined;
-  }>();
+    sender_id?: string[] | undefined;
+  }>({});
 
   const nextStep = (newStep?: number) => {
     let hasError = false;
@@ -244,24 +252,11 @@ export default function CampaignForm({
           name: true,
           campaign_desc: true,
           segment_id: true,
+          sender_id: true,
         }).safeParse(campaignFields);
 
         if (!basicInfoFields.success) {
           setBasicInfoErrors(basicInfoFields.error.flatten().fieldErrors);
-          hasError = true;
-        }
-
-        break;
-      case 2:
-        const emailField = CampaignSchema.pick({ emails: true })
-          .refine(sumRatioEquals100, {
-            message: 'Ratio must add to 100%',
-            path: ['emails'],
-          })
-          .safeParse(campaignFields);
-
-        if (!emailField.success) {
-          toast.error(emailField.error.flatten().fieldErrors.emails![0]);
           hasError = true;
         }
 
@@ -291,6 +286,14 @@ export default function CampaignForm({
     }
 
     setCampaignFields({ ...campaignFields, segment_id: Number(e) });
+  };
+
+  const onSenderChange = (e: string | number | null) => {
+    if (!e) {
+      return;
+    }
+
+    setCampaignFields({ ...campaignFields, sender_id: Number(e) });
   };
 
   const findEmail = (emailID: number) =>
@@ -386,34 +389,32 @@ export default function CampaignForm({
         />
 
         {/* Email */}
-        <div className='mb-6 flex items-start gap-2'>
-          <Input
-            id='email'
-            name='email'
-            variant='bordered'
-            label={
-              <div className='flex gap-2'>
-                <EnvelopeIcon className='w-5' />
-                <p>Email</p>
-              </div>
-            }
-            labelPlacement='inside'
-            value={findEmail(campaignFields.emails[0].email_id)?.name || ''}
-            isReadOnly
-            isInvalid={
-              emailErrors.length > 0 && emailErrors[0].email_id && true
-            }
-            errorMessage={emailErrors.length > 0 && emailErrors[0].email_id}
-          />
-          <Button
-            size='md'
-            color='primary'
-            variant='ghost'
-            onPress={() => openEmailDrawer(0)}
-          >
-            Select Email
-          </Button>
-        </div>
+        <Input
+          id='email'
+          name='email'
+          variant='bordered'
+          label={
+            <div className='flex gap-2'>
+              <EnvelopeIcon className='w-5' />
+              <p>Email</p>
+            </div>
+          }
+          labelPlacement='inside'
+          value={findEmail(campaignFields.emails[0].email_id)?.name || ''}
+          isReadOnly
+          isInvalid={emailErrors.length > 0 && emailErrors[0].email_id && true}
+          errorMessage={emailErrors.length > 0 && emailErrors[0].email_id}
+          endContent={
+            <Button
+              size='sm'
+              color='primary'
+              variant='ghost'
+              onPress={() => openEmailDrawer(0)}
+            >
+              Select Email
+            </Button>
+          }
+        />
       </div>
     );
   };
@@ -454,37 +455,36 @@ export default function CampaignForm({
                   errorMessage={emailErrors[i] && emailErrors[i].subject}
                 />
 
-                <div className='mb-6 flex items-start gap-2'>
-                  <Input
-                    id={`email-${i}`}
-                    name='email'
-                    variant='bordered'
-                    label={
-                      <div className='flex gap-2'>
-                        <EnvelopeIcon className='w-5' />
-                        <p>Email</p>
-                      </div>
-                    }
-                    labelPlacement='inside'
-                    value={
-                      findEmail(campaignFields.emails[i].email_id)?.name || ''
-                    }
-                    isReadOnly
-                    isInvalid={
-                      emailErrors[i] && emailErrors[i].email_id && true
-                    }
-                    errorMessage={emailErrors[i] && emailErrors[i].email_id}
-                  />
-                  <Button
-                    size='md'
-                    color='primary'
-                    variant='ghost'
-                    onPress={() => openEmailDrawer(i)}
-                    className='w-fit'
-                  >
-                    Select Email
-                  </Button>
-                </div>
+                <Input
+                  className='mb-6'
+                  id={`email-${i}`}
+                  name='email'
+                  variant='bordered'
+                  label={
+                    <div className='flex gap-2'>
+                      <EnvelopeIcon className='w-5' />
+                      <p>Email</p>
+                    </div>
+                  }
+                  labelPlacement='inside'
+                  value={
+                    findEmail(campaignFields.emails[i].email_id)?.name || ''
+                  }
+                  isReadOnly
+                  isInvalid={emailErrors[i] && emailErrors[i].email_id && true}
+                  errorMessage={emailErrors[i] && emailErrors[i].email_id}
+                  endContent={
+                    <Button
+                      size='sm'
+                      color='primary'
+                      variant='ghost'
+                      onPress={() => openEmailDrawer(i)}
+                      className='w-fit'
+                    >
+                      Select Email
+                    </Button>
+                  }
+                />
 
                 <Slider
                   label={
@@ -639,6 +639,30 @@ export default function CampaignForm({
             {segments.map((segment) => (
               <AutocompleteItem key={segment.id!}>
                 {segment.name}
+              </AutocompleteItem>
+            ))}
+          </Autocomplete>
+
+          {/* Sender */}
+          <Autocomplete
+            aria-label='Sender'
+            variant='bordered'
+            selectedKey={`${campaignFields.sender_id}`}
+            onSelectionChange={onSenderChange}
+            label={
+              <div className='flex gap-2'>
+                <PaperAirplaneIcon className='w-5' />
+                <p>Sender</p>
+              </div>
+            }
+            isInvalid={basicInfoErrors?.sender_id && true}
+            errorMessage={
+              basicInfoErrors?.sender_id && basicInfoErrors?.sender_id[0]
+            }
+          >
+            {senders.map((sender) => (
+              <AutocompleteItem key={sender.id!}>
+                {`${sender.name}: ${sender.email}`}
               </AutocompleteItem>
             ))}
           </Autocomplete>

@@ -8,10 +8,16 @@ import React, {
   useState,
 } from 'react';
 import EmailEditor, { EditorRef } from 'react-email-editor';
-import { Button, Link, Divider, Input, Textarea } from '@heroui/react';
+import {
+  Button,
+  Link,
+  Divider,
+  Input,
+  Textarea,
+  addToast,
+} from '@heroui/react';
 import { Email } from '@/app/_lib/model/email';
 import { createEmail, EmailState, updateEmail } from '@/app/_lib/action/email';
-import toast from 'react-hot-toast';
 import { redirect } from 'next/navigation';
 import { TagIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
 import NumberCircles from '../number-circle';
@@ -69,10 +75,16 @@ export default function EmailForm({ email }: { email?: Email }) {
     }
 
     if (state.error) {
-      toast.error(state.error ? state.error : 'Error encountered');
+      addToast({
+        title: state.error,
+        color: 'danger',
+      });
     } else {
       if (state.message) {
-        toast.success(state.message);
+        addToast({
+          title: state.message,
+          color: 'success',
+        });
       }
       redirect(`/dashboard/emails/${state.emailID}`);
     }
@@ -122,7 +134,10 @@ export default function EmailForm({ email }: { email?: Email }) {
           nextStep();
         } catch (error) {
           console.log(`encode email err: ${error}`);
-          toast.error('Fail to encode email html');
+          addToast({
+            title: 'Fail to encode email html',
+            color: 'danger',
+          });
         }
       });
     });
@@ -204,16 +219,17 @@ export default function EmailForm({ email }: { email?: Email }) {
             <Title title='Email Template' />
 
             <EmailEditor
-              editorId='editor'
               ref={editorRef}
               options={{
+                id: 'editor',
+                projectId: 270883,
                 displayMode: 'web',
               }}
               onReady={loadEmailJson}
             />
           </>
         ) : (
-          <>
+          <div className='w-1/2'>
             <Title title='Basic Info' />
 
             {/* Email ID */}
@@ -228,7 +244,7 @@ export default function EmailForm({ email }: { email?: Email }) {
 
             {/* Email Name */}
             <Input
-              className='mb-6 w-1/2'
+              className='mb-6'
               id='name'
               name='name'
               variant='bordered'
@@ -238,8 +254,8 @@ export default function EmailForm({ email }: { email?: Email }) {
                   <p>Name</p>
                 </div>
               }
+              fullWidth
               labelPlacement='inside'
-              fullWidth={false}
               value={emailFields.name}
               isInvalid={state.fieldErrors?.name && true}
               errorMessage={
@@ -255,7 +271,6 @@ export default function EmailForm({ email }: { email?: Email }) {
 
             {/* Email Description */}
             <Textarea
-              className='w-1/2'
               id='email_desc'
               name='email_desc'
               variant='bordered'
@@ -266,7 +281,7 @@ export default function EmailForm({ email }: { email?: Email }) {
                 </div>
               }
               labelPlacement='inside'
-              fullWidth={false}
+              fullWidth
               value={emailFields.email_desc}
               isInvalid={state.fieldErrors?.email_desc && true}
               errorMessage={
@@ -280,7 +295,7 @@ export default function EmailForm({ email }: { email?: Email }) {
                 })
               }
             />
-          </>
+          </div>
         )}
       </form>
     </div>

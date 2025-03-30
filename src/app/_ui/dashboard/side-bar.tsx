@@ -6,6 +6,10 @@ import { usePathname } from 'next/navigation';
 
 const menuItems = [
   {
+    name: 'General',
+    href: '/dashboard/settings/general',
+  },
+  {
     name: 'Users',
     href: '/dashboard/settings/users',
   },
@@ -13,8 +17,12 @@ const menuItems = [
     name: 'Roles',
     href: '/dashboard/settings/roles',
   },
+  {
+    name: 'Email',
+    href: '/dashboard/settings/email',
+  },
 ];
-const menuStyle = `flex h-[52px] items-center justify-start rounded-sm p-4 hover:bg-gray-100 text-inherit`;
+const menuStyle = `flex h-[50px] items-center justify-start rounded-sm p-4 hover:bg-gray-100 text-inherit`;
 
 export default function SideBar() {
   const pathname = usePathname();
@@ -22,7 +30,7 @@ export default function SideBar() {
   return (
     <ScrollShadow
       hideScrollBar
-      className='h-[80vh] w-[15rem] flex-col space-y-2 overflow-y-auto border-r-2 pr-6'
+      className='min-h-[80vh] w-[15rem] flex-col space-y-2 overflow-y-auto border-r-2 pr-6'
     >
       {menuItems.map((item, i) => (
         <Link

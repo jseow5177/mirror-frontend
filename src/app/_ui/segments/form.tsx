@@ -16,7 +16,6 @@ import {
 } from '@heroicons/react/24/outline';
 import { createSegment, SegmentState } from '@/app/_lib/action/segment';
 import { redirect } from 'next/navigation';
-import toast from 'react-hot-toast';
 import {
   Link,
   Button,
@@ -25,6 +24,7 @@ import {
   Divider,
   Skeleton,
   Tooltip,
+  addToast,
 } from '@heroui/react';
 import { emptyCriteria, QueryBuilder } from './query-builder';
 import { previewUd } from '@/app/_lib/data/segment';
@@ -95,7 +95,10 @@ export default function SegmentForm({
         ]);
 
         if (error) {
-          toast.error(error);
+          addToast({
+            title: error,
+            color: 'danger',
+          });
           setSegmentSize(-1);
         } else {
           setSegmentSize(count);
@@ -119,10 +122,16 @@ export default function SegmentForm({
     }
 
     if (state.error) {
-      toast.error(state.error ? state.error : 'Error encountered');
+      addToast({
+        title: state.error,
+        color: 'danger',
+      });
     } else {
       if (state.message) {
-        toast.success(state.message);
+        addToast({
+          title: state.message,
+          color: 'success',
+        });
       }
       redirect(`/dashboard/segments/${state.segmentID}`);
     }
@@ -132,7 +141,10 @@ export default function SegmentForm({
 
   const nextStep = () => {
     if (!validateCriteria(segmentFields.criteria)) {
-      toast.error('Criteria is incomplete!');
+      addToast({
+        title: 'Criteria is incomplete!',
+        color: 'danger',
+      });
     } else {
       setCurrentStep(currentStep + 1);
     }
@@ -157,7 +169,10 @@ export default function SegmentForm({
                 currentStep === 1 &&
                 !validateCriteria(segmentFields.criteria)
               ) {
-                toast.error('Criteria is incomplete!');
+                addToast({
+                  title: 'Criteria is incomplete!',
+                  color: 'danger',
+                });
               } else {
                 setCurrentStep(s);
               }

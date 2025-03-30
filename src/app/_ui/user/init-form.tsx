@@ -2,7 +2,7 @@
 
 import { initUser, InitUserState } from '@/app/_lib/action/user';
 import { ShieldCheckIcon } from '@heroicons/react/24/outline';
-import { Button, Input } from '@heroui/react';
+import { addToast, Button, Input } from '@heroui/react';
 import { redirect } from 'next/navigation';
 import {
   startTransition,
@@ -11,7 +11,6 @@ import {
   useRef,
   useState,
 } from 'react';
-import toast from 'react-hot-toast';
 
 export default function InitUserForm({ token }: { token: string }) {
   const initialState: InitUserState = {
@@ -31,16 +30,25 @@ export default function InitUserForm({ token }: { token: string }) {
   useEffect(() => {
     if (state.fieldErrors) {
       if (state.fieldErrors.token) {
-        toast.error('Missing token');
+        addToast({
+          title: 'Missing token',
+          color: 'danger',
+        });
       }
       return;
     }
 
     if (state.error) {
-      toast.error(state.error ? state.error : 'Error encountered');
+      addToast({
+        title: state.error,
+        color: 'danger',
+      });
     } else {
       if (state.message) {
-        toast.success(state.message);
+        addToast({
+          title: state.message,
+          color: 'success',
+        });
       }
       redirect('/dashboard');
     }

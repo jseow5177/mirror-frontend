@@ -6,7 +6,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <h1 className='mb-8 text-2xl'>Settings</h1>
       <section className='flex'>
         <SideBar />
-        <div className='w-full pl-6'>{children}</div>
+        <div className='w-full pl-8'>{children}</div>
       </section>
     </div>
   );

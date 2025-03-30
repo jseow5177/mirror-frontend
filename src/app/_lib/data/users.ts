@@ -50,7 +50,7 @@ export async function getMe(): Promise<User> {
 
     return body.user;
   } catch (error) {
-    const err = handleAxiosError(error, 'Failed to get me.');
+    const err = handleAxiosError(error, 'Failed to get user.');
     throw new Error(err.error);
   }
 }

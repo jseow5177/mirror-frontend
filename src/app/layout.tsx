@@ -1,7 +1,7 @@
 import '@/app/_ui/globals.css';
 import { roboto } from '@/app/_ui/fonts';
-import { Toaster } from 'react-hot-toast';
 import { HeroUIProvider } from '@heroui/react';
+import { ToastProvider } from '@heroui/toast';
 
 export default async function RootLayout({
   children,
@@ -14,14 +14,10 @@ export default async function RootLayout({
         className={`${roboto.className} antialiased`}
         suppressHydrationWarning={true}
       >
-        <HeroUIProvider>{children}</HeroUIProvider>
-        <Toaster
-          position='top-right'
-          toastOptions={{
-            duration: 5000,
-            removeDelay: 1000,
-          }}
-        />
+        <HeroUIProvider>
+          <ToastProvider placement='top-right' toastOffset={10} />
+          {children}
+        </HeroUIProvider>
       </body>
     </html>
   );

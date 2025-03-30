@@ -31,6 +31,7 @@ import { EyeIcon } from '@heroicons/react/24/outline';
 import EmailHtml from '../email-html';
 import { DetailGrid, DetailRow } from '../detail';
 import { Segment } from '@/app/_lib/model/segment';
+import { Sender } from '@/app/_lib/model/tenant';
 
 const keyUniqueOpenCount = 'uniqueOpenCount';
 const keyTotalLinkClickCount = 'totalLinkClickCount';
@@ -40,9 +41,11 @@ const keyLinkClickCount = 'linkClickCount';
 export default function CampaignView({
   campaign,
   segment,
+  sender,
 }: {
   campaign: Campaign;
   segment: Segment;
+  sender: Sender;
 }) {
   const campaignCreateTime = convertUnixToLocalTime(campaign.create_time);
   const campaignSchedule = convertUnixToLocalTime(campaign.schedule);
@@ -153,6 +156,7 @@ export default function CampaignView({
             </Link>
           }
         />
+        <DetailRow label='Sender' value={`${sender.email}`} />
         <DetailRow label='Emails to be Sent' value={campaign.segment_size} />
         <DetailRow
           label='Progress'
@@ -203,7 +207,7 @@ export default function CampaignView({
           <TableColumn>Average Open Time</TableColumn>
           <TableColumn>Click Map</TableColumn>
         </TableHeader>
-        <TableBody emptyContent={'No campaign emails to display.'}>
+        <TableBody emptyContent='You have no campaign emails.'>
           {sortedEmails.map((campaignEmail, i) => {
             const { date: avgOpenDate, time: avgOpenTime } =
               convertUnixToLocalTime(

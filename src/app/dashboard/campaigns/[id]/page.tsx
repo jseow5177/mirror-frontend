@@ -19,10 +19,11 @@ export default async function Page({
     return {
       campaign: resp[0],
       segment: resp[1],
+      sender: resp[2],
     };
   };
 
-  const { campaign, segment } = await fetchData();
+  const { campaign, segment, sender } = await fetchData();
 
   if (!campaign) {
     notFound();
@@ -39,7 +40,7 @@ export default async function Page({
           },
         ]}
       />
-      <CampaignView campaign={campaign} segment={segment} />
+      <CampaignView campaign={campaign} segment={segment} sender={sender} />
     </main>
   );
 }

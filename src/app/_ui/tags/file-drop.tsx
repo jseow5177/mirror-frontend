@@ -19,8 +19,8 @@ import {
   TableRow,
   Tooltip,
   Image,
+  addToast,
 } from '@heroui/react';
-import { toast } from 'react-hot-toast';
 import { InformationCircleIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Tag, TagValueType } from '../../_lib/model/tag';
 import { redirect } from 'next/navigation';
@@ -206,10 +206,16 @@ export default function DragAndDrop({ tag }: { tag: Tag }) {
     }
 
     if (state.error) {
-      toast.error(state.error ? state.error : 'Error encountered');
+      addToast({
+        title: state.error,
+        color: 'danger',
+      });
     } else {
       if (state.message) {
-        toast.success(state.message);
+        addToast({
+          title: state.message,
+          color: 'success',
+        });
       }
       redirect(`/dashboard/tags/${tag.id}`);
     }

@@ -30,7 +30,7 @@ export default function EmailTable({ emails }: { emails: Email[] }) {
         <TableColumn>Update Time</TableColumn>
         <TableColumn> </TableColumn>
       </TableHeader>
-      <TableBody emptyContent={'No emails to display.'}>
+      <TableBody emptyContent='You have no emails.'>
         {emails.map((email, i) => {
           const { date: updateDate, time: updateTime } = convertUnixToLocalTime(
             email.update_time

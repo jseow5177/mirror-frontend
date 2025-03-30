@@ -6,6 +6,7 @@ import { User } from '@/app/_lib/model/user';
 import {
   Accordion,
   AccordionItem,
+  addToast,
   Button,
   Checkbox,
   CheckboxGroup,
@@ -18,7 +19,6 @@ import {
   useRef,
   useState,
 } from 'react';
-import toast from 'react-hot-toast';
 
 export default function Roles({
   roles,
@@ -64,15 +64,24 @@ export default function Roles({
 
   useEffect(() => {
     if (state.fieldErrors?.roles && state.fieldErrors?.roles.length > 0) {
-      toast.error('Fail to update roles');
+      addToast({
+        title: 'Fail to update roles',
+        color: 'danger',
+      });
       return;
     }
 
     if (state.error) {
-      toast.error(state.error ? state.error : 'Error encountered');
+      addToast({
+        title: state.error,
+        color: 'danger',
+      });
     } else {
       if (state.message) {
-        toast.success(state.message);
+        addToast({
+          title: state.message,
+          color: 'success',
+        });
         setHasChange(false);
       }
     }
@@ -80,7 +89,7 @@ export default function Roles({
 
   return (
     <form ref={formRef}>
-      <Accordion variant='shadow' selectionMode='multiple'>
+      <Accordion variant='bordered' selectionMode='multiple'>
         {userRoles.map((userRole, i) => (
           <AccordionItem
             key={i}

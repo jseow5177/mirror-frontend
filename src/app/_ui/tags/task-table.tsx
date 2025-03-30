@@ -33,7 +33,7 @@ export default function TaskTable({ tasks }: { tasks: Task[] }) {
         <TableColumn>Create Time</TableColumn>
         <TableColumn>Update Time</TableColumn>
       </TableHeader>
-      <TableBody emptyContent={'No tasks to display.'}>
+      <TableBody emptyContent='No tasks to display.'>
         {tasks.map((task, i) => {
           const { date: createDate, time: createTime } = convertUnixToLocalTime(
             task.create_time

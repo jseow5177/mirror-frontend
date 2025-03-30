@@ -32,7 +32,7 @@ export default function TagTable({ tags }: { tags: Tag[] }) {
         <TableColumn>Update Time</TableColumn>
         <TableColumn> </TableColumn>
       </TableHeader>
-      <TableBody emptyContent={'No tags to display.'}>
+      <TableBody emptyContent='You have no tags.'>
         {tags.map((tag, i) => {
           const { date: updateDate, time: updateTime } = convertUnixToLocalTime(
             tag.update_time

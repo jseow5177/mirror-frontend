@@ -10,7 +10,6 @@ import { createTag, TagState } from '@/app/_lib/action/tag';
 import { Tag, TagValueType, TagValueTypes } from '@/app/_lib/model/tag';
 import { DocumentTextIcon, TagIcon } from '@heroicons/react/24/outline';
 import { useEffect } from 'react';
-import toast from 'react-hot-toast';
 import { redirect } from 'next/navigation';
 import {
   Link,
@@ -19,6 +18,7 @@ import {
   Textarea,
   RadioGroup,
   Radio,
+  addToast,
 } from '@heroui/react';
 import Title from '../title';
 
@@ -51,10 +51,16 @@ export default function TagForm({ tag }: { tag?: Tag }) {
     }
 
     if (state.error) {
-      toast.error(state.error ? state.error : 'Error encountered');
+      addToast({
+        title: state.error,
+        color: 'danger',
+      });
     } else {
       if (state.message) {
-        toast.success(state.message);
+        addToast({
+          title: state.message,
+          color: 'success',
+        });
       }
       redirect(`/dashboard/tags/${state.tagID}`);
     }

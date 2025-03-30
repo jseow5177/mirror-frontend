@@ -95,7 +95,7 @@ export default function UserTable({ users }: { users: User[] }) {
         </TableColumn>
         <TableColumn>Joined Date</TableColumn>
       </TableHeader>
-      <TableBody emptyContent={'No users to display.'}>
+      <TableBody emptyContent='You have no users.'>
         {users.map((user, i) => {
           const { date: createDate, time: createTime } = convertUnixToLocalTime(
             user.create_time

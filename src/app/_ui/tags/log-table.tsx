@@ -13,7 +13,7 @@ export default async function LogTable() {
       <TableHeader>
         <TableColumn>Log</TableColumn>
       </TableHeader>
-      <TableBody emptyContent={'No logs to display.'}>
+      <TableBody emptyContent='No logs to display.'>
         {[].map((_, i) => {
           return (
             <TableRow key={i}>

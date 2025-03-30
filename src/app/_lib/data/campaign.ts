@@ -5,6 +5,7 @@ import { handleAxiosError } from '../utils';
 import { Pagination } from './tag';
 import { Campaign } from '../model/campaign';
 import { Segment } from '../model/segment';
+import { Sender } from '../model/tenant';
 
 const CAMPAIGNS_PER_PAGE = 10;
 
@@ -38,11 +39,12 @@ export async function getCampaigns(
 type GetCampaignResponse = {
   campaign: Campaign;
   segment: Segment;
+  sender: Sender;
 };
 
 export async function getCampaign(
   campaignID: number
-): Promise<[Campaign, Segment]> {
+): Promise<[Campaign, Segment, Sender]> {
   try {
     const resp = await axiosInstance.post('/get_campaign', {
       campaign_id: campaignID,
@@ -50,7 +52,7 @@ export async function getCampaign(
 
     const body: GetCampaignResponse = resp.data.body;
 
-    return [body.campaign, body.segment];
+    return [body.campaign, body.segment, body.sender];
   } catch (error) {
     const err = handleAxiosError(error, 'Fail to get campaign.');
     throw new Error(err.error);

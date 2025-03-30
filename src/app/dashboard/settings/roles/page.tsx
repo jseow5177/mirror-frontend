@@ -23,7 +23,6 @@ export default async function Page() {
 
   return (
     <main className='w-full'>
-      <h1 className='mb-8 text-2xl'>Your Roles</h1>
       <Roles actions={actions} roles={roles} me={me} />
     </main>
   );
