@@ -43,7 +43,7 @@ export default function TrialAccountForm({ token }: { token: string }) {
 
   return (
     <>
-      {error !== '' ? (
+      {error === '' ? (
         <div className='flex flex-col gap-2'>
           <div className='flex items-center gap-4'>
             <p className='text-xl'>Setting up your trial account</p>
