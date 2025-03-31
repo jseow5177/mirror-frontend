@@ -44,13 +44,13 @@ export default function TrialAccountForm({ token }: { token: string }) {
   return (
     <>
       {error === '' ? (
-        <div className='flex-col'>
+        <div className='flex-col gap-6'>
           <div className='flex items-center gap-4'>
             <p className='text-xl'>Setting up your trial account</p>
-            <p className='text-md'>This might take a few minutes...</p>
             <PacmanLoader color='#2463EB' size={15} />
           </div>
-          <div className='mt-6 flex-col'>
+          <p className='text-md'>This might take a few minutes...</p>
+          <div className='flex-col gap-4'>
             <Progress
               aria-label='Setting up...'
               className='max-w-md'
@@ -58,7 +58,7 @@ export default function TrialAccountForm({ token }: { token: string }) {
               size='md'
               value={progress}
             />
-            <p className='text mt-2'>{progress}%</p>
+            <p className='text'>{progress}%</p>
           </div>
         </div>
       ) : (
