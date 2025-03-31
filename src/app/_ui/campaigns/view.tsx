@@ -156,7 +156,7 @@ export default function CampaignView({
             </Link>
           }
         />
-        <DetailRow label='Sender' value={`${sender.email}`} />
+        <DetailRow label='Sender' value={sender?.email ? sender.email : '-'} />
         <DetailRow label='Emails to be Sent' value={campaign.segment_size} />
         <DetailRow
           label='Progress'
