@@ -47,6 +47,7 @@ export default function TrialAccountForm({ token }: { token: string }) {
         <div className='flex-col'>
           <div className='flex items-center gap-4'>
             <p className='text-xl'>Setting up your trial account</p>
+            <p className='text-md'>This might take a few minutes...</p>
             <PacmanLoader color='#2463EB' size={15} />
           </div>
           <div className='mt-6 flex-col'>
