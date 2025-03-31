@@ -43,14 +43,16 @@ export default function TrialAccountForm({ token }: { token: string }) {
 
   return (
     <>
-      {error === '' ? (
-        <div className='flex-col gap-6'>
+      {error !== '' ? (
+        <div className='flex flex-col gap-2'>
           <div className='flex items-center gap-4'>
             <p className='text-xl'>Setting up your trial account</p>
             <PacmanLoader color='#2463EB' size={15} />
           </div>
+
           <p className='text-md'>This might take a few minutes...</p>
-          <div className='flex-col gap-4'>
+
+          <div className='flex flex-col gap-2'>
             <Progress
               aria-label='Setting up...'
               className='max-w-md'
